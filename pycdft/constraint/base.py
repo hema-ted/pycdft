@@ -1,9 +1,8 @@
-from __future__ import absolute_import, division, print_function
-
+from abc import ABCMeta, abstractmethod
 import numpy as np
-from .common.sample import Sample
-from .optimizer import Optimizer
-from .weight import Weight
+from pycdft.common.sample import Sample
+from pycdft.common.fragment import Fragment
+from pycdft.optimizer import Optimizer
 
 
 class Constraint(object):
@@ -15,7 +14,6 @@ class Constraint(object):
                    computed from the charge density of the current DFT step.
         N0 (float): the target value for the electron number or electron number difference,
                    N = N0 at convergence.
-        weight (Weight): weight function.
         optimizer (Optimizer): the optimizer for free energy.
         V (float): Lagrangian multiplier associate with the constraint.
         V_old (float): Lagrangian multiplier at the previous CDFT step.
@@ -25,50 +23,42 @@ class Constraint(object):
         dVtol (float): convergence threshold for dW/dV.
     """
 
-    def __init__(self, N0, weight: Weight, optimizer: Optimizer,
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def __init__(self, sample: Sample, N0, optimizer: Optimizer,
                  V_init=0.0, Ntol=None, Vtol=None, dVtol=1.0E-2):
         """
         Args:
             V_init (float): initial guess for V.
         """
+        self.sample = sample
         self.N0 = N0
-        self.weight = weight
-        self.sample = self.weight.sample
         self.optimizer = optimizer
         self.V = self.V_old = V_init
 
         if all((Ntol is None, Vtol is None, dVtol is None)):
-            raise ValueError("At least one of Ntol, Vtol or dVtol should be specified.")
+            raise ValueError("At least one of Ntol, Vtol or dVtol has to be specified.")
         self.Ntol = Ntol
         self.Vtol = Vtol
         self.dVtol = dVtol
 
+        self.type = None
         self.Vc = None
         self.N = None
-        self.dW_by_dV = None
         self.is_converged = False
 
-        self.update_structure()
-
-    def update_structure(self):
-        """ Update the constraint with new structure. """
-        self.weight.update()
-        self.is_converged = False
+    @property
+    def dW_by_dV(self):
+        """ The derivative of free energy with respect to V.
+        dW/dV = \int dr w_i(r) n(r) - N0 = N - N0"""
+        return self.N - self.N0
 
     def update_V(self, W):
         """ Update the constraint with new value for V."""
-        print("Updating constraint (type: {}, N0 = {})...".format(self.weight.weight_type, self.N0))
-
-        omega = self.sample.cell.omega
-        n123 = self.sample.fftgrid.N
-        rhor = self.sample.rhor
-
-        self.N = np.sum(rhor) * omega / n123
+        print("Updating constraint (type: {}, N0 = {})...".format(self.type, self.N0))
+        self.N = self.compute_N()
         print("N = {}".format(self.N))
-
-        # Compute the derivative of free energy with respect to V.
-        # dW/dV = \int dr w_i(r) n(r) - N
-        self.dW_by_dV = np.sum(self.weight.w * rhor) * omega / n123 - self.N0
         print("dW/dV = {}".format(self.dW_by_dV))
 
         # Obtained a new V value from optimizer.
@@ -77,8 +67,7 @@ class Constraint(object):
         # Update constraint info.
         self.V_old = self.V
         self.V = V_new
-        self.Vc = self.V * self.weight.w
-
+        self.Vc = self.compute_Vc()
         self.is_converged = self.check_convergence()
 
     def check_convergence(self):
@@ -110,16 +99,22 @@ class Constraint(object):
         print("convergence: N ({}), V ({}), dW/dV ({}).".format(Nconv, Vconv, dVconv))
         return not any(conv == "no" for conv in [Nconv, Vconv, dVconv])
 
-    # def compute_Fc(self):
-    #     """ Compute constraint force. """
-    #     n123 = self.sample.fftgrid.N
-    #     omega = self.sample.cell.omega
-    #     rhor = np.sum(self.sample.rhor, axis=0)
-    #
-    #     Fc = np.zeros([self.sample.cell.natoms, 3])
-    #
-    #     for iatom, atom in enumerate(self.sample.cell.atoms):
-    #         w_grad = self.weight.compute_w_grad(atom)
-    #         Fc[iatom] = self.V * np.einsum("ijk,aijk->a", rhor, w_grad) * omega / n123
-    #
-    #     return Fc
+    @abstractmethod
+    def update_structure(self):
+        """ Update the constraint with new structure. """
+        pass
+
+    @abstractmethod
+    def compute_N(self) -> float:
+        """ Update the electron number or electron number difference. """
+        pass
+
+    @abstractmethod
+    def compute_Vc(self):
+        """"""
+        pass
+
+    @abstractmethod
+    def compute_Fc(self):
+        """ Compute constraint force. """
+        pass
