@@ -52,15 +52,16 @@ class Constraint(object):
         dW/dV = \int dr w_i(r) n(r) - N0 = N - N0"""
         return self.N - self.N0
 
-    def update_V(self, W):
+    def update_V(self):
         """ Update the constraint with new value for V."""
-        print("Updating constraint (type: {}, N0 = {})...".format(self.type, self.N0))
+        print("type: {}, N0 = {}, V = {}".format(self.type, self.N0, self.V))
         self.N = self.compute_N()
         print("N = {}".format(self.N))
         print("dW/dV = {}".format(self.dW_by_dV))
 
         # Obtained a new V value from optimizer.
-        V_new = self.optimizer.update(self.dW_by_dV, self.V, W)
+        V_new = self.optimizer.update(self.dW_by_dV, self.V, self.sample.W)
+        print("updated V = {}".format(V_new))
 
         # Update constraint info.
         self.V_old = self.V

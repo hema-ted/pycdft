@@ -149,7 +149,7 @@ class QboxDriver(DFTDriver):
 
         return Fdft
 
-    def set_force(self, Fc):
+    def set_Fc(self, Fc):
         """ Implement abstract set_force method for Qbox."""
         for i in range(self.sample.cell.natoms):
             symbol = self.sample.cell.atoms[i].symbol

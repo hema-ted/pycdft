@@ -9,6 +9,8 @@ class Sample(object):
     Attributes:
         cell (Cell): the cell of the system.
         nspin (int): number of spin channels (1 or 2).
+        Edft (float): DFT total energy.
+        W (float): free energy.
     """
     def __init__(self, cell, fftgrid, nspin):
         assert isinstance(cell, Cell)
@@ -20,4 +22,9 @@ class Sample(object):
         self.nspin = nspin
 
         self.rhor = np.zeros([nspin, fftgrid.n1, fftgrid.n2, fftgrid.n3])
-        self.Etotal = None
+        self.Edft = None
+        self.W = None
+
+        self.Ftotal = None
+        self.Fdft = None
+        self.Fc = None
