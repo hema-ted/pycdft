@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, print_function
-
 import os
 import re
 import shutil
@@ -24,7 +22,7 @@ class QboxDriver(DFTDriver):
 
     _archive_folder = 'qbox_outputs'
 
-    def __init__(self, sample, init_cmd, scf_cmd, opt_cmd="run 5 100 5", input_file="qb_cdft.in"):
+    def __init__(self, sample, init_cmd, scf_cmd, opt_cmd, input_file="qb_cdft.in"):
         """Initialize QboxDriver.
 
         Control commands for SCF calculations (e.g. "run 0 100 5") needs to
@@ -37,9 +35,6 @@ class QboxDriver(DFTDriver):
         self._input_file = input_file
         self._output_file = self._input_file.split('.')[0] + '.out'
         self._lock_file = "{}.lock".format(input_file)
-        self.complete_input_file = "qb_complete.in"
-        with open(self.complete_input_file, 'w') as file:
-            file.write('')
 
         self.iter = 0
 
@@ -54,15 +49,11 @@ class QboxDriver(DFTDriver):
 
         # Initialize Qbox
         print("QboxDriver: waiting for Qbox to start...")
-        self._wait_lockfile()
+        self.wait_for_lockfile()
         print("QboxDriver: initializing Qbox...")
-        self._run_cmd(self._init_cmd)
+        self.run_cmd(self._init_cmd)
 
-    def _write_complete_input_file(self, cmd):
-        with open(self.complete_input_file, 'a') as file:
-            file.write(cmd + '\n')
-
-    def _wait_lockfile(self):
+    def wait_for_lockfile(self):
         """ Wait for Qbox lock file to appear."""
         nsec = 0
         while not os.path.isfile(self._lock_file):
@@ -71,25 +62,14 @@ class QboxDriver(DFTDriver):
             if nsec > self._max_sleep_seconds:
                 raise QboxLockfileError
 
-    def _run_cmd(self, cmd):
-        """ Let Qbox run given command.
-
-        Method returns when Qbox finishes running given command and lock file appears again.
-
-        Args:
-            cmd (str): Commands for Qbox.
-        """
+    def run_cmd(self, cmd):
+        """ Let Qbox run given command. """
         open(self._input_file, "w").write(cmd + "\n")
-        self._write_complete_input_file(cmd)
-
         os.remove(self._lock_file)
-        self._wait_lockfile()
+        self.wait_for_lockfile()
 
     def set_Vc(self, Vc):
-        """ Implement abstract set_constraint_potential method for Qbox.
-
-        Write Vc in cube format, then send set vext command to Qbox.
-        """
+        """ Write Vc in cube format, then send set vext command to Qbox."""
         nspin = self.sample.nspin
         if nspin == 2:
             raise NotImplementedError("Spin-dependent Vext not implemented in Qbox yet.")
@@ -100,29 +80,24 @@ class QboxDriver(DFTDriver):
         ase_cell = self.sample.cell.ase_cell
         write_cube(open(self._Vc_file, "w"), atoms=ase_cell, data=Vc[0])
 
-        self._run_cmd("set vext {}".format(self._Vc_file))
+        self.run_cmd("set vext {}".format(self._Vc_file))
 
     def run_scf(self):
-        """ Implement abstract run_scf method for Qbox."""
-        self._run_cmd(self._scf_cmd)
+        """ Run SCF calculation in Qbox."""
+        self.run_cmd(self._scf_cmd)
         self.iter += 1
-
         shutil.copyfile(self._output_file,
                         "{}/iter{}.out".format(self._archive_folder, self.iter))
-
         self.scf_xml = ET.ElementTree(file=self._output_file).getroot()
         for i in self.scf_xml.findall('iteration'):
             self.sample.Etotal = float((i.findall('etotal'))[0].text)
 
-
     def run_opt(self):
-        """ Implement abstract run_opt method for Qbox."""
-        self._run_cmd(self._opt_cmd)
+        """ Run geometry relaxation in Qbox."""
+        self.run_cmd(self._opt_cmd)
         shutil.copyfile(self._output_file,
                         "{}/iter{}_opt.out".format(self._archive_folder, self.iter))
-
         self.opt_xml = ET.ElementTree(file=self._output_file).getroot()
-
 
     def fetch_rhor(self):
         """ Implement abstract fetch_rhor method for Qbox.
@@ -132,7 +107,7 @@ class QboxDriver(DFTDriver):
         nspin = self.sample.nspin
 
         for ispin in range(nspin):
-            self._run_cmd(cmd="plot -density {} {}".format(
+            self.run_cmd(cmd="plot -density {} {}".format(
                 "-spin {}".format(ispin + 1) if nspin == 2 else "",
                 self._rhor_file
             ))
@@ -144,7 +119,6 @@ class QboxDriver(DFTDriver):
             rhor2 = np.roll(rhor1, n2//2, axis=1)
             rhor3 = np.roll(rhor2, n3//2, axis=2)
             self.sample.rhor[ispin] = rhor3
-
 
     def fetch_force(self):
         """ Implement abstract fetch_force method for Qbox."""
@@ -166,18 +140,16 @@ class QboxDriver(DFTDriver):
 
         return Fdft
 
-
     def set_force(self, Fc):
         """ Implement abstract set_force method for Qbox."""
         for i in range(self.sample.cell.natoms):
             symbol = self.sample.cell.atoms[i].symbol
-            self._run_cmd(cmd="extforce delete f{}{}".format(symbol, i+1))
+            self.run_cmd(cmd="extforce delete f{}{}".format(symbol, i + 1))
 
         for i in range(self.sample.cell.natoms):
             symbol = self.sample.cell.atoms[i].symbol
             qb_sym = symbol + str(i+1)
-            self._run_cmd(cmd="extforce define f{} {} {:06f} {:06f} {:06f}".format(qb_sym, qb_sym, Fc[i][0], Fc[i][1], Fc[i][2]))
-
+            self.run_cmd(cmd="extforce define f{} {} {:06f} {:06f} {:06f}".format(qb_sym, qb_sym, Fc[i][0], Fc[i][1], Fc[i][2]))
 
     def fetch_structure(self):
         """ Implement abstract fetch_structure method for Qbox."""
@@ -194,10 +166,9 @@ class QboxDriver(DFTDriver):
 
                     self.sample.cell.atoms[index - 1].abs_coord = p
 
-
     def clean(self):
         """ Clean qb_cdft.in qb_cdft.out qb_cdft.in.lock"""
-        self._run_cmd("save wf.xml")
+        self.run_cmd("save wf.xml")
 
         if os.path.exists(self._input_file):
             os.remove(self._input_file)

@@ -1,12 +1,11 @@
-from __future__ import absolute_import, division, print_function
-
 from abc import ABCMeta, abstractmethod
+from ..common.sample import Sample
 
 
 class DFTDriver(object):
     __metaclass__ = ABCMeta
 
-    def __init__(self, sample):
+    def __init__(self, sample: Sample):
         self.sample = sample
 
     @abstractmethod
@@ -23,7 +22,7 @@ class DFTDriver(object):
 
     @abstractmethod
     def run_scf(self):
-        """ Let the DFT code perform SCF calculation under the constraint.
+        """ Order the DFT code to perform SCF calculation under the constraint.
 
         Returns when SCF calculation is finished.
         """
@@ -31,7 +30,7 @@ class DFTDriver(object):
 
     @abstractmethod
     def run_opt(self):
-        """ Let the DFT code to run one structure relaxation step."""
+        """ Order the DFT code to run one structure relaxation step."""
         pass
 
     @abstractmethod
@@ -41,12 +40,12 @@ class DFTDriver(object):
 
     @abstractmethod
     def fetch_force(self):
-        """ Fetch the force from the DFT code."""
+        """ Fetch the DFT force from the DFT code."""
         pass
 
     @abstractmethod
     def set_force(self, Fc):
-        """ Set the force in the DFT code."""
+        """ Set the constraint force in the DFT code."""
         pass
 
     @abstractmethod
