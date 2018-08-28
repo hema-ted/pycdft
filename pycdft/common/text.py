@@ -1,9 +1,5 @@
-from __future__ import absolute_import, division, print_function
-
 import re
 import numpy as np
-from six import string_types
-
 
 def regex(dtype):
     """Returns the regular expression required by re package
@@ -21,6 +17,7 @@ def regex(dtype):
     else:
         raise ValueError("unsupported type")
 
+
 def parse_many_values(n, dtype, content):
     """Parse n values of type dtype from content
 
@@ -32,7 +29,7 @@ def parse_many_values(n, dtype, content):
     :return: a list of n values
     """
 
-    if isinstance(content, string_types) or isinstance(content, np.string_):
+    if isinstance(content, str) or isinstance(content, np.string_):
         results = re.findall(regex(dtype), content)
         return [dtype(value) for value in results[0:n]]
 
@@ -51,4 +48,3 @@ def parse_many_values(n, dtype, content):
         assert len(results) <= n
         if len(results) == n:
             return [dtype(result) for result in results]
-

@@ -34,12 +34,12 @@ class DFTDriver(object):
         pass
 
     @abstractmethod
-    def fetch_rhor(self):
+    def get_rhor(self):
         """ Fetch the charge density from the DFT code, write to self.sample.rhor."""
         pass
 
     @abstractmethod
-    def fetch_force(self):
+    def get_force(self):
         """ Fetch the DFT force from the DFT code."""
         pass
 
@@ -49,6 +49,11 @@ class DFTDriver(object):
         pass
 
     @abstractmethod
-    def fetch_structure(self):
+    def get_structure(self):
         """ Fetch the structure from the DFT code, write to self.sample.cell."""
+        pass
+
+    @abstractmethod
+    def get_wfc(self):
+        """ Fetch the wavefunction from the DFT code."""
         pass

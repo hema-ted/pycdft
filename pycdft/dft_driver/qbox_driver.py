@@ -2,11 +2,18 @@ import os
 import re
 import shutil
 import time
+import base64
 import numpy as np
+from lxml import etree
 import xml.etree.ElementTree as ET
+from ase import Atoms, Atom
 from ase.io.cube import read_cube_data, write_cube
 from .base import DFTDriver
-
+from ..common.units import bohr_to_angstrom
+from ..common.ft import FFTGrid
+from ..common.wfc import Wavefunction
+from ..common.text import parse_many_values
+from ..common.cell import Cell
 
 class QboxLockfileError(Exception):
     pass
@@ -19,6 +26,8 @@ class QboxDriver(DFTDriver):
 
     _Vc_file = "Vc.cube"
     _rhor_file = "rhor.cube"
+    _wfc_file = "wfc.xml"
+    _wfc_cmd = "save {}".format(_wfc_file)
 
     _archive_folder = 'qbox_outputs'
 
@@ -99,7 +108,7 @@ class QboxDriver(DFTDriver):
                         "{}/iter{}_opt.out".format(self._archive_folder, self.iter))
         self.opt_xml = ET.ElementTree(file=self._output_file).getroot()
 
-    def fetch_rhor(self):
+    def get_rhor(self):
         """ Implement abstract fetch_rhor method for Qbox.
 
         Send plot charge density commands to Qbox, then parse charge density.
@@ -120,7 +129,7 @@ class QboxDriver(DFTDriver):
             rhor3 = np.roll(rhor2, n3//2, axis=2)
             self.sample.rhor[ispin] = rhor3
 
-    def fetch_force(self):
+    def get_force(self):
         """ Implement abstract fetch_force method for Qbox."""
         # parse from self.scf_xml
         Fdft = np.zeros([self.sample.cell.natoms, 3])
@@ -151,7 +160,7 @@ class QboxDriver(DFTDriver):
             qb_sym = symbol + str(i+1)
             self.run_cmd(cmd="extforce define f{} {} {:06f} {:06f} {:06f}".format(qb_sym, qb_sym, Fc[i][0], Fc[i][1], Fc[i][2]))
 
-    def fetch_structure(self):
+    def get_structure(self):
         """ Implement abstract fetch_structure method for Qbox."""
         # parse from self.scf_xml
         for i in self.opt_xml.findall('iteration')[-1:]:
@@ -179,3 +188,92 @@ class QboxDriver(DFTDriver):
         _output_file = self._input_file.split('.')[0] + '.out'
         if os.path.exists(_output_file):
             os.remove(_output_file)
+
+    def get_wfc(self):
+        """ Parse wavefunction from Qbox."""
+
+        self.run_cmd(self._wfc_cmd)
+        wfcfile = self._wfc_file
+
+        iterxml = etree.iterparse(wfcfile, huge_tree=True, events=("start", "end"))
+
+        nkpt = 1
+        ikpt = 0  # k points are not supported yet
+
+        for event, leaf in iterxml:
+            if event == "end" and leaf.tag == "unit_cell":
+                R1 = np.fromstring(leaf.attrib["a"], sep=" ", dtype=np.float_) * bohr_to_angstrom
+                R2 = np.fromstring(leaf.attrib["b"], sep=" ", dtype=np.float_) * bohr_to_angstrom
+                R3 = np.fromstring(leaf.attrib["c"], sep=" ", dtype=np.float_) * bohr_to_angstrom
+                lattice = np.array([R1, R2, R3])
+                ase_cell = Atoms(cell=lattice, pbc=True)
+
+            if event == "end" and leaf.tag == "atom":
+                species = leaf.attrib["species"]
+                position = np.array(parse_many_values(3, float, leaf.find("position").text))
+                ase_cell.append(Atom(symbol=species, position=position * bohr_to_angstrom))
+
+            if event == "start" and leaf.tag == "wavefunction":
+                nspin = int(leaf.attrib["nspin"])
+                assert nspin == self.sample.nspin
+                nbnd = np.zeros((nspin, nkpt))
+                occs = np.zeros((nspin, nkpt), dtype=object)
+
+            if event == "end" and leaf.tag == "grid":
+                n1, n2, n3 = int(leaf.attrib["nx"]), int(leaf.attrib["ny"]), int(leaf.attrib["nz"])
+
+            if event == "start" and leaf.tag == "slater_determinant":
+                ispin = 0
+                if nspin == 2 and leaf.attrib["spin"] == "down":
+                    ispin = 1
+
+            if event == "end" and leaf.tag == "density_matrix":
+                occ = np.fromstring(leaf.text, sep=" ", dtype=np.float_)
+                nbnd[ispin, ikpt] = len(occ)
+                occs[ispin, ikpt] = occ
+
+            if event == "end" and leaf.tag == "grid_function":
+                leaf.clear()
+
+            if event == "start" and leaf.tag == "wavefunction_velocity":
+                break
+
+        cell = Cell(ase_cell)
+        wgrid = FFTGrid(n1, n2, n3)
+
+        occs_ = np.zeros((nspin, nkpt, max(len(occs[ispin, ikpt])
+                                           for ispin, ikpt in np.ndindex(nspin, nkpt))))
+        for ispin, ikpt in np.ndindex(nspin, nkpt):
+            occs_[ispin, ikpt, 0:len(occs[ispin, ikpt])] = occs[ispin, ikpt]
+
+        wfc = Wavefunction(cell=cell, wgrid=wgrid, dgrid=wgrid,
+                           nspin=nspin, nkpt=nkpt, nbnd=nbnd, occ=occs_,
+                           gamma=True, gvecs=None)
+
+        for event, leaf in iterxml:
+            ispin = 0
+            ikpt = 0
+            if event == "start" and leaf.tag == "slater_determinant":
+                if wfc.nspin == 2 and leaf.attrib["spin"] == "down":
+                    ispin = 1
+                ibnd = 0
+
+            if event == "end" and leaf.tag == "grid_function":
+                if leaf.attrib["encoding"] == "base64":
+                    psir = np.frombuffer(
+                        base64.b64decode(leaf.text), dtype=np.float64
+                    ).reshape(wfc.wgrid.n3, wfc.wgrid.n2, wfc.wgrid.n1).T
+                elif leaf.attrib["encoding"] == "text":
+                    psir = np.fromstring(leaf.text, sep=" ", dtype=np.float64).reshape(
+                        wfc.wgrid.n3, wfc.wgrid.n2, wfc.wgrid.n1
+                    ).T
+                else:
+                    raise ValueError
+                wfc.psir[ispin, ikpt, ibnd] = psir
+                ibnd += 1
+                leaf.clear()
+
+            if event == "start" and leaf.tag == "wavefunction_velocity":
+                break
+
+        return wfc

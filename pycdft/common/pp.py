@@ -1,6 +1,3 @@
-from __future__ import absolute_import, division, print_function
-
-
 SG15PP = {
     'Ag': {'atomic_number': 47,
            'mass': 107.87000275,

@@ -104,7 +104,7 @@ class CDFTCalculation:
             self.dft_driver.run_opt()
 
             # parse updated coordinates
-            self.dft_driver.fetch_structure()
+            self.dft_driver.get_structure()
 
             # update weights and constraint potentials
             for c in self.constraints:
@@ -165,7 +165,7 @@ class CDFTCalculation:
                     file.write("{:06f} {:06f}\n".format(c.V, self.W))
 
             # Parse the resulting charge density.
-            self.dft_driver.fetch_rhor()
+            self.dft_driver.get_rhor()
 
             # Update the Lagrangian multipliers for all constraints.
             for i, c in enumerate(self.constraints, 1):
@@ -193,7 +193,7 @@ class CDFTCalculation:
 
     def record_force(self):
         # read DFT force
-        self.Fdft = self.dft_driver.fetch_force()
+        self.Fdft = self.dft_driver.get_force()
         # compute constraint force
         self.Fc = self.compute_Fc()
         # compute total force and check convergence
