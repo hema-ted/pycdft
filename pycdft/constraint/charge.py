@@ -27,10 +27,12 @@ class ChargeConstraint(Constraint):
         omega = self.sample.cell.omega
         n123 = self.sample.fftgrid.N
         rhor = self.sample.rhor
-        return np.sum(self.fragment.w * rhor) * omega / n123
+        return (omega / n123) * np.sum(np.einsum("ijk,sijk->s", self.fragment.w, rhor))
 
     def compute_Vc(self):
-        return self.V * self.fragment.w
+        nspin = self.sample.nspin
+        w = self.fragment.w
+        return self.V * np.append(w, w, axis=0).reshape(nspin, *w.shape)
 
     def compute_Fc(self):
         n123 = self.sample.fftgrid.N

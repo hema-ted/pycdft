@@ -1,7 +1,5 @@
 from abc import ABCMeta, abstractmethod
-import numpy as np
 from pycdft.common.sample import Sample
-from pycdft.common.fragment import Fragment
 from pycdft.optimizer import Optimizer
 
 

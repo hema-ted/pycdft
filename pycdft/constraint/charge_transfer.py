@@ -30,10 +30,13 @@ class ChargeTransferConstraint(Constraint):
         omega = self.sample.cell.omega
         n123 = self.sample.fftgrid.N
         rhor = self.sample.rhor
-        return np.sum((self.donor.w - self.acceptor.w) * rhor) * omega / n123
+        return (omega / n123) * (np.sum(np.einsum("ijk,sijk->s", self.donor.w, rhor))
+                                 - np.sum(np.einsum("ijk,sijk->s", self.acceptor.w, rhor)))
 
     def compute_Vc(self):
-        return self.V * (self.donor.w - self.acceptor.w)
+        nspin = self.sample.nspin
+        dw = self.donor.w - self.acceptor.w
+        return self.V * np.append(dw, dw, axis=0).reshape(nspin, *dw.shape)
 
     def compute_Fc(self):
         n123 = self.sample.fftgrid.N
