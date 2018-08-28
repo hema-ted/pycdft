@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, print_function
-
 from .base import Optimizer
 
 
@@ -10,10 +8,6 @@ class SDOptimizer(Optimizer):
 
     def setup(self):
         pass
-
-    # def update(self, dy_by_dx):
-    #     self.x += self.step * dy_by_dx
-    #     return self.x
 
     def update(self, dy_by_dx, x, y=None):
         return x + self.step * dy_by_dx
