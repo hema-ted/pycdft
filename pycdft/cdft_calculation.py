@@ -174,7 +174,7 @@ class CDFTCalculation:
             for i, c in enumerate(self.constraints, 1):
                 c.update_V(self.W)
 
-            if all(c.is_converged() for c in self.constraints):
+            if all(c.is_converged for c in self.constraints):
                 # Check if convergence achieved
                 print("CDFTCalculation: convergence achieved!")
                 self.record_force()
@@ -189,7 +189,7 @@ class CDFTCalculation:
     def compute_Fc(self):
         Fc = np.zeros([self.sample.cell.natoms, 3])
         for c in self.constraints:
-            Fc += c.compute_pre_Fc()
+            Fc += c.compute_Fc()
 
         return Fc
 
