@@ -34,7 +34,7 @@ class DFTDriver(object):
         pass
 
     @abstractmethod
-    def get_rhor(self):
+    def get_rho_r(self):
         """ Fetch the charge density from the DFT code, write to self.sample.rhor."""
         pass
 

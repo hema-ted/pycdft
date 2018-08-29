@@ -10,6 +10,7 @@ from .base import DFTDriver
 from ..common.ft import FFTGrid
 from ..common.wfc import Wavefunction
 
+
 class QboxLockfileError(Exception):
     pass
 
@@ -103,7 +104,7 @@ class QboxDriver(DFTDriver):
                         "{}/iter{}_opt.out".format(self._archive_folder, self.iter))
         self.opt_xml = etree.parse(self._output_file).getroot()
 
-    def get_rhor(self):
+    def get_rho_r(self):
         """ Implement abstract fetch_rhor method for Qbox.
 
         Send plot charge density commands to Qbox, then parse charge density.

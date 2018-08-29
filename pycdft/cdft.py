@@ -80,7 +80,7 @@ class CDFTSolver:
             print("Free energy = {}".format(self.sample.W))
 
             # Parse the resulting charge density.
-            self.dft_driver.get_rhor()
+            self.dft_driver.get_rho_r()
 
             # Update the Lagrangian multipliers for all constraints.
             for i, c in enumerate(self.constraints, 1):
@@ -88,12 +88,12 @@ class CDFTSolver:
                 c.update_V()
 
             if all(c.is_converged for c in self.constraints):
-                print("CDFTCalculation: convergence achieved!")
+                print("CDFTSolver: convergence achieved!")
                 self.dft_driver.get_force()
                 return
 
         else:
-            print("CDFTCalculation: convergence NOT achieved after {} iterations.".format(self.maxiter))
+            print("CDFTSolver: convergence NOT achieved after {} iterations.".format(self.maxiter))
             self.dft_driver.get_force()
 
     def solve_relax(self):
@@ -109,7 +109,7 @@ class CDFTSolver:
             maxforce, maxforceatom = self.sample.get_maxforce()
             print("Maximum force = {} au, on {}".format(maxforce, maxforceatom))
             if maxforce < self.Ftol:
-                print("CDFTCalculation: force convergence achieved!")
+                print("CDFTSolver: force convergence achieved!")
                 break
 
             # add constraint force to DFT force
@@ -135,7 +135,7 @@ class CDFTSolver:
             print("================================")
 
         else:
-            print("CDFTCalculation: relaxation NOT achieved after {} steps.".format(self.maxstep))
+            print("CDFTSolver: relaxation NOT achieved after {} steps.".format(self.maxstep))
 
     def get_wfc(self):
         """ Get DFT wavefunction."""

@@ -34,7 +34,7 @@ class Sample(object):
         self.G = 2 * np.pi * np.linalg.inv(self.R).T
         assert np.all(np.isclose(np.dot(self.R, self.G.T), 2 * np.pi * np.eye(3)))
         self.omega = np.linalg.det(self.R)
-        self.atoms = list(Atom(cell=self, ase_atom=atom) for atom in ase_cell)
+        self.atoms = list(Atom(sample=self, ase_atom=atom) for atom in ase_cell)
         self.natoms = len(self.atoms)
         self.species = sorted(set([atom.symbol for atom in self.atoms]))
         self.nspecies = len(self.species)
