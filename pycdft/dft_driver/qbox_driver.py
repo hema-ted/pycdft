@@ -5,15 +5,10 @@ import time
 import base64
 import numpy as np
 from lxml import etree
-import xml.etree.ElementTree as ET
-from ase import Atoms, Atom
 from ase.io.cube import read_cube_data, write_cube
 from .base import DFTDriver
-from ..common.units import bohr_to_angstrom
 from ..common.ft import FFTGrid
 from ..common.wfc import Wavefunction
-from ..common.text import parse_many_values
-from ..common.sample import Cell
 
 class QboxLockfileError(Exception):
     pass
@@ -86,7 +81,7 @@ class QboxDriver(DFTDriver):
         n1, n2, n3 = fftgrid.n1, fftgrid.n2, fftgrid.n3
         assert isinstance(Vc, np.ndarray) and Vc.shape == (nspin, n1, n2, n3)
 
-        ase_cell = self.sample.cell.ase_cell
+        ase_cell = self.sample.ase_cell
         write_cube(open(self._Vc_file, "w"), atoms=ase_cell, data=Vc[0])
 
         self.run_cmd("set vext {}".format(self._Vc_file))
@@ -97,7 +92,7 @@ class QboxDriver(DFTDriver):
         self.iter += 1
         shutil.copyfile(self._output_file,
                         "{}/iter{}.out".format(self._archive_folder, self.iter))
-        self.scf_xml = ET.ElementTree(file=self._output_file).getroot()
+        self.scf_xml = etree.parse(self._output_file).getroot()
         for i in self.scf_xml.findall('iteration'):
             self.sample.Etotal = float((i.findall('etotal'))[0].text)
 
@@ -106,7 +101,7 @@ class QboxDriver(DFTDriver):
         self.run_cmd(self._opt_cmd)
         shutil.copyfile(self._output_file,
                         "{}/iter{}_opt.out".format(self._archive_folder, self.iter))
-        self.opt_xml = ET.ElementTree(file=self._output_file).getroot()
+        self.opt_xml = etree.parse(self._output_file).getroot()
 
     def get_rhor(self):
         """ Implement abstract fetch_rhor method for Qbox.
@@ -132,7 +127,7 @@ class QboxDriver(DFTDriver):
     def get_force(self):
         """ Implement abstract fetch_force method for Qbox."""
         # parse from self.scf_xml
-        Fdft = np.zeros([self.sample.cell.natoms, 3])
+        Fdft = np.zeros([self.sample.natoms, 3])
 
         for i in self.scf_xml.findall('iteration')[-1:]:
             for atoms in i.findall('atomset'):
@@ -140,7 +135,7 @@ class QboxDriver(DFTDriver):
 
                     m = re.match(r"([a-zA-Z]+)([0-9]+)", atom.attrib['name'])
                     symbol, index = m.group(1), int(m.group(2))
-                    assert self.sample.cell.atoms[index-1].symbol == symbol
+                    assert self.sample.atoms[index-1].symbol == symbol
 
                     a = atom.findall('force')
                     f = np.array(a[0].text.split()).astype(np.float)
@@ -151,12 +146,12 @@ class QboxDriver(DFTDriver):
 
     def set_Fc(self, Fc):
         """ Implement abstract set_force method for Qbox."""
-        for i in range(self.sample.cell.natoms):
-            symbol = self.sample.cell.atoms[i].symbol
+        for i in range(self.sample.natoms):
+            symbol = self.sample.atoms[i].symbol
             self.run_cmd(cmd="extforce delete f{}{}".format(symbol, i + 1))
 
-        for i in range(self.sample.cell.natoms):
-            symbol = self.sample.cell.atoms[i].symbol
+        for i in range(self.sample.natoms):
+            symbol = self.sample.atoms[i].symbol
             qb_sym = symbol + str(i+1)
             self.run_cmd(cmd="extforce define f{} {} {:06f} {:06f} {:06f}".format(qb_sym, qb_sym, Fc[i][0], Fc[i][1], Fc[i][2]))
 
@@ -168,12 +163,12 @@ class QboxDriver(DFTDriver):
                 for atom in atoms.findall('atom'):
                     m = re.match(r"([a-zA-Z]+)([0-9]+)", atom.attrib['name'])
                     symbol, index = m.group(1), int(m.group(2))
-                    assert self.sample.cell.atoms[index - 1].symbol == symbol
+                    assert self.sample.atoms[index - 1].symbol == symbol
 
                     a = atom.findall('position')
                     p = np.array(a[0].text.split()).astype(np.float)
 
-                    self.sample.cell.atoms[index - 1].abs_coord = p
+                    self.sample.atoms[index - 1].abs_coord = p
 
     def clean(self):
         """ Clean qb_cdft.in qb_cdft.out qb_cdft.in.lock"""
@@ -201,18 +196,6 @@ class QboxDriver(DFTDriver):
         ikpt = 0  # k points are not supported yet
 
         for event, leaf in iterxml:
-            if event == "end" and leaf.tag == "unit_cell":
-                R1 = np.fromstring(leaf.attrib["a"], sep=" ", dtype=np.float_) * bohr_to_angstrom
-                R2 = np.fromstring(leaf.attrib["b"], sep=" ", dtype=np.float_) * bohr_to_angstrom
-                R3 = np.fromstring(leaf.attrib["c"], sep=" ", dtype=np.float_) * bohr_to_angstrom
-                lattice = np.array([R1, R2, R3])
-                ase_cell = Atoms(cell=lattice, pbc=True)
-
-            if event == "end" and leaf.tag == "atom":
-                species = leaf.attrib["species"]
-                position = np.array(parse_many_values(3, float, leaf.find("position").text))
-                ase_cell.append(Atom(symbol=species, position=position * bohr_to_angstrom))
-
             if event == "start" and leaf.tag == "wavefunction":
                 nspin = int(leaf.attrib["nspin"])
                 assert nspin == self.sample.nspin
@@ -238,7 +221,6 @@ class QboxDriver(DFTDriver):
             if event == "start" and leaf.tag == "wavefunction_velocity":
                 break
 
-        cell = Cell(ase_cell)
         wgrid = FFTGrid(n1, n2, n3)
 
         occs_ = np.zeros((nspin, nkpt, max(len(occs[ispin, ikpt])
@@ -246,7 +228,7 @@ class QboxDriver(DFTDriver):
         for ispin, ikpt in np.ndindex(nspin, nkpt):
             occs_[ispin, ikpt, 0:len(occs[ispin, ikpt])] = occs[ispin, ikpt]
 
-        wfc = Wavefunction(cell=cell, wgrid=wgrid, dgrid=wgrid,
+        wfc = Wavefunction(sample=self.sample, wgrid=wgrid, dgrid=wgrid,
                            nspin=nspin, nkpt=nkpt, nbnd=nbnd, occ=occs_,
                            gamma=True, gvecs=None)
 

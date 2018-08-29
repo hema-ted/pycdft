@@ -74,7 +74,7 @@ class Wavefunction:
         After been indexed, the corresponding quantity (numpy array) of a
         specific KS orbital is returned.
 
-        cell (Cell): cell upon which the wavefunction is defined.
+        sample (Sample): sample upon which the wavefunction is defined.
         wgrid (FFTGrid): wavefunction grid.
         dgrid (FFTGrid): charge density grid.
 
@@ -95,10 +95,10 @@ class Wavefunction:
         Above maps can be accessed by skb2idx and idx2skb methods.
     """
 
-    def __init__(self, cell, wgrid, dgrid, nspin, nkpt, nbnd, occ, gamma=True, gvecs=None):
+    def __init__(self, sample, wgrid, dgrid, nspin, nkpt, nbnd, occ, gamma=True, gvecs=None):
 
         # define general info
-        self._cell = cell
+        self._sample = sample
         self._wgrid = wgrid
         self._dgrid = dgrid
 
@@ -217,7 +217,7 @@ class Wavefunction:
     def normalize(self, psir):
         """Normalize psi(r)."""
         assert psir.shape == (self.wgrid.n1, self.wgrid.n2, self.wgrid.n3)
-        norm = np.sqrt(np.sum(np.abs(psir) ** 2) * self.cell.omega / self.wgrid.N)
+        norm = np.sqrt(np.sum(np.abs(psir) ** 2) * self.sample.omega / self.wgrid.N)
         return psir / norm
 
     @property
@@ -233,8 +233,8 @@ class Wavefunction:
         return self._psir
 
     @property
-    def cell(self):
-        return self._cell
+    def sample(self):
+        return self._sample
 
     @property
     def wgrid(self):

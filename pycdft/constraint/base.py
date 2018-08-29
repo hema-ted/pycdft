@@ -103,10 +103,10 @@ class Constraint(object):
 
     def compute_N(self) -> float:
         """ Update the electron number or electron number difference. """
-        omega = self.sample.cell.omega
-        n123 = self.sample.fftgrid.N
-        rhor = self.sample.rho_r
-        return (omega / n123) * np.sum(np.einsum("ijk,sijk->s", self.weight, rhor))
+        omega = self.sample.omega
+        n123 = self.sample.n1 * self.sample.n2 * self.sample.n3
+        rho_r = self.sample.rho_r
+        return (omega / n123) * np.sum(np.einsum("ijk,sijk->s", self.weight, rho_r))
 
     @abstractmethod
     def update_structure(self)-> None:

@@ -24,19 +24,20 @@ class ChargeTransferConstraint(Constraint):
         self.update_structure()
 
     def update_structure(self):
-        self.weight = (self.donor.rhopro - self.acceptor.rhopro) / self.sample.cell.rhopro_tot
-        self.weight[self.sample.cell.rhopro_tot < self._eps] = 0.0
+        self.weight = (self.donor.rhopro_r - self.acceptor.rhopro_r) / self.sample.rhopro_tot_r
+        self.weight[self.sample.rhopro_tot_r < self._eps] = 0.0
         self.is_converged = False
 
     def compute_Fc(self):
-        n123 = self.sample.fftgrid.N
-        omega = self.sample.cell.omega
-        rhor = np.sum(self.sample.rhor, axis=0)
+        omega = self.sample.omega
+        n123 = self.sample.n123
+        rhor = np.sum(self.sample.rho_r, axis=0)
+        Fc = np.zeros([self.sample.natoms, 3])
 
-        Fc = np.zeros([self.sample.cell.natoms, 3])
+        for iatom, atom in enumerate(self.sample.atoms):
 
-        for iatom, atom in enumerate(self.sample.cell.atoms):
-            w_grad = self.donor.compute_w_grad(atom) - self.acceptor.compute_w_grad(atom)
-            Fc[iatom] = self.V * np.einsum("ijk,aijk->a", rhor, w_grad) * omega / n123
+            w_grad = (self.donor.compute_w_grad(atom, self.weight)
+                      - self.acceptor.compute_w_grad(atom, self.weight))
+            Fc[iatom] = (omega * n123) * self.V * np.einsum("ijk,aijk->a", rhor, w_grad)
 
         return Fc

@@ -11,28 +11,28 @@ class Atom(object):
     All physical quantities are in atomic unit.
 
     Attributes:
-        cell(Cell): the cell where the atom lives.
-        symbol(str): chemical symbol of the atom.
-        abs_coord(float array): absolute coordinate.
-        cry_coord(float array): crystal coordinate.
+        sample (Sample): the sample where the atom lives.
+        symbol (str): chemical symbol of the atom.
+        abs_coord (np.ndarray, shape = [3]): absolute coordinate.
+        cry_coord (np.ndarray, shape = [3]): crystal coordinate.
 
     Extra attributes are welcomed to be attached to an atom.
     """
 
     _extra_attr_to_print = ["Fc", "Fdft", "Ftotal"]
 
-    def __init__(self, cell, ase_atom):
-        self.cell = cell
+    def __init__(self, sample, ase_atom):
+        self.sample = sample
         self.symbol = ase_atom.symbol
         self.abs_coord = ase_atom.position * angstrom_to_bohr
 
     @property
     def cry_coord(self):
-        return self.abs_coord @ self.cell.G.T / (2 * np.pi)
+        return self.abs_coord @ self.sample.G.T / (2 * np.pi)
 
     @cry_coord.setter
     def cry_coord(self, cry_coord):
-        self.abs_coord = cry_coord @ self.cell.R
+        self.abs_coord = cry_coord @ self.sample.R
 
     @property
     def ase_atom(self):

@@ -50,7 +50,7 @@ class DFTDriver(object):
 
     @abstractmethod
     def get_structure(self):
-        """ Fetch the structure from the DFT code, write to self.sample.cell."""
+        """ Fetch the structure from the DFT code, write to self.sample."""
         pass
 
     @abstractmethod

@@ -45,6 +45,7 @@ class Sample(object):
         # define nspin and FFT grid
         self.nspin = nspin
         self.n1, self.n2, self.n3 = n1, n2, n3
+        self.n123 = n1 * n2 * n3
 
         # define charge density and promolecule charge densities
         self.rho_r = None
@@ -118,14 +119,6 @@ class Sample(object):
             ase_cell.append(atom.ase_atom)
         return ase_cell
 
-    def __repr__(self):
-        return "Cell \"{}\" natoms={}\nLattice constants:\n{}\nReciprocal lattice constants:\n{}\n".format(
-            self.ase_cell.get_chemical_formula(), self.natoms, self.R, self.G
-        )
-
-    def __str__(self):
-        return self.__repr__()
-
     def show(self):
         """ Visualize the structure by VESTA."""
         fname = "/tmp/cell{}.cif".format(randint(1000, 9999))
@@ -183,3 +176,11 @@ class Sample(object):
                 maxforceatom = atom
 
         return maxforce, maxforceatom
+
+    def __repr__(self):
+        return "Cell \"{}\" natoms={}\nLattice constants:\n{}\nReciprocal lattice constants:\n{}\n".format(
+            self.ase_cell.get_chemical_formula(), self.natoms, self.R, self.G
+        )
+
+    def __str__(self):
+        return self.__repr__()

@@ -106,14 +106,14 @@ class CDFTSolver:
             # run SCF to converge electronic structure
             self.solve_scf()
 
-            maxforce, maxforceatom = self.sample.cell.get_maxforce()
+            maxforce, maxforceatom = self.sample.get_maxforce()
             print("Maximum force = {} au, on {}".format(maxforce, maxforceatom))
             if maxforce < self.Ftol:
                 print("CDFTCalculation: force convergence achieved!")
                 break
 
             # add constraint force to DFT force
-            Fc_total = np.zeros([self.sample.cell.natoms, 3])
+            Fc_total = np.zeros([self.sample.natoms, 3])
             for c in self.constraints:
                 Fc_total += c.compute_Fc()
 
