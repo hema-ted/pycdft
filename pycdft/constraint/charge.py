@@ -12,6 +12,8 @@ class ChargeConstraint(Constraint):
         fragment (Fragment): a fragment of the whole system.
     """
 
+    _eps = 0.0001  # cutoff of Hirshfeld weight when the density approaches zero
+
     def __init__(self, sample: Sample, fragment: Fragment, N0, optimizer: Optimizer,
                  V_init=0.0, Ntol=None, Vtol=None, dVtol=1.0E-2):
         super(ChargeConstraint, self).__init__(sample, N0, optimizer, V_init=V_init,
@@ -20,19 +22,9 @@ class ChargeConstraint(Constraint):
         self.update_structure()
 
     def update_structure(self):
-        self.fragment.update()
+        self.weight = self.fragment.rhopro / self.sample.cell.rhopro_tot
+        self.weight[self.sample.cell.rhopro_tot < self._eps] = 0.0
         self.is_converged = False
-
-    def compute_N(self) -> float:
-        omega = self.sample.cell.omega
-        n123 = self.sample.fftgrid.N
-        rhor = self.sample.rhor
-        return (omega / n123) * np.sum(np.einsum("ijk,sijk->s", self.fragment.w, rhor))
-
-    def compute_Vc(self):
-        nspin = self.sample.nspin
-        w = self.fragment.w
-        return self.V * np.append(w, w, axis=0).reshape(nspin, *w.shape)
 
     def compute_Fc(self):
         n123 = self.sample.fftgrid.N

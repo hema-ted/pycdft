@@ -13,6 +13,8 @@ class ChargeTransferConstraint(Constraint):
         acceptor (Fragment): acceptor fragment.
     """
 
+    _eps = 0.0001  # cutoff of Hirshfeld weight when the density approaches zero
+
     def __init__(self, sample: Sample, donor: Fragment, acceptor: Fragment, N0,
                  optimizer: Optimizer, V_init=0.0, Ntol=None, Vtol=None, dVtol=1.0E-2):
         super(ChargeTransferConstraint, self).__init__(sample, N0, optimizer, V_init=V_init,
@@ -22,21 +24,9 @@ class ChargeTransferConstraint(Constraint):
         self.update_structure()
 
     def update_structure(self):
-        self.donor.update()
-        self.acceptor.update()
+        self.weight = (self.donor.rhopro - self.acceptor.rhopro) / self.sample.cell.rhopro_tot
+        self.weight[self.sample.cell.rhopro_tot < self._eps] = 0.0
         self.is_converged = False
-
-    def compute_N(self) -> float:
-        omega = self.sample.cell.omega
-        n123 = self.sample.fftgrid.N
-        rhor = self.sample.rhor
-        return (omega / n123) * (np.sum(np.einsum("ijk,sijk->s", self.donor.w, rhor))
-                                 - np.sum(np.einsum("ijk,sijk->s", self.acceptor.w, rhor)))
-
-    def compute_Vc(self):
-        nspin = self.sample.nspin
-        dw = self.donor.w - self.acceptor.w
-        return self.V * np.append(dw, dw, axis=0).reshape(nspin, *dw.shape)
 
     def compute_Fc(self):
         n123 = self.sample.fftgrid.N

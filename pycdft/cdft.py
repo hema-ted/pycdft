@@ -7,7 +7,7 @@ from .constraint import Constraint
 from .dft_driver import DFTDriver
 
 
-class CDFTCalculation:
+class CDFTSolver:
     """ Constrained DFT calculation.
 
     Attributes:
@@ -136,3 +136,7 @@ class CDFTCalculation:
 
         else:
             print("CDFTCalculation: relaxation NOT achieved after {} steps.".format(self.maxstep))
+
+    def get_wfc(self):
+        """ Get DFT wavefunction."""
+        return self.dft_driver.get_wfc()

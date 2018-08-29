@@ -13,7 +13,7 @@ from ..common.units import bohr_to_angstrom
 from ..common.ft import FFTGrid
 from ..common.wfc import Wavefunction
 from ..common.text import parse_many_values
-from ..common.cell import Cell
+from ..common.sample import Cell
 
 class QboxLockfileError(Exception):
     pass

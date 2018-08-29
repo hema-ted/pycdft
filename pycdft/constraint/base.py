@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+import numpy as np
 from pycdft.common.sample import Sample
 from pycdft.optimizer import Optimizer
 
@@ -15,7 +16,8 @@ class Constraint(object):
         optimizer (Optimizer): the optimizer for free energy.
         V (float): Lagrangian multiplier associate with the constraint.
         V_old (float): Lagrangian multiplier at the previous CDFT step.
-        Vc (np.array, shape == [nspin, n1, n2, n3]): constraint potential.
+        Vc (np.ndarray, shape = [nspin, n1, n2, n3]): constraint potential.
+        weight (np.ndarray, shape = [n1, n2, n3]): weight function.
         Ntol (float): convergence threshold for N.
         Vtol (float): convergence threshold for V.
         dVtol (float): convergence threshold for dW/dV.
@@ -43,6 +45,7 @@ class Constraint(object):
 
         self.type = None
         self.Vc = None
+        self.weight = None
         self.N = None
         self.is_converged = False
 
@@ -98,22 +101,25 @@ class Constraint(object):
         print("convergence: N ({}), V ({}), dW/dV ({}).".format(Nconv, Vconv, dVconv))
         return not any(conv == "no" for conv in [Nconv, Vconv, dVconv])
 
+    def compute_N(self) -> float:
+        """ Update the electron number or electron number difference. """
+        omega = self.sample.cell.omega
+        n123 = self.sample.fftgrid.N
+        rhor = self.sample.rho_r
+        return (omega / n123) * np.sum(np.einsum("ijk,sijk->s", self.weight, rhor))
+
     @abstractmethod
-    def update_structure(self):
+    def update_structure(self)-> None:
         """ Update the constraint with new structure. """
         pass
 
     @abstractmethod
-    def compute_N(self) -> float:
-        """ Update the electron number or electron number difference. """
-        pass
+    def compute_Vc(self)-> np.ndarray:
+        """ Compute constraint potential. """
+        nspin = self.sample.nspin
+        return self.V * np.append(self.weight, self.weight, axis=0).reshape(nspin, *self.weight.shape)
 
     @abstractmethod
-    def compute_Vc(self):
-        """"""
-        pass
-
-    @abstractmethod
-    def compute_Fc(self):
+    def compute_Fc(self)-> np.ndarray:
         """ Compute constraint force. """
         pass
