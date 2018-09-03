@@ -24,7 +24,7 @@ class Sample(object):
         nspin (int): number of spin channels (1 or 2).
         n1, n2, n3 (int): FFT grid for charge density, weight function and constraint potential.
         Edft (float): DFT total energy.
-        W (float): free energy.
+        Efree (float): free energy.
     """
     def __init__(self, ase_cell: Atoms, nspin: int, n1: int, n2: int, n3: int,
                  atomic_density_files: dict=None):
@@ -67,7 +67,7 @@ class Sample(object):
 
         # define energies and forces
         self.Edft = None
-        self.W = None
+        self.Efree = None
         self.Ftotal = None
         self.Fdft = None
         self.Fc = None

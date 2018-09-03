@@ -17,8 +17,8 @@ class Constraint(object):
         V (float): Lagrangian multiplier associate with the constraint.
         V_old (float): Lagrangian multiplier at the previous CDFT step.
         Vc (np.ndarray, shape = [nspin, n1, n2, n3]): constraint potential.
-        weight (np.ndarray, shape = [nspin (optional), n1, n2, n3]): weight function.
-        Ntol (float): convergence threshold for N - N0 (= dW/dV).
+        w (np.ndarray, shape = [nspin, n1, n2, n3]): weight function.
+        N_tol (float): convergence threshold for N - N0 (= dW/dV).
     """
 
     __metaclass__ = ABCMeta
@@ -26,7 +26,7 @@ class Constraint(object):
 
     @abstractmethod
     def __init__(self, sample: Sample, N0, optimizer: Optimizer,
-                 V_init=0.0, Ntol=1.0E-2):
+                 V_init=0.0, N_tol=1.0E-2):
         """
         Args:
             V_init (float): initial guess for V.
@@ -36,9 +36,9 @@ class Constraint(object):
         self.optimizer = optimizer
         self.V = self.V_old = V_init
 
-        self.Ntol = Ntol
+        self.N_tol = N_tol
 
-        self.weight = None
+        self.w = None
         self.N = None
         self.Vc = None
         self.Fc = None
@@ -54,45 +54,50 @@ class Constraint(object):
 
     def update(self):
         """ Update the constraint with new value for V."""
-        print("type: {}, N0 = {}, V = {}".format(self.type, self.N0, self.V))
+        print("Updating constraint (type: {}, N0 = {}, V = {})...".format(
+            self.type, self.N0, self.V
+        ))
+
+        # Update N, compute dW/dV
         self.update_N()
         print("N = {}".format(self.N))
-        print("dW/dV = {}".format(self.dW_by_dV))
+        print("dW/dV = N - N0 = {}".format(self.dW_by_dV))
 
-        # Obtained a new V value from optimizer.
-        V_new = self.optimizer.update(self.dW_by_dV, self.V, self.sample.W)
-        print("V = {}".format(V_new))
+        # Compute a new value for V
+        V_new = self.optimizer.update(self.dW_by_dV, self.V, self.sample.Efree)
+        print("New value for V = {}".format(V_new))
 
-        # Update constraint info.
+        # Update V and Vc
         self.V_old = self.V
         self.V = V_new
         self.update_Vc()
-        self.is_converged = bool(abs(self.N - self.N0) < self.Ntol)
+        self.is_converged = bool(abs(self.N - self.N0) < self.N_tol)
 
     def update_structure(self):
         """ Update the constraint with new structure."""
         print("Updating constraint with new structure")
-        self.update_weight()
+        self.update_w()
         self.update_N()
         self.update_Vc()
         self.is_converged = False
 
     @abstractmethod
-    def update_weight(self)-> None:
+    def update_w(self):
         """ Update the weight with new structure. """
         pass
 
-    @abstractmethod
-    def update_N(self) -> float:
+    def update_N(self):
         """ Update the electron number or electron number difference. """
-        pass
+        omega = self.sample.omega
+        n123 = self.sample.n1 * self.sample.n2 * self.sample.n3
+        rho_r = self.sample.rho_r
+        self.N = (omega / n123) * np.sum(self.w * rho_r)
 
-    @abstractmethod
-    def update_Vc(self)-> np.ndarray:
+    def update_Vc(self):
         """ Update constraint potential. """
-        pass
+        self.Vc = self.V * self.w
 
     @abstractmethod
-    def update_Fc(self)-> np.ndarray:
+    def update_Fc(self):
         """ Update constraint force. """
         pass
