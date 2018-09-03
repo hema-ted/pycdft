@@ -7,6 +7,7 @@ from numpy.fft import *
 from .pp import SG15PP
 from .units import angstrom_to_bohr, bohr_to_angstrom
 from .atom import Atom
+from pycdft.atomic import rho_path, rd_grid, drd
 
 
 class Sample(object):
@@ -26,6 +27,7 @@ class Sample(object):
         Edft (float): DFT total energy.
         Efree (float): free energy.
     """
+
     def __init__(self, ase_cell: Atoms, nspin: int, n1: int, n2: int, n3: int,
                  atomic_density_files: dict=None):
 
@@ -48,29 +50,56 @@ class Sample(object):
         self.n1, self.n2, self.n3 = n1, n2, n3
         self.n123 = n1 * n2 * n3
 
-        # define charge density and promolecule charge densities
-        self.rho_r = None
-        self.rhopro_tot_r = None
-
-        # compute atomic density for all species
-        self.rhoatom_g = {}
-        if atomic_density_files is not None:
-            for species, f in atomic_density_files.items():
-                rho_r = read_cube_data(f)[0]
-                assert rho_r.shape == (n1, n2, n3)
-                rho_r1 = np.roll(rho_r, n1//2, axis=0)
-                rho_r2 = np.roll(rho_r1, n2//2, axis=1)
-                rho_r3 = np.roll(rho_r2, n3//2, axis=2)
-                self.rhoatom_g[species] = fftn(rho_r3)
-        else:
-            raise NotImplementedError
-
         # define energies and forces
         self.Edft = None
         self.Efree = None
         self.Ftotal = None
         self.Fdft = None
         self.Fc = None
+
+        # define charge density and promolecule charge densities
+        self.rho_r = None
+        self.rhopro_tot_r = None
+
+        # compute atomic density for all species
+        if atomic_density_files is None:
+            self.atomic_density_from_file = True
+            self.rhoatom_g = {}
+            for s in self.species:
+                rho_r = read_cube_data(atomic_density_files[s])[0]
+                assert rho_r.shape == (n1, n2, n3)
+                rho_r1 = np.roll(rho_r, n1 // 2, axis=0)
+                rho_r2 = np.roll(rho_r1, n2 // 2, axis=1)
+                rho_r3 = np.roll(rho_r2, n3 // 2, axis=2)
+                self.rhoatom_g[s] = fftn(rho_r3)
+        else:
+            self.atomic_density_from_file = False
+            self.rhoatom_rd = {}
+            for s in self.species:
+                self.rhoatom_rd[s] = np.loadtxt(
+                    "{}/{}.spavr".format(rho_path, s), dtype=float)[:, 1]
+
+            G1, G2, G3 = self.G
+            G1_arr = np.outer(G1, fftfreq(n1, d=1. / n1))
+            G2_arr = np.outer(G2, fftfreq(n2, d=1. / n2))
+            G3_arr = np.outer(G3, fftfreq(n3, d=1. / n3))
+
+            Gx = (G1_arr[0, :, np.newaxis, np.newaxis]
+                  + G2_arr[0, np.newaxis, :, np.newaxis]
+                  + G3_arr[0, np.newaxis, np.newaxis, :])
+            Gy = (G1_arr[1, :, np.newaxis, np.newaxis]
+                  + G2_arr[1, np.newaxis, :, np.newaxis]
+                  + G3_arr[1, np.newaxis, np.newaxis, :])
+            Gz = (G1_arr[2, :, np.newaxis, np.newaxis]
+                  + G2_arr[2, np.newaxis, :, np.newaxis]
+                  + G3_arr[2, np.newaxis, np.newaxis, :])
+
+            G2 = Gx ** 2 + Gy ** 2 + Gz ** 2
+
+            # G array norm and mappings
+            G2u = np.sort(np.array(list(set(G2.flatten()))))
+            self.Gmapping = np.searchsorted(G2u, G2)
+            self.Gu = np.sqrt(G2u)
 
     def update_constraints(self):
         """ Update constraints with new structure. """
@@ -97,24 +126,36 @@ class Sample(object):
 
     def compute_rhoatom_g(self, atom):
         """ Compute charge density for an atom with specific coordinate in cell. """
-        rhog0 = self.rhoatom_g[atom.symbol]
+        if atom.symbol in self.rhoatom_g:
+            # density is given by cube files
+            rhog0 = self.rhoatom_g[atom.symbol]
 
-        G1, G2, G3 = self.G
-        n1, n2, n3 = rhog0.shape
-        freqlist1 = fftfreq(n1, d=1 / n1)
-        freqlist2 = fftfreq(n2, d=1 / n2)
-        freqlist3 = fftfreq(n3, d=1 / n3)
+            G1, G2, G3 = self.G
+            n1, n2, n3 = rhog0.shape
+            freqlist1 = fftfreq(n1, d=1 / n1)
+            freqlist2 = fftfreq(n2, d=1 / n2)
+            freqlist3 = fftfreq(n3, d=1 / n3)
 
-        r = atom.abs_coord
-        G1, G2, G3 = G1 @ r, G2 @ r, G3 @ r
-        look_up_table_h = np.exp(-1j * (freqlist1 * G1))
-        look_up_table_k = np.exp(-1j * (freqlist2 * G2))
-        look_up_table_l = np.exp(-1j * (freqlist3 * G3))
-        eigr = np.kron(look_up_table_h, look_up_table_k)
-        eigr = np.kron(eigr, look_up_table_l)
-        eigr = np.reshape(eigr, newshape=(n1, n2, n3))
+            r = atom.abs_coord
+            G1, G2, G3 = G1 @ r, G2 @ r, G3 @ r
+            look_up_table_h = np.exp(-1j * (freqlist1 * G1))
+            look_up_table_k = np.exp(-1j * (freqlist2 * G2))
+            look_up_table_l = np.exp(-1j * (freqlist3 * G3))
+            eigr = np.kron(look_up_table_h, look_up_table_k)
+            eigr = np.kron(eigr, look_up_table_l)
+            eigr = np.reshape(eigr, newshape=(n1, n2, n3))
 
-        return rhog0 * eigr
+            rhog = rhog0 * eigr
+
+        else:
+            # density is obtained from pre-computed spherically-averaged atomic density
+            sinrGu = np.sin(np.outer(rd_grid, self.Gu))
+            rho_rd = self.rhoatom_rd[atom.symbol]
+            rhogu = 4 * np.pi / self.omega * drd * np.einsum("r,rg->g", rho_rd, sinrGu/self.Gu)
+            rhog = rhogu[self.Gmapping]
+            rhog[0, 0, 0] = self.nel() / self.omega
+
+        return rhog
 
     @property
     def ase_cell(self):
