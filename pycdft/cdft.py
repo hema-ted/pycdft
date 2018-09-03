@@ -24,12 +24,12 @@ class CDFTSolver:
 
     _archive_folder = 'outputs'
 
-    def __init__(self, job: str, sample: Sample, constraints: list, dft_driver: DFTDriver,
+    def __init__(self, job: str, sample: Sample, dft_driver: DFTDriver,
                  maxiter=1000, maxstep=100, Ftol=1.0E-2):
 
         self.job = job
         self.sample = sample
-        self.constraints = constraints
+        self.constraints = self.sample.constraints
         self.dft_driver = dft_driver
         self.maxiter = maxiter
         self.maxstep = maxstep
@@ -44,6 +44,7 @@ class CDFTSolver:
 
     def solve(self):
         """ Solve CDFT SCF or relax problem."""
+        self.dft_driver.get_rho_r()
         if self.job == "scf":
             self.solve_scf()
         elif self.job == "relax":
@@ -58,6 +59,9 @@ class CDFTSolver:
         Lagrangian multipliers for all constrains, an inner loop (casted to a KS problem and
         outsourced to DFT code) is performed to minimize the free energy w.r.t. charge density.
         """
+
+        self.sample.update_constraints()
+
         for c in self.constraints:
             c.optimizer.setup()
 
@@ -72,24 +76,22 @@ class CDFTSolver:
             # Order DFT code to perform SCF calculation under the constraint potential Vc.
             # After dft driver run_scf command should read etotal and force
             self.dft_driver.run_scf()
+            self.dft_driver.get_rho_r()
             self.sample.W = self.sample.Edft - np.sum(c.V * c.N for c in self.constraints)
-
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             print("Iter {}:".format(iiter))
             print("DFT total energy = {}".format(self.sample.Edft))
             print("Free energy = {}".format(self.sample.W))
 
-            # Parse the resulting charge density.
-            self.dft_driver.get_rho_r()
-
             # Update the Lagrangian multipliers for all constraints.
             for i, c in enumerate(self.constraints, 1):
                 print("Constraint {}:".format(i))
-                c.update_V()
+                c.update()
 
             if all(c.is_converged for c in self.constraints):
                 print("CDFTSolver: convergence achieved!")
-                self.dft_driver.get_force()
+                if self.job == "relax":
+                    self.dft_driver.get_force()
                 return
 
         else:
@@ -115,7 +117,7 @@ class CDFTSolver:
             # add constraint force to DFT force
             Fc_total = np.zeros([self.sample.natoms, 3])
             for c in self.constraints:
-                Fc_total += c.compute_Fc()
+                Fc_total += c.update_Fc()
 
             # add constraint force to DFT force
             self.dft_driver.set_Fc(Fc_total)

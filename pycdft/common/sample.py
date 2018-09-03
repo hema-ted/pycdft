@@ -39,8 +39,9 @@ class Sample(object):
         self.species = sorted(set([atom.symbol for atom in self.atoms]))
         self.nspecies = len(self.species)
 
-        # define fragments
+        # define fragments and constraints list
         self.fragments = []
+        self.constraints = []
 
         # define nspin and FFT grid
         self.nspin = nspin
@@ -71,24 +72,28 @@ class Sample(object):
         self.Fdft = None
         self.Fc = None
 
-    def update_rhopro(self):
-        """ Update promolecule densities. """
+    def update_constraints(self):
+        """ Update constraints with new structure. """
+
+        # Update promolecule densities
         self.rhopro_tot_r = np.zeros([self.n1, self.n2, self.n3], dtype=np.complex_)
         for f in self.fragments:
             f.rhopro_r = np.zeros([self.n1, self.n2, self.n3], dtype=np.complex_)
 
-        # Compute promolecule densities in G space
         for atom in self.atoms:
             rhog = self.compute_rhoatom_g(atom)
             self.rhopro_tot_r += rhog
             for f in self.fragments:
-                if atom in f:
+                if atom in f.atoms:
                     f.rhopro_r += rhog
 
-        # FT -> R space
-        self.rhopro_tot_r = np.fft.ifftn(self.rhopro_tot_r).real
+        self.rhopro_tot_r = np.fft.ifftn(self.rhopro_tot_r).real  # FT G -> R
         for f in self.fragments:
             f.rhopro_r = np.fft.ifftn(f.rhopro_r).real
+
+        # Update weights
+        for c in self.constraints:
+            c.update_structure()
 
     def compute_rhoatom_g(self, atom):
         """ Compute charge density for an atom with specific coordinate in cell. """

@@ -7,7 +7,6 @@ import numpy as np
 from lxml import etree
 from ase.io.cube import read_cube_data, write_cube
 from .base import DFTDriver
-from ..common.ft import FFTGrid
 from ..common.wfc import Wavefunction
 
 
@@ -27,7 +26,7 @@ class QboxDriver(DFTDriver):
 
     _archive_folder = 'qbox_outputs'
 
-    def __init__(self, sample, init_cmd, scf_cmd, opt_cmd, input_file="qb_cdft.in"):
+    def __init__(self, sample, init_cmd, scf_cmd, opt_cmd=None, input_file="qb_cdft.in"):
         """Initialize QboxDriver.
 
         Control commands for SCF calculations (e.g. "run 0 100 5") needs to
@@ -78,8 +77,7 @@ class QboxDriver(DFTDriver):
         nspin = self.sample.nspin
         if nspin == 2:
             raise NotImplementedError("Spin-dependent Vext not implemented in Qbox yet.")
-        fftgrid = self.sample.fftgrid
-        n1, n2, n3 = fftgrid.n1, fftgrid.n2, fftgrid.n3
+        n1, n2, n3 = self.sample.n1, self.sample.n2, self.sample.n3
         assert isinstance(Vc, np.ndarray) and Vc.shape == (nspin, n1, n2, n3)
 
         ase_cell = self.sample.ase_cell
@@ -94,8 +92,7 @@ class QboxDriver(DFTDriver):
         shutil.copyfile(self._output_file,
                         "{}/iter{}.out".format(self._archive_folder, self.iter))
         self.scf_xml = etree.parse(self._output_file).getroot()
-        for i in self.scf_xml.findall('iteration'):
-            self.sample.Etotal = float((i.findall('etotal'))[0].text)
+        self.sample.Edft = float(self.scf_xml.findall("iteration/etotal")[-1].text)
 
     def run_opt(self):
         """ Run geometry relaxation in Qbox."""
@@ -110,6 +107,8 @@ class QboxDriver(DFTDriver):
         Send plot charge density commands to Qbox, then parse charge density.
         """
         nspin = self.sample.nspin
+        n1, n2, n3 = self.sample.n1, self.sample.n2, self.sample.n3
+        self.sample.rho_r = np.zeros([nspin, n1, n2, n3])
 
         for ispin in range(nspin):
             self.run_cmd(cmd="plot -density {} {}".format(
@@ -118,12 +117,12 @@ class QboxDriver(DFTDriver):
             ))
 
             rhor_raw = read_cube_data(self._rhor_file)[0]
-            n1, n2, n3 = rhor_raw.shape
+            assert rhor_raw.shape == (n1, n2, n3)
 
             rhor1 = np.roll(rhor_raw, n1//2, axis=0)
             rhor2 = np.roll(rhor1, n2//2, axis=1)
             rhor3 = np.roll(rhor2, n3//2, axis=2)
-            self.sample.rhor[ispin] = rhor3
+            self.sample.rho_r[ispin] = rhor3
 
     def get_force(self):
         """ Implement abstract fetch_force method for Qbox."""

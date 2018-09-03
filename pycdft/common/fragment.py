@@ -13,11 +13,13 @@ class Fragment(object):
         w (numpy array, shape = [n1, n2, n3]: Hirshfeld weight function.
     """
 
-    def __init__(self, sample: Sample, atoms: list):
+    def __init__(self, name: str, sample: Sample, atoms: list):
+        self.name = name
         self.sample = sample
         self.atoms = atoms
         self.natoms = len(self.atoms)
         self.rhopro_r = None
+        self.sample.fragments.append(self)
 
     def compute_w_grad(self, atom, weight):
         n1, n2, n3 = self.sample.n1, self.sample.n2, self.sample.n3

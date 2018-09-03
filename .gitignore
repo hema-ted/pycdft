@@ -1,4 +1,6 @@
 *.pyc
-.idea/*
 *checkpoint.ipynb
 *.out
+.idea
+*.egg-info
+
