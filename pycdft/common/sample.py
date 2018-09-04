@@ -59,7 +59,8 @@ class Sample(object):
         self.n = n1 * n2 * n3
 
         # define energies and forces
-        self.Edft = None
+        self.Edft_bare = None
+        self.Edft_total = None
         self.Efree = None
         self.Ftotal = None
         self.Fdft = None

@@ -65,7 +65,7 @@ class Constraint(object):
 
         # Compute a new value for V
         V_new = self.optimizer.update(self.dW_by_dV, self.V, self.sample.Efree)
-        print("New value for V = {}".format(V_new))
+        # print("New value for V = {}".format(V_new))
 
         # Update V and Vc
         self.V_old = self.V

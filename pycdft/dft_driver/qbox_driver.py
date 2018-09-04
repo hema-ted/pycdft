@@ -92,7 +92,8 @@ class QboxDriver(DFTDriver):
         shutil.copyfile(self._output_file,
                         "{}/iter{}.out".format(self._archive_folder, self.iter))
         self.scf_xml = etree.parse(self._output_file).getroot()
-        self.sample.Edft = float(self.scf_xml.findall("iteration/etotal")[-1].text)
+        self.sample.Edft_total = float(self.scf_xml.findall("iteration/etotal")[-1].text)
+        self.sample.Edft_bare = self.sample.Edft_total - float(self.scf_xml.findall("iteration/eext")[-1].text)
 
     def run_opt(self):
         """ Run geometry relaxation in Qbox."""

@@ -77,11 +77,12 @@ class CDFTSolver:
             # After dft driver run_scf command should read etotal and force
             self.dft_driver.run_scf()
             self.dft_driver.get_rho_r()
-            self.sample.Efree = self.sample.Edft - np.sum(c.V * c.N for c in self.constraints)
+            self.sample.Efree = self.sample.Edft_total - np.sum(c.V * c.N for c in self.constraints)
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             print("Iter {}:".format(iiter))
-            print("DFT energy = {}".format(self.sample.Edft))
             print("Free energy = {}".format(self.sample.Efree))
+            print("DFT KS energy = {}".format(self.sample.Edft_bare))
+            print("DFT KS+c energy = {}".format(self.sample.Edft_total))
 
             # Update all constraints.
             for c in self.constraints:
