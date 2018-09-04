@@ -1,13 +1,15 @@
 from random import randint
 from subprocess import Popen
+
 import numpy as np
 from ase import Atoms
 from ase.io.cube import read_cube_data
 from numpy.fft import *
-from .pp import SG15PP
-from .units import angstrom_to_bohr, bohr_to_angstrom
-from .atom import Atom
+
 from pycdft.atomic import rho_path, rd_grid, drd
+from pycdft.atomic.pp import SG15PP
+from .atom import Atom
+from .units import angstrom_to_bohr, bohr_to_angstrom
 
 
 class Sample(object):
@@ -109,9 +111,12 @@ class Sample(object):
             for s in self.species:
                 rho_rd = np.loadtxt(
                     "{}/{}.spavr".format(rho_path, s), dtype=float)[:, 1]
+                rho_rd /= self.omega  # normalization convention in westpp
+                rho_rd[rho_rd < 0] = 0
                 rho_d = 4 * np.pi * drd * np.einsum("r,rg->g", rho_rd * rd_grid, self.sinrG / self.G_d)
                 rho_g = rho_d[self.Gmapping]
                 rho_g[0, 0, 0] = 4 * np.pi * drd * np.sum(rho_rd * rd_grid ** 2)
+                rho_g *= (self.nel() / rho_g[0, 0, 0])  # normalize charge density
                 self.rhoatom_g[s] = rho_g
 
     def update_constraints(self):
