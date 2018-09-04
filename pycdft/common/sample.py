@@ -56,6 +56,7 @@ class Sample(object):
         # define nspin and FFT grid
         self.nspin = nspin
         self.n1, self.n2, self.n3 = n1, n2, n3
+        self.n = n1 * n2 * n3
 
         # define energies and forces
         self.Edft = None
@@ -67,18 +68,19 @@ class Sample(object):
         # define charge density and promolecule charge densities
         self.rho_r = None
         self.rhopro_tot_r = None
+        self.rhoatom_g = {}
 
         # compute atomic density for all species
-        if atomic_density_files is None:
+        if atomic_density_files is not None:
             # read atomic density from file
-            self.rhoatom_g = {}
             for s in self.species:
-                rho_r = read_cube_data(atomic_density_files[s])[0]
+                rho_r, ase_cell = read_cube_data(atomic_density_files[s])
+                omega = ase_cell.get_volume() * angstrom_to_bohr**3
                 assert rho_r.shape == (n1, n2, n3)
                 rho_r1 = np.roll(rho_r, n1 // 2, axis=0)
                 rho_r2 = np.roll(rho_r1, n2 // 2, axis=1)
                 rho_r3 = np.roll(rho_r2, n3 // 2, axis=2)
-                self.rhoatom_g[s] = fftn(rho_r3)
+                self.rhoatom_g[s] = omega / self.n * fftn(rho_r3)
         else:
             # calculate atomic density from pre-computed spherically-averaged atomic density
             # compute the norm of all G vectors on the [n1, n2, n3] grid
@@ -116,7 +118,7 @@ class Sample(object):
                 rho_d = 4 * np.pi * drd * np.einsum("r,rg->g", rho_rd * rd_grid, self.sinrG / self.G_d)
                 rho_g = rho_d[self.Gmapping]
                 rho_g[0, 0, 0] = 4 * np.pi * drd * np.sum(rho_rd * rd_grid ** 2)
-                rho_g *= (self.nel() / rho_g[0, 0, 0])  # normalize charge density
+                rho_g *= (SG15PP[s]["nel"] / rho_g[0, 0, 0])  # normalize charge density
                 self.rhoatom_g[s] = rho_g
 
     def update_constraints(self):

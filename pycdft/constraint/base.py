@@ -26,7 +26,7 @@ class Constraint(object):
 
     @abstractmethod
     def __init__(self, sample: Sample, N0, optimizer: Optimizer,
-                 V_init=0.0, N_tol=1.0E-2):
+                 V_init=0.0, N_tol=1.0E-4):
         """
         Args:
             V_init (float): initial guess for V.
