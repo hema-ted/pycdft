@@ -51,6 +51,7 @@ class CDFTSolver:
             self.solve_relax()
         else:
             raise ValueError
+        self.dft_driver.get_wfc()
 
     def solve_scf(self):
         """ Iteratively solve the CDFT problem.
@@ -138,7 +139,3 @@ class CDFTSolver:
 
         else:
             print("CDFTSolver: relaxation NOT achieved after {} steps.".format(self.maxstep))
-
-    def get_wfc(self):
-        """ Get DFT wavefunction."""
-        return self.dft_driver.get_wfc()

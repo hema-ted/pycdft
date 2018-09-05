@@ -68,7 +68,6 @@ class Wavefunction:
     Public attributes:
         psi_r: R space KS orbitals defined on a R space grid described by self.wgrid.
         psi_g: G space KS orbitals defined on a G space grid described by self.wgrid.
-        psi_ga: G space KS orbitals defined on G vectors described by self.gvecs.
 
         Above quantities can be accessed like dicts. They can be indexed with either
         an integer (internal index) or a 3-tuple of integers (spin, kpoint, band index).
@@ -142,7 +141,6 @@ class Wavefunction:
         }
 
         # define containers to store collections of psi(r) or psi(G)
-        self.psi_ga = WfcManager(self)
         self.psi_g = WfcManager(self)
         self.psi_r = WfcManager(self, transform=self.normalize)
 
@@ -160,55 +158,6 @@ class Wavefunction:
     def idx2skb(self, idx):
         """Get (spin, kpoint, band) index from internal index."""
         return self.idx_skb_map[idx]
-
-    def psiga2psig(self, psig_arr):
-        """Match psi(G) defined on self.gvecs to G space grid defined on self.wgrid."""
-        if self.gamma:
-            psigd = embedd_g(psig_arr, self.gvecs, self.dgrid, fill="xyz")
-            psig = ftgg(psigd, self.dgrid, self.wgrid)
-        else:
-            psigd = embedd_g(psig_arr, self.gvecs, self.dgrid)
-            psig = ftgg(psigd, self.dgrid, self.wgrid)
-        return psig
-
-    def psiga2psir(self, psigarr, normalize=True):
-        """Compute psi(r) from psi(G) defined on self.gvecs."""
-        if self.gamma:
-            psigd = embedd_g(psigarr, self.gvecs, self.dgrid, fill="yz")
-            psig = ftgg(psigd, self.dgrid, self.wgrid, real=True)
-            psir = ftgr(psig, self.wgrid, real=True)
-        else:
-            psigd = embedd_g(psigarr, self.gvecs, self.dgrid)
-            psig = ftgg(psigd, self.dgrid, self.wgrid)
-            psir = ftgr(psig, self.wgrid)
-
-        if normalize:
-            return self.normalize(psir)
-        else:
-            return psir
-
-    def psig2psir(self, psig, normalize=True):
-        """Compute psi(r) from psi(G) defined on selg.wgrid."""
-        psir = ftgr(psig, self.wgrid, real=False)
-        if normalize:
-            return self.normalize(psir)
-        else:
-            return psir
-
-    def compute_all_psig_from_psiga(self):
-        """Match all psi(G) defined on self.gvecs to self.wgrid."""
-        for idx in self.psi_ga.indices():
-            self.psi_g[idx] = self.psiga2psig(self.psi_ga[idx])
-
-    def compute_all_psir_from_psiga(self):
-        """Compute all psi(r) based on psi(G) defined on self.gvecs."""
-        for idx in self.psi_ga.indices():
-            self.psi_r[idx] = self.psiga2psir(self.psi_ga[idx], normalize=False)
-
-    def compute_all_psir_from_psig(self):
-        """Compute all psi(r) based on psi(G) defined on self.wgrid."""
-        for idx in self.psi_g.indices():
-            self.psi_r[idx] = self.psig2psir(self.psi_g[idx], normalize=False)
 
     def normalize(self, psir):
         """Normalize psi(r)."""

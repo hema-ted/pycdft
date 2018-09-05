@@ -57,13 +57,14 @@ class Sample(object):
         self.n1, self.n2, self.n3 = n1, n2, n3
         self.n = n1 * n2 * n3
 
-        # define energies and forces
+        # define energies, forces and wavefunction
         self.Edft_bare = None
         self.Edft_total = None
         self.Efree = None
         self.Ftotal = None
         self.Fdft = None
         self.Fc = None
+        self.wfc = None
 
         # define charge density and promolecule charge densities
         self.rho_r = None

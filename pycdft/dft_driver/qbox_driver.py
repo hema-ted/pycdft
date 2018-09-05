@@ -260,4 +260,4 @@ class QboxDriver(DFTDriver):
             if event == "start" and leaf.tag == "wavefunction_velocity":
                 break
 
-        return wfc
+        self.sample.wfc = wfc
