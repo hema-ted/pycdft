@@ -6,6 +6,7 @@ import base64
 import numpy as np
 from lxml import etree
 from ase.io.cube import read_cube_data, write_cube
+from pycdft.common.ft import FFTGrid
 from pycdft.common.wfc import Wavefunction
 from pycdft.dft_driver.base import DFTDriver
 
@@ -252,7 +253,7 @@ class QboxDriver(DFTDriver):
                     ).T
                 else:
                     raise ValueError
-                wfc.psir[ispin, ikpt, ibnd] = psir
+                wfc.psi_r[ispin, ikpt, ibnd] = psir
                 ibnd += 1
                 leaf.clear()
 

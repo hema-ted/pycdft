@@ -1,22 +1,23 @@
 from pycdft.common.ft import *
+from pycdft.common.sample import *
 
 
-class _CollectionManager:
+class WfcManager:
     """Helper class to manage a collection of quantities like psi(r) or psi(G).
 
     The collection can be indexed by either an internal index or a (spin, kpoint, band) index.
     """
 
     def __init__(self, wfc, transform=lambda f: f):
-        self._wfc = wfc
-        self._qty = dict()
-        self._transform = transform
+        self.wfc = wfc
+        self.qty = dict()
+        self.transform = transform
 
     def indices(self):
-        return self._qty.keys()
+        return self.qty.keys()
 
     def clear(self):
-        self._qty.clear()
+        self.qty.clear()
 
     def _get_idx(self, key):
         try:
@@ -26,31 +27,31 @@ class _CollectionManager:
                 ispin = int(key[0])
                 ikpt = int(key[1])
                 ibnd = int(key[2])
-                assert 0 <= ispin <= self._wfc.nspin
-                assert 0 <= ikpt <= self._wfc.nkpt
-                assert 0 <= ibnd <= self._wfc.nbnd[ispin, ikpt]
+                assert 0 <= ispin <= self.wfc.nspin
+                assert 0 <= ikpt <= self.wfc.nkpt
+                assert 0 <= ibnd <= self.wfc.nbnd[ispin, ikpt]
             except ValueError:
                 raise ValueError("Index must be either internal index or (spin, kpoint, band) index")
             except (AssertionError, IndexError):
                 raise IndexError("(spin, kpoint, band) index out of range ({}, {}, {})".format(
-                    self._wfc.nspin, self._wfc.nkpt, self._wfc.nbnd
+                    self.wfc.nspin, self.wfc.nkpt, self.wfc.nbnd
                 ))
-            idx = self._wfc.skb2idx(ispin, ikpt, ibnd)
+            idx = self.wfc.skb2idx(ispin, ikpt, ibnd)
         return idx
 
     def __getitem__(self, key):
         try:
-            return self._qty[self._get_idx(key)]
+            return self.qty[self._get_idx(key)]
         except KeyError:
             return None
 
     def __setitem__(self, key, value):
         idx = self._get_idx(key)
-        self._qty[idx] = self._transform(value)
+        self.qty[idx] = self.transform(value)
 
 
 class Wavefunction:
-    """Container class for Kohn-Sham wavefunction
+    """Container class for Kohn-Sham wavefunction.
 
     A wavefunction is defined as a collection of KS orbitals, each uniquely labeled by
     three integers: spin (0 or 1), k point index and band index. To facilitate distributed
@@ -65,9 +66,9 @@ class Wavefunction:
     Currently, k points are not fully supported.
 
     Public attributes:
-        psir: R space KS orbitals defined on a R space grid described by self.wgrid.
-        psig: G space KS orbitals defined on a G space grid described by self.wgrid.
-        psig_arr: G space KS orbitals defined on G vectors described by self.gvecs.
+        psi_r: R space KS orbitals defined on a R space grid described by self.wgrid.
+        psi_g: G space KS orbitals defined on a G space grid described by self.wgrid.
+        psi_ga: G space KS orbitals defined on G vectors described by self.gvecs.
 
         Above quantities can be accessed like dicts. They can be indexed with either
         an integer (internal index) or a 3-tuple of integers (spin, kpoint, band index).
@@ -89,102 +90,97 @@ class Wavefunction:
         ngvecs (int): # of G vectors.
 
     Private attributes:
-        _idx_skb_map (dict): internal index -> (spin, kpoint, band) index map
-        _skb_idx_map (dict): (spin, kpoint, band) index -> internal index map
+        idx_skb_map (dict): internal index -> (spin, kpoint, band) index map
+        skb_idx_map (dict): (spin, kpoint, band) index -> internal index map
 
         Above maps can be accessed by skb2idx and idx2skb methods.
     """
 
-    def __init__(self, sample, wgrid, dgrid, nspin, nkpt, nbnd, occ, gamma=True, gvecs=None):
+    def __init__(self, sample: Sample, wgrid, dgrid, nspin, nkpt, nbnd, occ, gamma=True, gvecs=None):
 
         # define general info
-        self._sample = sample
-        self._wgrid = wgrid
-        self._dgrid = dgrid
+        self.sample = sample
+        self.wgrid = wgrid
+        self.dgrid = dgrid
 
-        self._nspin = nspin
-        self._nkpt = nkpt
-        assert self._nkpt == 1, "K points are not supported yet"
+        self.nspin = nspin
+        self.nkpt = nkpt
+        assert self.nkpt == 1, "K points are not supported yet"
         try:
             nbnd_ = int(nbnd)
             # all spin and kpoints share the same nbnd
-            self._nbnd = np.ones((self._nspin, self._nkpt), dtype=int) * nbnd_
+            self.nbnd = np.ones((self.nspin, self.nkpt), dtype=int) * nbnd_
         except TypeError:
             # every spin and kpoint have its own nbnd
-            self._nbnd = np.array(nbnd, dtype=np.int_)
-            assert self._nbnd.shape == (self._nspin, self._nkpt)
+            self.nbnd = np.array(nbnd, dtype=np.int_)
+            assert self.nbnd.shape == (self.nspin, self.nkpt)
         if occ.ndim == 1:
             # all spin and kpoints share the same occupation
-            self._occ = np.tile(occ, (self._nspin, self._nkpt)).reshape(self._nspin, self._nkpt, -1)
+            self.occ = np.tile(occ, (self.nspin, self.nkpt)).reshape(self.nspin, self.nkpt, -1)
         else:
             # every spin and kpoint have its own occupation
-            self._occ = np.zeros((self._nspin, self._nkpt, np.max(self._nbnd)), dtype=int)
-            for ispin in range(self._nspin):
-                for ikpt in range(self._nkpt):
+            self.occ = np.zeros((self.nspin, self.nkpt, np.max(self.nbnd)), dtype=int)
+            for ispin in range(self.nspin):
+                for ikpt in range(self.nkpt):
                     nbnd = self.nbnd[ispin, ikpt]
-                    self._occ[ispin, ikpt, 0:nbnd] = occ[ispin, ikpt][0:nbnd]
+                    self.occ[ispin, ikpt, 0:nbnd] = occ[ispin, ikpt][0:nbnd]
 
-        self._gamma = gamma
-        self._gvecs = gvecs
+        self.gamma = gamma
+        self.gvecs = gvecs
 
         # define maps between internal index <-> (spin, kpoint, band) index
-        self._idx_skb_map = dict()
+        self.idx_skb_map = dict()
         idx = 0
-        for ispin, ikpt in np.ndindex(self._nspin, self._nkpt):
-            for ibnd in range(self._nbnd[ispin, ikpt]):
-                self._idx_skb_map[idx] = (ispin, ikpt, ibnd)
+        for ispin, ikpt in np.ndindex(self.nspin, self.nkpt):
+            for ibnd in range(self.nbnd[ispin, ikpt]):
+                self.idx_skb_map[idx] = (ispin, ikpt, ibnd)
                 idx += 1
-        self._norb = len(self._idx_skb_map)
-        self._skb_idx_map = {
-            self._idx_skb_map[idx]: idx
-            for idx in range(self._norb)
+        self.norb = len(self.idx_skb_map)
+        self.skb_idx_map = {
+            self.idx_skb_map[idx]: idx
+            for idx in range(self.norb)
         }
 
         # define containers to store collections of psi(r) or psi(G)
-        self._psig_arr = _CollectionManager(self)
-        self._psig = _CollectionManager(self)
-        self._psir = _CollectionManager(self, transform=self.normalize)
+        self.psi_ga = WfcManager(self)
+        self.psi_g = WfcManager(self)
+        self.psi_r = WfcManager(self, transform=self.normalize)
 
-        if gvecs is not None:
-            assert gvecs.shape[1] == 3
-            self._gvecs = gvecs
-            self._ngvecs = gvecs.shape[0]
-        else:
-            # define G vectors according to QE convention
-            # raise NotImplementedError
-            pass
+        assert gvecs.shape[1] == 3
+        self.gvecs = gvecs
+        self.ngvecs = gvecs.shape[0]
 
     def skb2idx(self, ispin, ikpt, ibnd):
         """Get internal index from (spin, kpoint, band) index."""
         try:
-            return self._skb_idx_map[ispin, ikpt, ibnd]
+            return self.skb_idx_map[ispin, ikpt, ibnd]
         except KeyError:
             return None
 
     def idx2skb(self, idx):
         """Get (spin, kpoint, band) index from internal index."""
-        return self._idx_skb_map[idx]
+        return self.idx_skb_map[idx]
 
-    def psig_arr2psig(self, psig_arr):
+    def psiga2psig(self, psig_arr):
         """Match psi(G) defined on self.gvecs to G space grid defined on self.wgrid."""
         if self.gamma:
-            psigd = embedd_g(psig_arr, self._gvecs, self._dgrid, fill="xyz")
-            psig = ftgg(psigd, self._dgrid, self._wgrid)
+            psigd = embedd_g(psig_arr, self.gvecs, self.dgrid, fill="xyz")
+            psig = ftgg(psigd, self.dgrid, self.wgrid)
         else:
-            psigd = embedd_g(psig_arr, self._gvecs, self._dgrid)
-            psig = ftgg(psigd, self._dgrid, self._wgrid)
+            psigd = embedd_g(psig_arr, self.gvecs, self.dgrid)
+            psig = ftgg(psigd, self.dgrid, self.wgrid)
         return psig
 
-    def psig_arr2psir(self, psigarr, normalize=True):
+    def psiga2psir(self, psigarr, normalize=True):
         """Compute psi(r) from psi(G) defined on self.gvecs."""
         if self.gamma:
-            psigd = embedd_g(psigarr, self.gvecs, self._dgrid, fill="yz")
-            psig = ftgg(psigd, self._dgrid, self._wgrid, real=True)
-            psir = ftgr(psig, self._wgrid, real=True)
+            psigd = embedd_g(psigarr, self.gvecs, self.dgrid, fill="yz")
+            psig = ftgg(psigd, self.dgrid, self.wgrid, real=True)
+            psir = ftgr(psig, self.wgrid, real=True)
         else:
-            psigd = embedd_g(psigarr, self.gvecs, self._dgrid)
-            psig = ftgg(psigd, self._dgrid, self._wgrid)
-            psir = ftgr(psig, self._wgrid)
+            psigd = embedd_g(psigarr, self.gvecs, self.dgrid)
+            psig = ftgg(psigd, self.dgrid, self.wgrid)
+            psir = ftgr(psig, self.wgrid)
 
         if normalize:
             return self.normalize(psir)
@@ -199,79 +195,23 @@ class Wavefunction:
         else:
             return psir
 
-    def compute_all_psig_from_psig_arr(self):
+    def compute_all_psig_from_psiga(self):
         """Match all psi(G) defined on self.gvecs to self.wgrid."""
-        for idx in self._psig_arr.indices():
-            self.psig[idx] = self.psig_arr2psig(self._psig_arr[idx])
+        for idx in self.psi_ga.indices():
+            self.psi_g[idx] = self.psiga2psig(self.psi_ga[idx])
 
-    def compute_all_psir_from_psig_arr(self):
+    def compute_all_psir_from_psiga(self):
         """Compute all psi(r) based on psi(G) defined on self.gvecs."""
-        for idx in self._psig_arr.indices():
-            self.psir[idx] = self.psig_arr2psir(self._psig_arr[idx], normalize=False)
+        for idx in self.psi_ga.indices():
+            self.psi_r[idx] = self.psiga2psir(self.psi_ga[idx], normalize=False)
 
     def compute_all_psir_from_psig(self):
         """Compute all psi(r) based on psi(G) defined on self.wgrid."""
-        for idx in self._psig.indices():
-            self.psir[idx] = self.psig2psir(self._psig[idx], normalize=False)
+        for idx in self.psi_g.indices():
+            self.psi_r[idx] = self.psig2psir(self.psi_g[idx], normalize=False)
 
     def normalize(self, psir):
         """Normalize psi(r)."""
         assert psir.shape == (self.wgrid.n1, self.wgrid.n2, self.wgrid.n3)
         norm = np.sqrt(np.sum(np.abs(psir) ** 2) * self.sample.omega / self.wgrid.N)
         return psir / norm
-
-    @property
-    def psig_arr(self):
-        return self._psig_arr
-
-    @property
-    def psig(self):
-        return self._psig
-
-    @property
-    def psir(self):
-        return self._psir
-
-    @property
-    def sample(self):
-        return self._sample
-
-    @property
-    def wgrid(self):
-        return self._wgrid
-
-    @property
-    def dgrid(self):
-        return self._dgrid
-
-    @property
-    def nspin(self):
-        return self._nspin
-
-    @property
-    def nkpt(self):
-        return self._nkpt
-
-    @property
-    def nbnd(self):
-        return self._nbnd
-
-    @property
-    def norb(self):
-        return self._norb
-
-    @property
-    def occ(self):
-        return self._occ
-
-    @property
-    def gamma(self):
-        return self._gamma
-
-    @property
-    def gvecs(self):
-        return self._gvecs
-
-    @property
-    def ngvecs(self):
-        return self._ngvecs
