@@ -31,10 +31,15 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
         O[i, j] = (omega / m) * np.sum(wfc1[norb] * wfc2[norb])
     Odet = np.linalg.det(O)
     Oinv = np.linalg.inv(O)
+    print("O matrix:")
+    print(O)
+    print("|O|:", Odet)
 
     # 2x2 state overlap matrix S
     S = np.eye(2)
     S[0, 1] = S[1, 0] = Odet
+    print("S matrix:")
+    print(S)
 
     # constraint potential matrix element Vab = <psi_a| (V_a + V_b)/2 |psi_b>
     vc = ftrr(0.5 * (solver1.Vc_tot + solver2.Vc_tot), dgrid, wgrid)
@@ -44,14 +49,17 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
     for i, j in np.ndindex(norb, norb):
         P[i, j] = (omega / m) * np.sum(wfc1[norb] * vc * wfc2[norb])
     Vab = np.trace(P @ C)
+    print("Vab:", Vab)
 
-    # H matrix (Eq. 9 in CP2K paper, Eq. 5 in QE paper)
+    # H matrix (Eq. 9-11 in CP2K paper, Eq. 5 in QE paper)
     H = np.zeros(2, 2)
     H[0, 0] = solver1.sample.Edft_bare
     H[1, 1] = solver2.sample.Edft_bare
     Fa = solver1.sample.Efree
     Fb = solver2.sample.Efree
     H[0, 1] = H[1, 0] = 0.5 * (Fa + Fb) * S[0, 1] - Vab
+    print("H matrix:")
+    print(H)
 
     Hab = 1 / (1 - S[0, 1]**2) * (H[0, 1] - S[0, 1] * (H[0, 0] + H[1, 1]) / 2)
     return Hab

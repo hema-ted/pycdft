@@ -1,14 +1,14 @@
 import numpy as np
 import os
 import shutil
-
-from .common import Sample
-from .constraint import Constraint
-from .dft_driver import DFTDriver
+from copy import deepcopy
+from pycdft.common import Sample
+from pycdft.constraint import Constraint
+from pycdft.dft_driver import DFTDriver
 
 
 class CDFTSolver:
-    """ Constrained DFT calculation.
+    """ Constrained DFT solver.
 
     Attributes:
         job (str): "scf" or "relax".
@@ -139,3 +139,6 @@ class CDFTSolver:
 
         else:
             print("CDFTSolver: relaxation NOT achieved after {} steps.".format(self.maxstep))
+
+    def copy(self):
+        return deepcopy(self)

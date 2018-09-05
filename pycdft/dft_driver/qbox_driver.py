@@ -34,12 +34,12 @@ class QboxDriver(DFTDriver):
         be specified by scf_cmd.
         """
         super(QboxDriver, self).__init__(sample)
-        self._opt_cmd = opt_cmd
-        self._init_cmd = init_cmd
-        self._scf_cmd = scf_cmd
-        self._input_file = input_file
-        self._output_file = self._input_file.split('.')[0] + '.out'
-        self._lock_file = "{}.lock".format(input_file)
+        self.opt_cmd = opt_cmd
+        self.init_cmd = init_cmd
+        self.scf_cmd = scf_cmd
+        self.input_file = input_file
+        self.output_file = self.input_file.split('.')[0] + '.out'
+        self.lock_file = "{}.lock".format(input_file)
 
         self.iter = 0
 
@@ -56,12 +56,12 @@ class QboxDriver(DFTDriver):
         print("QboxDriver: waiting for Qbox to start...")
         self.wait_for_lockfile()
         print("QboxDriver: initializing Qbox...")
-        self.run_cmd(self._init_cmd)
+        self.run_cmd(self.init_cmd)
 
     def wait_for_lockfile(self):
         """ Wait for Qbox lock file to appear."""
         nsec = 0
-        while not os.path.isfile(self._lock_file):
+        while not os.path.isfile(self.lock_file):
             time.sleep(self._sleep_seconds)
             nsec += self._sleep_seconds
             if nsec > self._max_sleep_seconds:
@@ -69,8 +69,8 @@ class QboxDriver(DFTDriver):
 
     def run_cmd(self, cmd):
         """ Let Qbox run given command. """
-        open(self._input_file, "w").write(cmd + "\n")
-        os.remove(self._lock_file)
+        open(self.input_file, "w").write(cmd + "\n")
+        os.remove(self.lock_file)
         self.wait_for_lockfile()
 
     def set_Vc(self, Vc):
@@ -88,20 +88,20 @@ class QboxDriver(DFTDriver):
 
     def run_scf(self):
         """ Run SCF calculation in Qbox."""
-        self.run_cmd(self._scf_cmd)
+        self.run_cmd(self.scf_cmd)
         self.iter += 1
-        shutil.copyfile(self._output_file,
+        shutil.copyfile(self.output_file,
                         "{}/iter{}.out".format(self._archive_folder, self.iter))
-        self.scf_xml = etree.parse(self._output_file).getroot()
+        self.scf_xml = etree.parse(self.output_file).getroot()
         self.sample.Edft_total = float(self.scf_xml.findall("iteration/etotal")[-1].text)
         self.sample.Edft_bare = self.sample.Edft_total - float(self.scf_xml.findall("iteration/eext")[-1].text)
 
     def run_opt(self):
         """ Run geometry relaxation in Qbox."""
-        self.run_cmd(self._opt_cmd)
-        shutil.copyfile(self._output_file,
+        self.run_cmd(self.opt_cmd)
+        shutil.copyfile(self.output_file,
                         "{}/iter{}_opt.out".format(self._archive_folder, self.iter))
-        self.opt_xml = etree.parse(self._output_file).getroot()
+        self.opt_xml = etree.parse(self.output_file).getroot()
 
     def get_rho_r(self):
         """ Implement abstract fetch_rhor method for Qbox.
@@ -176,13 +176,13 @@ class QboxDriver(DFTDriver):
         """ Clean qb_cdft.in qb_cdft.out qb_cdft.in.lock"""
         self.run_cmd("save wf.xml")
 
-        if os.path.exists(self._input_file):
-            os.remove(self._input_file)
+        if os.path.exists(self.input_file):
+            os.remove(self.input_file)
 
-        if os.path.exists(self._lock_file):
-            os.remove(self._lock_file)
+        if os.path.exists(self.lock_file):
+            os.remove(self.lock_file)
 
-        _output_file = self._input_file.split('.')[0] + '.out'
+        _output_file = self.input_file.split('.')[0] + '.out'
         if os.path.exists(_output_file):
             os.remove(_output_file)
 
@@ -231,8 +231,7 @@ class QboxDriver(DFTDriver):
             occs_[ispin, ikpt, 0:len(occs[ispin, ikpt])] = occs[ispin, ikpt]
 
         wfc = Wavefunction(sample=self.sample, wgrid=wgrid, dgrid=wgrid,
-                           nspin=nspin, nkpt=nkpt, nbnd=nbnd, occ=occs_,
-                           gamma=True, gvecs=None)
+                           nspin=nspin, nkpt=nkpt, nbnd=nbnd, occ=occs_, gamma=True)
 
         for event, leaf in iterxml:
             ispin = 0

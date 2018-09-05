@@ -84,10 +84,6 @@ class Wavefunction:
         norb (int): total # of orbitals on all spins, kpoints.
         occ (array): occupation numbers. shape: (nspin, nkpt, nbnd).
 
-        gamma (bool): gamma-trick flag. The flag will affect how psig_arr is interpreted.
-        gvecs (array): G vectors on which psig is defined. shape: (ng, 3)
-        ngvecs (int): # of G vectors.
-
     Private attributes:
         idx_skb_map (dict): internal index -> (spin, kpoint, band) index map
         skb_idx_map (dict): (spin, kpoint, band) index -> internal index map
@@ -95,7 +91,7 @@ class Wavefunction:
         Above maps can be accessed by skb2idx and idx2skb methods.
     """
 
-    def __init__(self, sample: Sample, wgrid, dgrid, nspin, nkpt, nbnd, occ, gamma=True, gvecs=None):
+    def __init__(self, sample: Sample, wgrid, dgrid, nspin, nkpt, nbnd, occ, gamma=True):
 
         # define general info
         self.sample = sample
@@ -125,7 +121,6 @@ class Wavefunction:
                     self.occ[ispin, ikpt, 0:nbnd] = occ[ispin, ikpt][0:nbnd]
 
         self.gamma = gamma
-        self.gvecs = gvecs
 
         # define maps between internal index <-> (spin, kpoint, band) index
         self.idx_skb_map = dict()
@@ -143,10 +138,6 @@ class Wavefunction:
         # define containers to store collections of psi(r) or psi(G)
         self.psi_g = WfcManager(self)
         self.psi_r = WfcManager(self, transform=self.normalize)
-
-        assert gvecs.shape[1] == 3
-        self.gvecs = gvecs
-        self.ngvecs = gvecs.shape[0]
 
     def skb2idx(self, ispin, ikpt, ibnd):
         """Get internal index from (spin, kpoint, band) index."""

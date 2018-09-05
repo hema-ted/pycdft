@@ -13,7 +13,7 @@ class Fragment(object):
         w (numpy array, shape = [n1, n2, n3]: Hirshfeld weight function.
     """
 
-    def __init__(self, name: str, sample: Sample, atoms: list):
+    def __init__(self, sample: Sample, atoms: list, name: str=""):
         self.name = name
         self.sample = sample
         self.atoms = atoms
