@@ -1,6 +1,6 @@
 import numpy as np
 from ase import Atom as ASEAtom
-from .units import angstrom_to_bohr, bohr_to_angstrom
+from pycdft.common.units import angstrom_to_bohr, bohr_to_angstrom
 
 
 class Atom(object):

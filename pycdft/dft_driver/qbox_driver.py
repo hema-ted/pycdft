@@ -6,8 +6,8 @@ import base64
 import numpy as np
 from lxml import etree
 from ase.io.cube import read_cube_data, write_cube
-from .base import DFTDriver
-from ..common.wfc import Wavefunction
+from pycdft.common.wfc import Wavefunction
+from pycdft.dft_driver.base import DFTDriver
 
 
 class QboxLockfileError(Exception):

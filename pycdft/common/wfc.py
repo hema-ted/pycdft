@@ -1,4 +1,4 @@
-from .ft import *
+from pycdft.common.ft import *
 
 
 class _CollectionManager:

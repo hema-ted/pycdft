@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from ..common.sample import Sample
+from pycdft.common.sample import Sample
 
 
 class DFTDriver(object):

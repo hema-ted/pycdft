@@ -1,7 +1,7 @@
 import numpy as np
 from numpy.fft import *
-from .atom import Atom
-from .sample import Sample
+from pycdft.common.atom import Atom
+from pycdft.common.sample import Sample
 
 
 class Fragment(object):
@@ -32,7 +32,6 @@ class Fragment(object):
         freqlist1 = fftfreq(n1, d=1 / n1)
         freqlist2 = fftfreq(n2, d=1 / n2)
         freqlist3 = fftfreq(n3, d=1 / n3)
-
 
         # TODO : tidy up the code
         """

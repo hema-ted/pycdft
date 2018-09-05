@@ -1,15 +1,14 @@
 from random import randint
 from subprocess import Popen
-
+import warnings
 import numpy as np
 from ase import Atoms
 from ase.io.cube import read_cube_data
 from numpy.fft import *
-
 from pycdft.atomic import rho_path, rd_grid, drd
 from pycdft.atomic.pp import SG15PP
-from .atom import Atom
-from .units import angstrom_to_bohr, bohr_to_angstrom
+from pycdft.common.atom import Atom
+from pycdft.common.units import angstrom_to_bohr, bohr_to_angstrom
 
 
 class Sample(object):
@@ -116,7 +115,9 @@ class Sample(object):
                     "{}/{}.spavr".format(rho_path, s), dtype=float)[:, 1]
                 rho_rd /= self.omega  # normalization convention in westpp
                 rho_rd[rho_rd < 0] = 0
-                rho_d = 4 * np.pi * drd * np.einsum("r,rg->g", rho_rd * rd_grid, self.sinrG / self.G_d)
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    rho_d = 4 * np.pi * drd * np.einsum("r,rg->g", rho_rd * rd_grid, self.sinrG / self.G_d)
                 rho_g = rho_d[self.Gmapping]
                 rho_g[0, 0, 0] = 4 * np.pi * drd * np.sum(rho_rd * rd_grid ** 2)
                 rho_g *= (SG15PP[s]["nel"] / rho_g[0, 0, 0])  # normalize charge density

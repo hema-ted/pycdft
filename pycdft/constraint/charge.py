@@ -2,7 +2,7 @@ import numpy as np
 from pycdft.common.sample import Sample
 from pycdft.common.fragment import Fragment
 from pycdft.optimizer import Optimizer
-from .base import Constraint
+from pycdft.constraint.base import Constraint
 
 
 class ChargeConstraint(Constraint):

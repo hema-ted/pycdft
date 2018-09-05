@@ -1,4 +1,4 @@
-from .base import Optimizer
+from pycdft.optimizer.base import Optimizer
 
 
 class SDOptimizer(Optimizer):

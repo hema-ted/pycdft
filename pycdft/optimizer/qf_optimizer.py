@@ -1,5 +1,5 @@
-from .base import Optimizer
 import numpy as np
+from pycdft.optimizer.base import Optimizer
 
 
 class QFOptimizer(Optimizer):
