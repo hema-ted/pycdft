@@ -27,8 +27,6 @@ class CDFTSolver:
             as a sum of all constraints defined on all fragments.
     """
 
-    _archive_folder = 'outputs'
-
     def __init__(self, job: str, sample: Sample, dft_driver: DFTDriver,
                  optimizer: str="secant", maxiter: int=1000, maxstep: int=100,
                  F_tol: float=1.0E-2):
@@ -37,18 +35,13 @@ class CDFTSolver:
         self.sample = sample
         self.constraints = self.sample.constraints
         self.dft_driver = dft_driver
+        self.dft_driver.reset()
         self.optimizer = optimizer
         self.maxiter = maxiter
         self.maxstep = maxstep
         self.F_tol = F_tol
         self.Vc_tot = None
         self.itscf = None
-
-        if os.path.exists(self._archive_folder):
-            shutil.rmtree(self._archive_folder)
-            os.makedirs(self._archive_folder)
-        else:
-            os.makedirs(self._archive_folder)
 
     def solve(self):
         """ Solve CDFT SCF or relax problem."""

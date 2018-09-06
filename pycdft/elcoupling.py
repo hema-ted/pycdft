@@ -8,11 +8,13 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
     wfc1 = solver1.sample.wfc
     wfc2 = solver2.sample.wfc
 
-    if np.any(np.array([wfc1.nspin, wfc1.nkpt, wfc2.nspin, wfc2.nkpt]) != 1):
-        raise NotImplementedError
+    assert wfc1.nspin == wfc2.nspin
+    assert wfc1.nkpt == wfc2.nkpt
+    assert np.all(wfc1.nbnd == wfc2.nbnd)
+    nspin, nkpt, nbnd, norb = wfc1.nspin, wfc1.nkpt, wfc1.nbnd, wfc1.norb
 
-    assert wfc1.norb == wfc2.norb
-    norb = wfc1.norb
+    if nspin not in [1, 2] or nkpt != 1:
+        raise NotImplementedError
 
     sample = solver1.sample
     # density grid
@@ -27,8 +29,11 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
 
     # orbital overlap matrix O
     O = np.zeros([norb, norb])
-    for i, j in np.ndindex(norb, norb):
-        O[i, j] = (omega / m) * np.sum(wfc1[norb] * wfc2[norb])
+    for ispin in range(nspin):
+        for ibnd, jbnd in np.ndindex(nbnd, nbnd):
+            i = wfc1.skb2idx(ispin, 0, ibnd)
+            j = wfc1.skb2idx(ispin, 0, jbnd)
+            O[i, j] = (omega / m) * np.sum(wfc1[norb] * wfc2[norb])
     Odet = np.linalg.det(O)
     Oinv = np.linalg.inv(O)
     print("O matrix:")
@@ -46,8 +51,11 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
     # cofactor matrix C
     C = Odet * Oinv.T
     P = np.zeros([norb, norb])
-    for i, j in np.ndindex(norb, norb):
-        P[i, j] = (omega / m) * np.sum(wfc1[norb] * vc * wfc2[norb])
+    for ispin in range(nspin):
+        for ibnd, jbnd in np.ndindex(nbnd, nbnd):
+            i = wfc1.skb2idx(ispin, 0, ibnd)
+            j = wfc1.skb2idx(ispin, 0, jbnd)
+            P[i, j] = (omega / m) * np.sum(wfc1[norb] * vc * wfc2[norb])
     Vab = np.trace(P @ C)
     print("Vab:", Vab)
 

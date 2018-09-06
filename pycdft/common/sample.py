@@ -29,7 +29,9 @@ class Sample(object):
         atoms (list of Atoms): list of atoms.
         fragments (list of Fragments): list of fragments defined on the sample.
         rhopro_tot_r (np.ndarray, shape = [n1, n2, n3]): total promolecule density.
-        nspin (int): number of spin channels (1 or 2).
+        nspin (int): number of spin channels (1 or 2) for constraint potential. Note that
+                     as long as only charge constraints are present, nspin = 1 even if the
+                     system may be spin-polarized.
         n1, n2, n3 (int): FFT grid for charge density, weight function and constraint potential.
         Edft (float): DFT total energy.
         W (float): free energy.

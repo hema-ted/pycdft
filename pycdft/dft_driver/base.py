@@ -9,6 +9,11 @@ class DFTDriver(object):
         self.sample = sample
 
     @abstractmethod
+    def reset(self):
+        """ Reset the DFT code."""
+        pass
+
+    @abstractmethod
     def set_Vc(self, Vc):
         """ Set the constraint potential Vc in DFT code.
 

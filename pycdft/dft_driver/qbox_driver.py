@@ -52,6 +52,7 @@ class QboxDriver(DFTDriver):
         else:
             os.makedirs(self._archive_folder)
 
+    def reset(self):
         # Initialize Qbox
         print("QboxDriver: waiting for Qbox to start...")
         self.wait_for_lockfile()
@@ -200,7 +201,7 @@ class QboxDriver(DFTDriver):
         for event, leaf in iterxml:
             if event == "start" and leaf.tag == "wavefunction":
                 nspin = int(leaf.attrib["nspin"])
-                assert nspin == self.sample.nspin
+                assert nspin >= self.sample.nspin
                 nbnd = np.zeros((nspin, nkpt))
                 occs = np.zeros((nspin, nkpt), dtype=object)
 
