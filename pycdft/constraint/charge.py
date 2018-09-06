@@ -1,7 +1,6 @@
 import numpy as np
 from pycdft.common.sample import Sample
 from pycdft.common.fragment import Fragment
-from pycdft.optimizer import Optimizer
 from pycdft.constraint.base import Constraint
 
 
@@ -15,9 +14,11 @@ class ChargeConstraint(Constraint):
     type = "charge"
     _eps = 0.0001  # cutoff of Hirshfeld weight when the density approaches zero
 
-    def __init__(self, sample: Sample, fragment: Fragment, N0,
-                 optimizer: Optimizer, N_tol=1.0E-3):
-        super(ChargeConstraint, self).__init__(sample, N0, optimizer, N_tol=N_tol)
+    def __init__(self, sample: Sample, fragment: Fragment, N0: float,
+                 V_init=0, V_brak=(-1, 1), N_tol=1.0E-3):
+        super(ChargeConstraint, self).__init__(
+            sample, N0, V_init=V_init, V_brak=V_brak, N_tol=N_tol
+        )
         self.fragment = fragment
 
     def update_w(self):
@@ -27,8 +28,6 @@ class ChargeConstraint(Constraint):
             self.w = w[None, ...]
         else:
             self.w = np.append(w, w, axis=0).reshape(2, *w.shape)
-
-        self.is_converged = False
 
     def update_Fc(self):
         omega = self.sample.omega

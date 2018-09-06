@@ -124,8 +124,8 @@ class Sample(object):
                 rho_g *= (SG15PP[s]["nel"] / rho_g[0, 0, 0])  # normalize charge density
                 self.rhoatom_g[s] = rho_g
 
-    def update_constraints(self):
-        """ Update constraints with new structure. """
+    def update_weights(self):
+        """ Update weights with new structure. """
         n = self.n1 * self.n2 * self.n3
         omega = self.omega
 

@@ -1,7 +1,6 @@
 from abc import ABCMeta, abstractmethod
 import numpy as np
 from pycdft.common.sample import Sample
-from pycdft.optimizer import Optimizer
 
 
 class Constraint(object):
@@ -13,9 +12,9 @@ class Constraint(object):
                    computed from the charge density of the current DFT step.
         N0 (float): the target value for the electron number or electron number difference,
                    N = N0 at convergence.
-        optimizer (Optimizer): the optimizer for free energy.
         V (float): Lagrangian multiplier associate with the constraint.
-        V_old (float): Lagrangian multiplier at the previous CDFT step.
+        V_init (float): Initial guess or bracket for V, used for certain optimization algorithms.
+        V_brak (2-tuple of float): Search bracket for V, used for certain optimization algorithms.
         Vc (np.ndarray, shape = [nspin, n1, n2, n3]): constraint potential.
         w (np.ndarray, shape = [nspin, n1, n2, n3]): weight function.
         N_tol (float): convergence threshold for N - N0 (= dW/dV).
@@ -25,23 +24,22 @@ class Constraint(object):
     type = None
 
     @abstractmethod
-    def __init__(self, sample: Sample, N0, optimizer: Optimizer, N_tol=1.0E-4):
+    def __init__(self, sample: Sample, N0, V_init=None, V_brak=None, N_tol=None):
         """
         Args:
             V_init (float): initial guess for V.
         """
         self.sample = sample
         self.N0 = N0
-        self.optimizer = optimizer
-        self.V = self.V_old = self.optimizer.xs[0]
-
+        self.V_init = V_init
+        self.V_brak = V_brak
         self.N_tol = N_tol
 
+        self.V = None
         self.w = None
         self.N = None
         self.Vc = None
         self.Fc = None
-        self.is_converged = None
 
         self.sample.constraints.append(self)
 
@@ -51,34 +49,15 @@ class Constraint(object):
         dW/dV = \int dr w_i(r) n(r) - N0 = N - N0"""
         return self.N - self.N0
 
-    def update(self):
-        """ Update the constraint with new value for V."""
-        print("Updating constraint (type: {}, N0 = {}, V = {})...".format(
-            self.type, self.N0, self.V
-        ))
-
-        # Update N, compute dW/dV
-        self.update_N()
-        print("N = {}".format(self.N))
-        print("dW/dV = N - N0 = {}".format(self.dW_by_dV))
-
-        # Compute a new value for V
-        V_new = self.optimizer.update(self.sample.W, self.dW_by_dV)
-
-        # Update V and Vc
-        self.V_old = self.V
-        self.V = V_new
-        self.update_Vc()
-        self.is_converged = bool(abs(self.N - self.N0) < self.N_tol)
+    @property
+    def is_converged(self):
+        return bool(abs(self.N - self.N0) < self.N_tol)
 
     def update_structure(self):
         """ Update the constraint with new structure."""
         print("Updating constraint with new structure")
         self.update_w()
         self.update_N()
-        self.update_Vc()
-        self.is_converged = False
-        self.optimizer.reset()
 
     @abstractmethod
     def update_w(self):

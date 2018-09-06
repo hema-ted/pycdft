@@ -1,7 +1,6 @@
 import numpy as np
 from pycdft.common.sample import Sample
 from pycdft.common.fragment import Fragment
-from pycdft.optimizer import Optimizer
 from pycdft.constraint.base import Constraint
 
 
@@ -16,9 +15,11 @@ class ChargeTransferConstraint(Constraint):
     type = "charge transfer"
     _eps = 0.0001  # cutoff of Hirshfeld weight when the density approaches zero
 
-    def __init__(self, sample: Sample, donor: Fragment, acceptor: Fragment, N0,
-                 optimizer: Optimizer, N_tol=1.0E-3):
-        super(ChargeTransferConstraint, self).__init__(sample, N0, optimizer, N_tol=N_tol)
+    def __init__(self, sample: Sample, donor: Fragment, acceptor: Fragment, N0: float,
+                 V_init=0, V_brak=(-1, 1), N_tol=1.0E-3):
+        super(ChargeTransferConstraint, self).__init__(
+            sample, N0, V_init=V_init, V_brak=V_brak, N_tol=N_tol
+        )
         self.donor = donor
         self.acceptor = acceptor
 
@@ -29,8 +30,6 @@ class ChargeTransferConstraint(Constraint):
             self.w = w[None, ...]
         else:
             self.w = np.append(w, w, axis=0).reshape(2, *w.shape)
-
-        self.is_converged = False
 
     def update_Fc(self):
         omega = self.sample.omega
