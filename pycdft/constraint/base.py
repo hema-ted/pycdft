@@ -25,8 +25,7 @@ class Constraint(object):
     type = None
 
     @abstractmethod
-    def __init__(self, sample: Sample, N0, optimizer: Optimizer,
-                 V_init=0.0, N_tol=1.0E-4):
+    def __init__(self, sample: Sample, N0, optimizer: Optimizer, N_tol=1.0E-4):
         """
         Args:
             V_init (float): initial guess for V.
@@ -34,7 +33,7 @@ class Constraint(object):
         self.sample = sample
         self.N0 = N0
         self.optimizer = optimizer
-        self.V = self.V_old = V_init
+        self.V = self.V_old = self.optimizer.xs[0]
 
         self.N_tol = N_tol
 
@@ -64,8 +63,7 @@ class Constraint(object):
         print("dW/dV = N - N0 = {}".format(self.dW_by_dV))
 
         # Compute a new value for V
-        V_new = self.optimizer.update(self.dW_by_dV, self.V, self.sample.Efree)
-        # print("New value for V = {}".format(V_new))
+        V_new = self.optimizer.update(self.sample.W, self.dW_by_dV)
 
         # Update V and Vc
         self.V_old = self.V
@@ -80,6 +78,7 @@ class Constraint(object):
         self.update_N()
         self.update_Vc()
         self.is_converged = False
+        self.optimizer.reset()
 
     @abstractmethod
     def update_w(self):

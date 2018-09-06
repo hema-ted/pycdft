@@ -63,9 +63,6 @@ class CDFTSolver:
 
         self.sample.update_constraints()
 
-        for c in self.constraints:
-            c.optimizer.setup()
-
         for iiter in range(1, self.maxiter + 1):
 
             # Compute the total constraint potential Vc.
@@ -78,10 +75,10 @@ class CDFTSolver:
             # After dft driver run_scf command should read etotal and force
             self.dft_driver.run_scf()
             self.dft_driver.get_rho_r()
-            self.sample.Efree = self.sample.Edft_total - np.sum(c.V * c.N for c in self.constraints)
+            self.sample.W = self.sample.Edft_total - np.sum(c.V * c.N for c in self.constraints)
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             print("Iter {}:".format(iiter))
-            print("Free energy = {}".format(self.sample.Efree))
+            print("Free energy = {}".format(self.sample.W))
             print("DFT KS energy = {}".format(self.sample.Edft_bare))
             print("DFT KS+c energy = {}".format(self.sample.Edft_total))
 

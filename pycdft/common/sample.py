@@ -32,7 +32,7 @@ class Sample(object):
         nspin (int): number of spin channels (1 or 2).
         n1, n2, n3 (int): FFT grid for charge density, weight function and constraint potential.
         Edft (float): DFT total energy.
-        Efree (float): free energy.
+        W (float): free energy.
     """
 
     def __init__(self, ase_cell: Atoms, nspin: int, n1: int, n2: int, n3: int,
@@ -60,7 +60,7 @@ class Sample(object):
         # define energies, forces and wavefunction
         self.Edft_bare = None
         self.Edft_total = None
-        self.Efree = None
+        self.W = None
         self.Ftotal = None
         self.Fdft = None
         self.Fc = None
@@ -128,6 +128,7 @@ class Sample(object):
         """ Update constraints with new structure. """
         n = self.n1 * self.n2 * self.n3
         omega = self.omega
+
         # Update promolecule densities
         self.rhopro_tot_r = np.zeros([self.n1, self.n2, self.n3], dtype=np.complex_)
         for f in self.fragments:

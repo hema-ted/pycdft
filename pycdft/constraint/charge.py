@@ -15,9 +15,9 @@ class ChargeConstraint(Constraint):
     type = "charge"
     _eps = 0.0001  # cutoff of Hirshfeld weight when the density approaches zero
 
-    def __init__(self, sample: Sample, fragment: Fragment, N0, optimizer: Optimizer,
-                 V_init=0.0, N_tol=1.0E-3):
-        super(ChargeConstraint, self).__init__(sample, N0, optimizer, V_init=V_init, N_tol=N_tol)
+    def __init__(self, sample: Sample, fragment: Fragment, N0,
+                 optimizer: Optimizer, N_tol=1.0E-3):
+        super(ChargeConstraint, self).__init__(sample, N0, optimizer, N_tol=N_tol)
         self.fragment = fragment
 
     def update_w(self):

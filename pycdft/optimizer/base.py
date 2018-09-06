@@ -8,12 +8,20 @@ class Optimizer(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def setup(self):
-        """ Set up the optimizer with initial x. """
-        pass
+    def __init__(self, dx0):
+        self.xs = [dx0]
+        self.ys = []
+        self.dydxs = []
+
+    def reset(self):
+        """ Reset the optimizer. """
+        self.xs = self.xs[-1:]
+        self.ys = []
+        self.dydxs = []
 
     @abstractmethod
-    def update(self, dy_by_dx, x_new, y_new):
-        """ Compute a new x value given y'(x) at current x value. """
-        pass
+    def update(self, y, dydx):
+        """ Compute a new x value given y and y'(x) at current x value. """
+        self.ys.append(y)
+        self.dydxs.append(dydx)
 
