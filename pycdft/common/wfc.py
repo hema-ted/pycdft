@@ -40,10 +40,7 @@ class WfcManager:
         return idx
 
     def __getitem__(self, key):
-        try:
-            return self.qty[self._get_idx(key)]
-        except KeyError:
-            return None
+        return self.qty[self._get_idx(key)]
 
     def __setitem__(self, key, value):
         idx = self._get_idx(key)

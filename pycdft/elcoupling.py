@@ -5,6 +5,11 @@ from pycdft.common.ft import FFTGrid, ftrr
 
 def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
     """ Compute electronic coupling between two KS wavefunctions."""
+    assert solver1.sample.nspin == solver2.sample.nspin
+    vspin = solver1.sample.nspin
+    if vspin != 1:
+        raise NotImplementedError
+
     wfc1 = solver1.sample.wfc
     wfc2 = solver2.sample.wfc
 
@@ -30,10 +35,10 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
     # orbital overlap matrix O
     O = np.zeros([norb, norb])
     for ispin in range(nspin):
-        for ibnd, jbnd in np.ndindex(nbnd, nbnd):
+        for ibnd, jbnd in np.ndindex(nbnd[ispin, 0], nbnd[ispin, 0]):
             i = wfc1.skb2idx(ispin, 0, ibnd)
             j = wfc1.skb2idx(ispin, 0, jbnd)
-            O[i, j] = (omega / m) * np.sum(wfc1[norb] * wfc2[norb])
+            O[i, j] = (omega / m) * np.sum(wfc1.psi_r[i] * wfc2.psi_r[j])
     Odet = np.linalg.det(O)
     Oinv = np.linalg.inv(O)
     print("O matrix:")
@@ -47,27 +52,31 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
     print(S)
 
     # constraint potential matrix element Vab = <psi_a| (V_a + V_b)/2 |psi_b>
-    vc = ftrr(0.5 * (solver1.Vc_tot + solver2.Vc_tot), dgrid, wgrid)
+    vc = ftrr(0.5 * (solver1.Vc_tot + solver2.Vc_tot)[0, ...], dgrid, wgrid)
     # cofactor matrix C
     C = Odet * Oinv.T
+    print("C:", C)
     P = np.zeros([norb, norb])
     for ispin in range(nspin):
-        for ibnd, jbnd in np.ndindex(nbnd, nbnd):
+        for ibnd, jbnd in np.ndindex(nbnd[ispin, 0], nbnd[ispin, 0]):
             i = wfc1.skb2idx(ispin, 0, ibnd)
             j = wfc1.skb2idx(ispin, 0, jbnd)
-            P[i, j] = (omega / m) * np.sum(wfc1[norb] * vc * wfc2[norb])
+            P[i, j] = (omega / m) * np.sum(wfc1.psi_r[i] * vc * wfc2.psi_r[j])
+    print("P:", P)
     Vab = np.trace(P @ C)
     print("Vab:", Vab)
 
     # H matrix (Eq. 9-11 in CP2K paper, Eq. 5 in QE paper)
-    H = np.zeros(2, 2)
+    H = np.zeros([2, 2])
     H[0, 0] = solver1.sample.Edft_bare
     H[1, 1] = solver2.sample.Edft_bare
-    Fa = solver1.sample.Efree
-    Fb = solver2.sample.Efree
+    Fa = solver1.sample.W
+    Fb = solver2.sample.W
     H[0, 1] = H[1, 0] = 0.5 * (Fa + Fb) * S[0, 1] - Vab
     print("H matrix:")
     print(H)
 
     Hab = 1 / (1 - S[0, 1]**2) * (H[0, 1] - S[0, 1] * (H[0, 0] + H[1, 1]) / 2)
+    print(H[0, 1], S[0, 1] * (H[0, 0] + H[1, 1]) / 2, 1 / (1 - S[0, 1]**2))
+
     return Hab

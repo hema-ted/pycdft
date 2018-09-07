@@ -234,9 +234,12 @@ class QboxDriver(DFTDriver):
         wfc = Wavefunction(sample=self.sample, wgrid=wgrid, dgrid=wgrid,
                            nspin=nspin, nkpt=nkpt, nbnd=nbnd, occ=occs_, gamma=True)
 
+        iterxml = etree.iterparse(wfcfile, huge_tree=True, events=("start", "end"))
+
+        ispin = 0
+        ikpt = 0
         for event, leaf in iterxml:
-            ispin = 0
-            ikpt = 0
+
             if event == "start" and leaf.tag == "slater_determinant":
                 if wfc.nspin == 2 and leaf.attrib["spin"] == "down":
                     ispin = 1
