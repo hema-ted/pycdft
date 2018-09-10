@@ -16,40 +16,51 @@ class CDFTSolver:
     """ Constrained DFT solver.
 
     Attributes:
-        job (str): "scf" or "relax".
+        job (str): "scf" or "opt".
         sample (Sample): the whole system for which CDFT calculation is performed.
         constraints (list of Constraint): constraints on the system.
         dft_driver (DFTDriver): the interface to DFT code (e.g. Qbox or PW).
-        maxiter (int): maximum number of CDFT iterations.
-        maxstep (int): maximum relaxation steps.
-        F_tol (float): force threshold for relaxation.
+        maxcscf (int): maximum number of CDFT iterations.
+        maxstep (int): maximum geometry optimization steps.
+        F_tol (float): force threshold for optimization.
         Vc_tot (float array, shape == [nspin, n1, n2, n3]): total constraint potential
             as a sum of all constraints defined on all fragments.
     """
 
+    nsolver = 0
+
     def __init__(self, job: str, sample: Sample, dft_driver: DFTDriver,
-                 optimizer: str="secant", maxiter: int=1000, maxstep: int=100,
+                 optimizer: str="secant", maxcscf: int=1000, maxstep: int=100,
                  F_tol: float=1.0E-2):
 
         self.job = job
         self.sample = sample
         self.constraints = self.sample.constraints
         self.dft_driver = dft_driver
-        self.dft_driver.reset()
         self.optimizer = optimizer
-        self.maxiter = maxiter
+        self.maxcscf = maxcscf
         self.maxstep = maxstep
         self.F_tol = F_tol
         self.Vc_tot = None
         self.itscf = None
 
+        CDFTSolver.nsolver += 1
+        self.isolver = CDFTSolver.nsolver
+        self.output_path = "./pycdft_outputs/solver{}/".format(self.isolver)
+        if os.path.exists(self.output_path):
+            shutil.rmtree(self.output_path)
+            os.makedirs(self.output_path)
+        else:
+            os.makedirs(self.output_path)
+        self.dft_driver.reset(self.output_path)
+
     def solve(self):
-        """ Solve CDFT SCF or relax problem."""
+        """ Solve CDFT SCF or optimization problem."""
         self.dft_driver.get_rho_r()
         if self.job == "scf":
             self.solve_scf()
-        elif self.job == "relax":
-            self.solve_relax()
+        elif self.job == "opt":
+            self.solve_opt()
         else:
             raise ValueError
         self.dft_driver.get_wfc()
@@ -73,28 +84,28 @@ class CDFTSolver:
                 self.constraints[0].V_init = scipy.optimize.newton(
                     func=self.solve_scf_for_dW_by_dV,
                     x0=self.constraints[0].V_init,
-                    maxiter=self.maxiter
+                    maxiter=self.maxcscf
                 )
             elif self.optimizer == "bisect":
                 self.constraints[0].V_init, info = scipy.optimize.bisect(
                     f=self.solve_scf_for_dW_by_dV,
                     a=self.constraints[0].V_brak[0],
                     b=self.constraints[0].V_brak[1],
-                    maxiter=self.maxiter
+                    maxiter=self.maxcscf
                 )
             elif self.optimizer == "brentq":
                 self.constraints[0].V_init, info = scipy.optimize.brentq(
                     f=self.solve_scf_for_dW_by_dV,
                     a=self.constraints[0].V_brak[0],
                     b=self.constraints[0].V_brak[1],
-                    maxiter=self.maxiter
+                    maxiter=self.maxcscf
                 )
             elif self.optimizer == "brenth":
                 self.constraints[0].V_init, info = scipy.optimize.brenth(
                     f=self.solve_scf_for_dW_by_dV,
                     a=self.constraints[0].V_brak[0],
                     b=self.constraints[0].V_brak[1],
-                    maxiter=self.maxiter
+                    maxiter=self.maxcscf
                 )
             elif self.optimizer in ["BFGS"]:
                 res = scipy.optimize.minimize(
@@ -102,7 +113,7 @@ class CDFTSolver:
                     fun=self.solve_scf_with_new_V,
                     x0=np.array(list(c.V_init for c in self.constraints)),
                     jac=True,
-                    options={"maxiter": self.maxiter}
+                    options={"maxiter": self.maxcscf}
                 )
                 for c, V in zip(self.constraints, res.x):
                     c.V_init = V
@@ -111,11 +122,8 @@ class CDFTSolver:
 
         except CDFTSCFConverged:
             print("CDFTSolver: convergence achieved!")
-        # else:
-        #     print("CDFTSolver: convergence NOT achieved after {} iterations.".format(self.maxiter))
-
-        if self.job == "relax":
-            self.dft_driver.get_force()
+        else:
+            print("CDFTSolver: convergence NOT achieved after {} iterations.".format(self.maxcscf))
 
     def solve_scf_with_new_V(self, Vs):
         """ Given V for all constraints, solve KS problem."""
@@ -162,29 +170,37 @@ class CDFTSolver:
         """ Wrapper function for solve_scf_with_new_V returning dW/dV."""
         return self.solve_scf_with_new_V([V])[1][0]
 
-    def solve_relax(self):
+    def solve_opt(self):
         """ Relax the structure under constraint.
 
-        A force from constraint potential is added to DFT force during relaxation.
+        A force from constraint potential is added to DFT force during optimization.
         """
 
         for istep in range(1, self.maxstep + 1):
             # run SCF to converge electronic structure
             self.solve_scf()
 
-            maxforce, maxforceatom = self.sample.get_maxforce()
-            print("Maximum force = {} au, on {}".format(maxforce, maxforceatom))
+            # get DFT force
+            Fdft = self.dft_driver.get_force()
+
+            # compute constraint force
+            for c in self.constraints:
+                c.update_Fc()
+            Fc = np.sum(c.Fc for c in self.constraints)
+
+            Ftot = Fdft + Fc
+            Ftotnorm = np.linalg.norm(Ftot, axis=1)
+            maxforce = np.max(Ftotnorm)
+            imaxforce = np.argmax(Ftotnorm)
+            print("Maximum force = {} au, on {}th atom (Fdft = {}, Fc = {})".format(
+                maxforce, imaxforce, Fdft[imaxforce], Fc[imaxforce]
+            ))
             if maxforce < self.F_tol:
                 print("CDFTSolver: force convergence achieved!")
                 break
 
             # add constraint force to DFT force
-            Fc_total = np.zeros([self.sample.natoms, 3])
-            for c in self.constraints:
-                Fc_total += c.update_Fc()
-
-            # add constraint force to DFT force
-            self.dft_driver.set_Fc(Fc_total)
+            self.dft_driver.set_Fc(Fc)
 
             # run optimization
             self.dft_driver.run_opt()
@@ -201,7 +217,7 @@ class CDFTSolver:
             print("================================")
 
         else:
-            print("CDFTSolver: relaxation NOT achieved after {} steps.".format(self.maxstep))
+            print("CDFTSolver: optimization NOT achieved after {} steps.".format(self.maxstep))
 
     def copy(self):
         return deepcopy(self)

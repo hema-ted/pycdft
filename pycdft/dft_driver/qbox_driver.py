@@ -16,63 +16,57 @@ class QboxLockfileError(Exception):
 
 
 class QboxDriver(DFTDriver):
+    """ DFT driver.
 
-    _sleep_seconds = 2
-    _max_sleep_seconds = 3600 * 6
+    Extra attributes:
+        init_cmd (str): initialization command for Qbox.
+        scf_cmd (str): command for running constrained SCF.
+        opt_cmd (str): command for running geometry optimization.
+    """
 
-    _Vc_file = "Vc.cube"
-    _rhor_file = "rhor.cube"
-    _wfc_file = "wfc.xml"
-    _wfc_cmd = "save {}".format(_wfc_file)
+    sleep_seconds = 2
+    max_sleep_seconds = 3600 * 6
 
-    _archive_folder = 'qbox_outputs'
+    input_file = "qb_cdft.in"
+    lock_file = "{}.lock".format(input_file)
+    output_file = "qb_cdft.out"
+    Vc_file = "Vc.cube"
+    rhor_file = "rhor.cube"
+    wfc_file = "wfc.xml"
+    wfc_cmd = "save {}".format(wfc_file)
 
-    def __init__(self, sample, init_cmd, scf_cmd, opt_cmd=None, input_file="qb_cdft.in"):
-        """Initialize QboxDriver.
-
-        Control commands for SCF calculations (e.g. "run 0 100 5") needs to
-        be specified by scf_cmd.
-        """
+    def __init__(self, sample, init_cmd, scf_cmd, opt_cmd=None):
         super(QboxDriver, self).__init__(sample)
-        self.opt_cmd = opt_cmd
         self.init_cmd = init_cmd
         self.scf_cmd = scf_cmd
-        self.input_file = input_file
-        self.output_file = self.input_file.split('.')[0] + '.out'
-        self.lock_file = "{}.lock".format(input_file)
-
-        self.iter = 0
+        self.opt_cmd = opt_cmd
 
         self.scf_xml = None
         self.opt_xml = None
 
-        if os.path.exists(self._archive_folder):
-            shutil.rmtree(self._archive_folder)
-            os.makedirs(self._archive_folder)
-        else:
-            os.makedirs(self._archive_folder)
-
-    def reset(self):
-        # Initialize Qbox
+    def reset(self, output_path):
+        self.istep = self.icscf = 1
+        print("QboxDriver: setting output path to {}...".format(output_path))
+        self.output_path = output_path
         print("QboxDriver: waiting for Qbox to start...")
-        self.wait_for_lockfile()
+        self.wait_for_lock_file()
         print("QboxDriver: initializing Qbox...")
         self.run_cmd(self.init_cmd)
 
-    def wait_for_lockfile(self):
+    def wait_for_lock_file(self):
         """ Wait for Qbox lock file to appear."""
         nsec = 0
         while not os.path.isfile(self.lock_file):
-            time.sleep(self._sleep_seconds)
-            nsec += self._sleep_seconds
-            if nsec > self._max_sleep_seconds:
+            time.sleep(self.sleep_seconds)
+            nsec += self.sleep_seconds
+            if nsec > self.max_sleep_seconds:
                 raise QboxLockfileError
 
     def run_cmd(self, cmd):
-        """ Let Qbox run given command. """
+        """ Order Qbox to run given command. """
         open(self.input_file, "w").write(cmd + "\n")
         os.remove(self.lock_file)
-        self.wait_for_lockfile()
+        self.wait_for_lock_file()
 
     def set_Vc(self, Vc):
         """ Write Vc in cube format, then send set vext command to Qbox."""
@@ -83,25 +77,29 @@ class QboxDriver(DFTDriver):
         assert isinstance(Vc, np.ndarray) and Vc.shape == (nspin, n1, n2, n3)
 
         ase_cell = self.sample.ase_cell
-        write_cube(open(self._Vc_file, "w"), atoms=ase_cell, data=Vc[0])
+        write_cube(open(self.Vc_file, "w"), atoms=ase_cell, data=Vc[0])
 
-        self.run_cmd("set vext {}".format(self._Vc_file))
+        self.run_cmd("set vext {}".format(self.Vc_file))
+
+    def copy_output(self):
+        """ Copy Qbox output file to self.output_path. """
+        shutil.copyfile(self.output_file, "{}/step{}-scf{}.out".format(
+            self.output_path, self.istep, self.icscf
+        ))
 
     def run_scf(self):
         """ Run SCF calculation in Qbox."""
         self.run_cmd(self.scf_cmd)
-        self.iter += 1
-        shutil.copyfile(self.output_file,
-                        "{}/iter{}.out".format(self._archive_folder, self.iter))
+        self.copy_output()
+        self.icscf += 1
         self.scf_xml = etree.parse(self.output_file).getroot()
         self.sample.Edft_total = float(self.scf_xml.findall("iteration/etotal")[-1].text)
         self.sample.Edft_bare = self.sample.Edft_total - float(self.scf_xml.findall("iteration/eext")[-1].text)
 
     def run_opt(self):
-        """ Run geometry relaxation in Qbox."""
+        """ Run geometry optimization in Qbox."""
         self.run_cmd(self.opt_cmd)
-        shutil.copyfile(self.output_file,
-                        "{}/iter{}_opt.out".format(self._archive_folder, self.iter))
+        self.copy_output()
         self.opt_xml = etree.parse(self.output_file).getroot()
 
     def get_rho_r(self):
@@ -116,10 +114,10 @@ class QboxDriver(DFTDriver):
         for ispin in range(nspin):
             self.run_cmd(cmd="plot -density {} {}".format(
                 "-spin {}".format(ispin + 1) if nspin == 2 else "",
-                self._rhor_file
+                self.rhor_file
             ))
 
-            rhor_raw = read_cube_data(self._rhor_file)[0]
+            rhor_raw = read_cube_data(self.rhor_file)[0]
             assert rhor_raw.shape == (n1, n2, n3)
 
             rhor1 = np.roll(rhor_raw, n1//2, axis=0)
@@ -190,8 +188,8 @@ class QboxDriver(DFTDriver):
     def get_wfc(self):
         """ Parse wavefunction from Qbox."""
 
-        self.run_cmd(self._wfc_cmd)
-        wfcfile = self._wfc_file
+        self.run_cmd(self.wfc_cmd)
+        wfcfile = self.wfc_file
 
         iterxml = etree.iterparse(wfcfile, huge_tree=True, events=("start", "end"))
 

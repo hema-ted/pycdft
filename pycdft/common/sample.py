@@ -231,16 +231,6 @@ class Sample(object):
             raise NotImplementedError
         return nel
 
-    def get_maxforce(self):
-        maxforce = 0
-        for atom in self.atoms:
-            f = np.linalg.norm(atom.Ftotal)
-            if f > maxforce:
-                maxforce = f
-                maxforceatom = atom
-
-        return maxforce, maxforceatom
-
     def __repr__(self):
         return "Cell \"{}\" natoms={}\nLattice constants:\n{}\nReciprocal lattice constants:\n{}\n".format(
             self.ase_cell.get_chemical_formula(), self.natoms, self.R, self.G

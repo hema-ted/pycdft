@@ -3,13 +3,25 @@ from pycdft.common.sample import Sample
 
 
 class DFTDriver(object):
+    """ DFT driver.
+
+    Attributes:
+        sample (Sample): the whole system for which CDFT calculation is performed.
+        istep (int): current geometry optimization step.
+        icscf (int): current constrained SCF step.
+        output_path (str): output file path.
+    """
+
     __metaclass__ = ABCMeta
 
     def __init__(self, sample: Sample):
         self.sample = sample
+        self.istep = None
+        self.icscf = None
+        self.output_path = None
 
     @abstractmethod
-    def reset(self):
+    def reset(self, output_path):
         """ Reset the DFT code."""
         pass
 

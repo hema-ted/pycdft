@@ -33,11 +33,11 @@ class ChargeTransferConstraint(Constraint):
 
     def update_Fc(self):
         omega = self.sample.omega
-        n123 = self.sample.n123
+        n = self.sample.n
         rhor = np.sum(self.sample.rho_r, axis=0)
         self.Fc = np.zeros([self.sample.natoms, 3])
 
         for iatom, atom in enumerate(self.sample.atoms):
             w_grad = (self.acceptor.compute_w_grad(atom, self.w)
                       - self.donor.compute_w_grad(atom, self.w))
-            self.Fc[iatom] = (omega * n123) * self.V * np.einsum("ijk,aijk->a", rhor, w_grad)
+            self.Fc[iatom] = (omega * n) * self.V * np.einsum("ijk,aijk->a", rhor, w_grad)

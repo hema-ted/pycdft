@@ -67,9 +67,9 @@ class Constraint(object):
     def update_N(self):
         """ Update the electron number or electron number difference. """
         omega = self.sample.omega
-        n123 = self.sample.n1 * self.sample.n2 * self.sample.n3
+        n = self.sample.n1 * self.sample.n2 * self.sample.n3
         rho_r = self.sample.rho_r
-        self.N = (omega / n123) * np.sum(self.w * rho_r)
+        self.N = (omega / n) * np.sum(self.w * rho_r)
 
     def update_Vc(self):
         """ Update constraint potential. """
