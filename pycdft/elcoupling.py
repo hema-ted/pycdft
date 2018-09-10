@@ -4,7 +4,7 @@ from pycdft.common.ft import FFTGrid, ftrr
 
 
 def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
-    """ Compute electronic coupling between two KS wavefunctions."""
+    """ Compute electronic coupling in mH between two KS wavefunctions."""
     assert solver1.sample.nspin == solver2.sample.nspin
     vspin = solver1.sample.nspin
     if vspin != 1:
@@ -77,6 +77,6 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
     print(H)
 
     Hab = 1 / (1 - S[0, 1]**2) * (H[0, 1] - S[0, 1] * (H[0, 0] + H[1, 1]) / 2)
-    print(H[0, 1], S[0, 1] * (H[0, 0] + H[1, 1]) / 2, 1 / (1 - S[0, 1]**2))
+    # print(H[0, 1], S[0, 1] * (H[0, 0] + H[1, 1]) / 2, 1 / (1 - S[0, 1]**2))
 
-    return Hab
+    print("Hab (mH):", Hab * 1E3)

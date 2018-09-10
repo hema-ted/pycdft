@@ -1,6 +1,11 @@
 *.pyc
-*checkpoint.ipynb
-*.out
 .idea
 *.egg-info
 
+*checkpoint.ipynb
+pycdft_outputs
+qb_cdft.*
+*.out
+gs.xml
+wfc.xml
+*.cube

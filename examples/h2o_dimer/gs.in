@@ -1,0 +1,23 @@
+set cell 20 0 0 0 20 0 0 0 20
+
+species O O_ONCV_PBE-1.0.xml
+species H H_ONCV_PBE-1.0.xml
+
+atom H1 H 6.327597  11.182995  9.349796
+atom H2 H 6.631797  8.491596  10.386995
+atom O3 O 7.242397  10.203795  10.595995
+atom H4 H 13.542794  10.910395  10.631995
+atom H5 H 10.810595  10.298595  9.841795
+atom O6 O 12.558394  10.246995  9.243796
+
+set xc PBE
+set ecut 30
+set wf_dyn JD
+set scf_tol 1.0E-8
+
+randomize_wf
+
+run 0 200 5
+
+save gs.xml
+
