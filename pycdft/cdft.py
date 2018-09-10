@@ -148,7 +148,7 @@ class CDFTSolver:
 
         # Print intermediate results
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print("Iter {}:".format(self.itscf))
+        print("SCF iteration {}".format(self.itscf))
         print("W (free energy) = {}".format(self.sample.W))
         print("E (DFT KS energy) = {}".format(self.sample.Edft_bare))
         print("Constraint info:")
@@ -159,6 +159,7 @@ class CDFTSolver:
             ))
             print("N = {}".format(c.N))
             print("dW/dV = N - N0 = {}".format(c.dW_by_dV))
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
         if all(c.is_converged for c in self.constraints):
             raise CDFTSCFConverged
@@ -177,6 +178,9 @@ class CDFTSolver:
         """
 
         for istep in range(1, self.maxstep + 1):
+            print("======================================")
+            print("Geometry optimization step {}".format(istep))
+
             # run SCF to converge electronic structure
             self.solve_scf()
 
@@ -210,11 +214,9 @@ class CDFTSolver:
 
             # update weights and constraint potentials
             for c in self.constraints:
-                c.update_R(istep)
+                c.update_structure()
 
-            print("================================")
-            print("Structure updated")
-            print("================================")
+            print("======================================")
 
         else:
             print("CDFTSolver: optimization NOT achieved after {} steps.".format(self.maxstep))

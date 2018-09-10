@@ -147,14 +147,16 @@ class QboxDriver(DFTDriver):
 
     def set_Fc(self, Fc):
         """ Implement abstract set_force method for Qbox."""
+        cmd = ""
         for i in range(self.sample.natoms):
             symbol = self.sample.atoms[i].symbol
-            self.run_cmd(cmd="extforce delete f{}{}".format(symbol, i + 1))
+            cmd += "extforce delete f{}{}\n".format(symbol, i + 1)
 
         for i in range(self.sample.natoms):
             symbol = self.sample.atoms[i].symbol
             qb_sym = symbol + str(i+1)
-            self.run_cmd(cmd="extforce define f{} {} {:06f} {:06f} {:06f}".format(qb_sym, qb_sym, Fc[i][0], Fc[i][1], Fc[i][2]))
+            cmd += "extforce define f{} {} {:06f} {:06f} {:06f}\n".format(qb_sym, qb_sym, Fc[i][0], Fc[i][1], Fc[i][2])
+        self.run_cmd(cmd)
 
     def get_structure(self):
         """ Implement abstract fetch_structure method for Qbox."""
