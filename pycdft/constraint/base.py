@@ -75,7 +75,23 @@ class Constraint(object):
         """ Update constraint potential. """
         self.Vc = self.V * self.w
 
-    @abstractmethod
     def update_Fc(self):
         """ Update constraint force. """
+        omega = self.sample.omega
+        n = self.sample.n
+        rhor = np.sum(self.sample.rho_r, axis=0)
+        self.Fc = np.zeros([self.sample.natoms, 3])
+
+        for iatom, atom in enumerate(self.sample.atoms):
+            w_grad = self.compute_w_grad_r(atom)
+            print("rhor", iatom)
+            print(rhor)
+            print("wgrad", iatom)
+            print(w_grad)
+            self.Fc[iatom] = self.V * (omega / n) * np.einsum("ijk,aijk->a", rhor, w_grad)
+
+        print(self.Fc)
+
+    @abstractmethod
+    def compute_w_grad_r(self, atom):
         pass

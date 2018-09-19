@@ -22,6 +22,7 @@ class ChargeTransferConstraint(Constraint):
         )
         self.donor = donor
         self.acceptor = acceptor
+        assert set(self.donor.atoms + self.acceptor.atoms) == set(self.sample.atoms)
 
     def update_w(self):
         w = (self.acceptor.rhopro_r - self.donor.rhopro_r) / self.sample.rhopro_tot_r
@@ -31,13 +32,9 @@ class ChargeTransferConstraint(Constraint):
         else:
             self.w = np.append(w, w, axis=0).reshape(2, *w.shape)
 
-    def update_Fc(self):
-        omega = self.sample.omega
-        n = self.sample.n
-        rhor = np.sum(self.sample.rho_r, axis=0)
-        self.Fc = np.zeros([self.sample.natoms, 3])
-
-        for iatom, atom in enumerate(self.sample.atoms):
-            w_grad = (self.acceptor.compute_w_grad(atom, self.w)
-                      - self.donor.compute_w_grad(atom, self.w))
-            self.Fc[iatom] = (omega * n) * self.V * np.einsum("ijk,aijk->a", rhor, w_grad)
+    def compute_w_grad_r(self, atom):
+        delta = 1 if atom in self.donor.atoms else -1  # it is assumed donor + acceptor = whole system
+        rho_grad_r = self.sample.compute_rhoatom_grad_r(atom)
+        print("rho_grad_r")
+        print(rho_grad_r)
+        return (delta - self.w) * rho_grad_r / self.sample.rhopro_tot_r
