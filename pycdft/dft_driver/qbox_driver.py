@@ -91,16 +91,18 @@ class QboxDriver(DFTDriver):
         """ Run SCF calculation in Qbox."""
         self.run_cmd(self.scf_cmd)
         self.copy_output()
-        self.icscf += 1
         self.scf_xml = etree.parse(self.output_file).getroot()
         self.sample.Edft_total = float(self.scf_xml.findall("iteration/etotal")[-1].text)
         self.sample.Edft_bare = self.sample.Edft_total - float(self.scf_xml.findall("iteration/eext")[-1].text)
+        self.icscf += 1
 
     def run_opt(self):
         """ Run geometry optimization in Qbox."""
         self.run_cmd(self.opt_cmd)
         self.copy_output()
         self.opt_xml = etree.parse(self.output_file).getroot()
+        self.istep += 1
+        self.icscf = 1
 
     def get_rho_r(self):
         """ Implement abstract fetch_rhor method for Qbox.

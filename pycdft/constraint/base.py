@@ -84,13 +84,7 @@ class Constraint(object):
 
         for iatom, atom in enumerate(self.sample.atoms):
             w_grad = self.compute_w_grad_r(atom)
-            print("rhor", iatom)
-            print(rhor)
-            print("wgrad", iatom)
-            print(w_grad)
             self.Fc[iatom] = self.V * (omega / n) * np.einsum("ijk,aijk->a", rhor, w_grad)
-
-        print(self.Fc)
 
     @abstractmethod
     def compute_w_grad_r(self, atom):

@@ -35,6 +35,8 @@ class ChargeTransferConstraint(Constraint):
     def compute_w_grad_r(self, atom):
         delta = 1 if atom in self.donor.atoms else -1  # it is assumed donor + acceptor = whole system
         rho_grad_r = self.sample.compute_rhoatom_grad_r(atom)
-        print("rho_grad_r")
-        print(rho_grad_r)
-        return (delta - self.w) * rho_grad_r / self.sample.rhopro_tot_r
+        w_grad = (delta - self.w) * rho_grad_r / self.sample.rhopro_tot_r
+        for i in range(3):
+            w_grad[i][self.sample.rhopro_tot_r < self._eps] = 0.0
+
+        return w_grad
