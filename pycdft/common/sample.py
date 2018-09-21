@@ -76,6 +76,7 @@ class Sample(object):
         self.rho_r = None
         self.rhopro_tot_r = None
         self.rhoatom_g = {}
+        self.rhoatom_rd = {}
 
         # compute the norm of all G vectors on the [n1, n2, n3] grid
         G1, G2, G3 = self.G
@@ -121,15 +122,17 @@ class Sample(object):
             for s in self.species:
                 rho_rd = np.loadtxt(
                     "{}/{}.spavr".format(rho_path, s), dtype=float)[:, 1]
-                rho_rd /= self.omega  # normalization convention in westpp
                 rho_rd[rho_rd < 0] = 0
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore")
                     rho_d = 4 * np.pi * drd * np.einsum("r,rg->g", rho_rd * rd_grid, self.sinrG / self.G_d)
                 rho_g = rho_d[self.Gmapping]
                 rho_g[0, 0, 0] = 4 * np.pi * drd * np.sum(rho_rd * rd_grid ** 2)
-                rho_g *= (SG15PP[s]["nel"] / rho_g[0, 0, 0])  # normalize charge density
+                fac = SG15PP[s]["nel"] / rho_g[0, 0, 0]
+                rho_rd *= fac
+                rho_g *= fac  # normalize charge density
                 self.rhoatom_g[s] = rho_g
+                self.rhoatom_rd[s] = rho_rd
 
     def update_weights(self):
         """ Update weights with new structure. """
@@ -192,11 +195,14 @@ class Sample(object):
         rhog = self.rhoatom_g[atom.symbol]
         n1, n2, n3 = self.n1, self.n2, self.n3
         rho_grad_r = np.zeros([3, n1, n2, n3])
+        n = self.n
+        omega = self.omega
 
         for i in range(3):
             eigr = self.compute_eigr(atom, axis=i)
             g = [self.Gx_g, self.Gy_g, self.Gz_g][i]
-            rho_grad_r[i] = ifftn(-1j * g * eigr * rhog).real
+            rho_grad_r[i] = (n / omega) * ifftn(1j * g * eigr * rhog).real
+            # print(eigr)
 
         return rho_grad_r
 

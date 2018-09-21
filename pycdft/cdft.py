@@ -220,6 +220,7 @@ class CDFTSolver:
 
             print("======================================")
 
+
         else:
             print("CDFTSolver: optimization NOT achieved after {} steps.".format(self.maxstep))
 
