@@ -121,7 +121,7 @@ class CDFTSolver:
                 raise ValueError
 
         except CDFTSCFConverged:
-            print("*Constrained SCF converged!*")
+            print("*Constrained SCF converged!*\n")
         else:
             print("*Constrained SCF NOT converged after {} iterations!*".format(self.maxcscf))
 
@@ -144,7 +144,10 @@ class CDFTSolver:
         # After dft driver run_scf command should read etotal and force
         self.dft_driver.run_scf()
         self.dft_driver.get_rho_r()
-        self.sample.W = self.sample.Ed + self.sample.Ec - np.sum(c.V * c.N for c in self.constraints)
+
+        for i, c in enumerate(self.constraints):
+            c.update_N()
+        self.sample.W = self.sample.Ed + self.sample.Ec - np.sum(c.N * c.V for c in self.constraints)
 
         # Print intermediate results
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -154,9 +157,8 @@ class CDFTSolver:
         print("  E (Ed + Ec) = {:.6f}".format(self.sample.Ed + self.sample.Ec))
         print("  W (free energy) = {:.6f}".format(self.sample.W))
         for i, c in enumerate(self.constraints):
-            c.update_N()
-            print("  Constraint #{} (type = {}, N0 = {}, V = {:.6f}):".format(
-                i + 1, c.type, c.N0, c.V
+            print("  > Constraint #{} (type = {}, N0 = {}, V = {:.6f}):".format(
+                i, c.type, c.N0, c.V
             ))
             print("    N = {:.6f}".format(c.N))
             print("    dW/dV = N - N0 = {:.6f}".format(c.dW_by_dV))
@@ -182,6 +184,7 @@ class CDFTSolver:
         for istep in range(1, self.maxstep + 1):
             print("======================================")
             print("Geometry optimization step {}".format(istep))
+            print("======================================")
 
             # run SCF to converge electronic structure
             self.solve_scf()
@@ -199,7 +202,7 @@ class CDFTSolver:
             maxforce = np.max(Fwnorm)
             imaxforce = np.argmax(Fwnorm)
             print("Maximum force = {:.6f} au, on {}th atom ({}).  Fw = {:.6f}, {:.6f}, {:.6f}".format(
-                maxforce, imaxforce, self.sample.atoms[imaxforce].symbol, *self.sample.Fw
+                maxforce, imaxforce, self.sample.atoms[imaxforce].symbol, *self.sample.Fw[imaxforce]
             ))
             print("  Fd = {:.6f}, {:.6f}, {:.6f}; Fc = {:.6f}, {:.6f}, {:.6f}".format(
                 *self.sample.Fd[imaxforce], *self.sample.Fc[imaxforce]

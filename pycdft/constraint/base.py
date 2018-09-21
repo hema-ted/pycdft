@@ -55,7 +55,7 @@ class Constraint(object):
 
     def update_structure(self):
         """ Update the constraint with new structure."""
-        print("Updating constraint with new structure")
+        print("Updating constraint with new structure...")
         self.update_w()
         self.update_N()
 
@@ -84,7 +84,7 @@ class Constraint(object):
 
         for iatom, atom in enumerate(self.sample.atoms):
             w_grad = self.compute_w_grad_r(atom)
-            self.Fc[iatom] = self.V * (omega / n) * np.einsum("ijk,aijk->a", rhor, w_grad)
+            self.Fc[iatom] = - self.V * (omega / n) * np.einsum("ijk,aijk->a", rhor, w_grad)
 
     @abstractmethod
     def compute_w_grad_r(self, atom):

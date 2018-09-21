@@ -45,7 +45,7 @@ class QboxDriver(DFTDriver):
         self.opt_xml = None
 
     def reset(self, output_path):
-        self.istep = self.icscf = 1
+        self.istep = self.icscf = 0
         print("QboxDriver: setting output path to {}...".format(output_path))
         self.output_path = output_path
         print("QboxDriver: waiting for Qbox to start...")
@@ -90,21 +90,23 @@ class QboxDriver(DFTDriver):
     def run_scf(self):
         """ Run SCF calculation in Qbox."""
         self.run_cmd(self.scf_cmd)
-        self.copy_output()
         self.scf_xml = etree.parse(self.output_file).getroot()
         etotal = float(self.scf_xml.findall("iteration/etotal")[-1].text)
         eext = float(self.scf_xml.findall("iteration/eext")[-1].text)
         self.sample.Ec = eext
         self.sample.Ed = etotal - eext
+
         self.icscf += 1
+        self.copy_output()
 
     def run_opt(self):
         """ Run geometry optimization in Qbox."""
         self.run_cmd(self.opt_cmd)
-        self.copy_output()
         self.opt_xml = etree.parse(self.output_file).getroot()
+
         self.istep += 1
-        self.icscf = 1
+        self.icscf = 0
+        self.copy_output()
 
     def get_rho_r(self):
         """ Implement abstract fetch_rhor method for Qbox.
