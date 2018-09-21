@@ -35,7 +35,7 @@ class QboxDriver(DFTDriver):
     wfc_file = "wfc.xml"
     wfc_cmd = "save {}".format(wfc_file)
 
-    def __init__(self, sample, init_cmd, scf_cmd, opt_cmd=None):
+    def __init__(self, sample, init_cmd, scf_cmd, opt_cmd="run 1 0 0"):
         super(QboxDriver, self).__init__(sample)
         self.init_cmd = init_cmd
         self.scf_cmd = scf_cmd

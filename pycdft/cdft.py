@@ -121,9 +121,9 @@ class CDFTSolver:
                 raise ValueError
 
         except CDFTSCFConverged:
-            print("CDFTSolver: convergence achieved!")
+            print("*Constrained SCF converged!*")
         else:
-            print("CDFTSolver: convergence NOT achieved after {} iterations.".format(self.maxcscf))
+            print("*Constrained SCF NOT converged after {} iterations!*".format(self.maxcscf))
 
     def solve_scf_with_new_V(self, Vs):
         """ Given V for all constraints, solve KS problem."""
@@ -149,21 +149,21 @@ class CDFTSolver:
         # Print intermediate results
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("SCF iteration {}".format(self.itscf))
-        print("Ed (DFT energy) = {}".format(self.sample.Ed))
-        print("Ec (constraint energy) = {}".format(self.sample.Ec))
-        print("E (Ed + Ec) = {}".format(self.sample.Ed + self.sample.Ec))
-        print("W (free energy) = {}".format(self.sample.W))
-        print("Constraint info:")
+        print("  Ed (DFT energy) = {:.6f}".format(self.sample.Ed))
+        print("  Ec (constraint energy) = {:.6f}".format(self.sample.Ec))
+        print("  E (Ed + Ec) = {:.6f}".format(self.sample.Ed + self.sample.Ec))
+        print("  W (free energy) = {:.6f}".format(self.sample.W))
         for i, c in enumerate(self.constraints):
             c.update_N()
-            print("Constraint {} (type = {}, N0 = {}, V = {}):".format(
-                i, c.type, c.N0, c.V
+            print("  Constraint #{} (type = {}, N0 = {}, V = {:.6f}):".format(
+                i + 1, c.type, c.N0, c.V
             ))
-            print("N = {}".format(c.N))
-            print("dW/dV = N - N0 = {}".format(c.dW_by_dV))
+            print("    N = {:.6f}".format(c.N))
+            print("    dW/dV = N - N0 = {:.6f}".format(c.dW_by_dV))
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
         if all(c.is_converged for c in self.constraints):
+
             raise CDFTSCFConverged
 
         # return the negative of W and dW/dV to be used by scipy minimizers
@@ -198,11 +198,14 @@ class CDFTSolver:
             Fwnorm = np.linalg.norm(self.sample.Fw, axis=1)
             maxforce = np.max(Fwnorm)
             imaxforce = np.argmax(Fwnorm)
-            print("Maximum force = {} au, on {}th atom (Fd = {}, Fc = {})".format(
-                maxforce, imaxforce, self.sample.Fd[imaxforce], self.sample.Fc[imaxforce]
+            print("Maximum force = {:.6f} au, on {}th atom ({}).  Fw = {:.6f}, {:.6f}, {:.6f}".format(
+                maxforce, imaxforce, self.sample.atoms[imaxforce].symbol, *self.sample.Fw
+            ))
+            print("  Fd = {:.6f}, {:.6f}, {:.6f}; Fc = {:.6f}, {:.6f}, {:.6f}".format(
+                *self.sample.Fd[imaxforce], *self.sample.Fc[imaxforce]
             ))
             if maxforce < self.F_tol:
-                print("CDFTSolver: force convergence achieved!")
+                print("\n**Constrained optimization converged!**\n")
                 break
 
             # add constraint force to DFT force
@@ -222,7 +225,7 @@ class CDFTSolver:
 
 
         else:
-            print("CDFTSolver: optimization NOT achieved after {} steps.".format(self.maxstep))
+            print("\n**Constrained optimization NOT achieved after {} steps!**\n".format(self.maxstep))
 
     def copy(self):
         return deepcopy(self)
