@@ -53,15 +53,19 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
 
     # constraint potential matrix element Vab = <psi_a| (V_a + V_b)/2 |psi_b>
     vc = ftrr(0.5 * (solver1.Vc_tot + solver2.Vc_tot)[0, ...], dgrid, wgrid)
+
     # cofactor matrix C
     C = Odet * Oinv.T
     print("C:", C)
+
     P = np.zeros([norb, norb])
     for ispin in range(nspin):
         for ibnd, jbnd in np.ndindex(nbnd[ispin, 0], nbnd[ispin, 0]):
             i = wfc1.skb2idx(ispin, 0, ibnd)
             j = wfc1.skb2idx(ispin, 0, jbnd)
-            P[i, j] = (omega / m) * np.sum(wfc1.psi_r[i] * vc * wfc2.psi_r[j])
+            p = (omega / m) * np.sum(wfc1.psi_r[i] * vc * wfc2.psi_r[j])
+            print(p)
+            P[i, j] = p
     print("P:", P)
     Vab = np.trace(P @ C)
     print("Vab:", Vab)

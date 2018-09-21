@@ -224,9 +224,6 @@ class CDFTSolver:
             for c in self.constraints:
                 c.update_structure()
 
-            print("======================================")
-
-
         else:
             print("\n**Constrained optimization NOT achieved after {} steps!**\n".format(self.maxstep))
 
