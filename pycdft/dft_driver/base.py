@@ -61,7 +61,7 @@ class DFTDriver(object):
         pass
 
     @abstractmethod
-    def set_Fc(self, Fc):
+    def set_Fc(self):
         """ Set the constraint force in the DFT code."""
         pass
 

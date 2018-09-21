@@ -33,8 +33,12 @@ class Sample(object):
                      as long as only charge constraints are present, nspin = 1 even if the
                      system may be spin-polarized.
         n1, n2, n3 (int): FFT grid for charge density, weight function and constraint potential.
-        Edft (float): DFT total energy.
-        W (float): free energy.
+        Ed (float): DFT energy.
+        Ec (float): Constraint energy.
+        W (float): free energy. W = Ed + Ec - sum_k V_k N_k
+        Fd (float): DFT force.
+        Fc (float): Constraint force. Fc = sum_k V_k int grad(w_k(r)) n(r) dr
+        Fw (float): -grad(W). Fw = Fd + Fc.
     """
 
     def __init__(self, ase_cell: Atoms, nspin: int, n1: int, n2: int, n3: int,
@@ -60,12 +64,12 @@ class Sample(object):
         self.n = n1 * n2 * n3
 
         # define energies, forces and wavefunction
-        self.Edft_bare = None
-        self.Edft_total = None
+        self.Ed = None
+        self.Ec = None
         self.W = None
-        self.Ftotal = None
-        self.Fdft = None
+        self.Fd = None
         self.Fc = None
+        self.Fw = None
         self.wfc = None
 
         # define charge density and promolecule charge densities

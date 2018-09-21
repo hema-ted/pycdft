@@ -144,13 +144,15 @@ class CDFTSolver:
         # After dft driver run_scf command should read etotal and force
         self.dft_driver.run_scf()
         self.dft_driver.get_rho_r()
-        self.sample.W = self.sample.Edft_total - np.sum(c.V * c.N for c in self.constraints)
+        self.sample.W = self.sample.Ed + self.sample.Ec - np.sum(c.V * c.N for c in self.constraints)
 
         # Print intermediate results
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("SCF iteration {}".format(self.itscf))
+        print("Ed (DFT energy) = {}".format(self.sample.Ed))
+        print("Ec (constraint energy) = {}".format(self.sample.Ec))
+        print("E (Ed + Ec) = {}".format(self.sample.Ed + self.sample.Ec))
         print("W (free energy) = {}".format(self.sample.W))
-        print("E (DFT KS energy) = {}".format(self.sample.Edft_bare))
         print("Constraint info:")
         for i, c in enumerate(self.constraints):
             c.update_N()
@@ -185,26 +187,26 @@ class CDFTSolver:
             self.solve_scf()
 
             # get DFT force
-            Fdft = self.dft_driver.get_force()
+            self.dft_driver.get_force()
 
             # compute constraint force
             for c in self.constraints:
                 c.update_Fc()
-            Fc = np.sum(c.Fc for c in self.constraints)
+            self.sample.Fc = np.sum(c.Fc for c in self.constraints)
 
-            Ftot = Fdft + Fc
-            Ftotnorm = np.linalg.norm(Ftot, axis=1)
-            maxforce = np.max(Ftotnorm)
-            imaxforce = np.argmax(Ftotnorm)
-            print("Maximum force = {} au, on {}th atom (Fdft = {}, Fc = {})".format(
-                maxforce, imaxforce, Fdft[imaxforce], Fc[imaxforce]
+            self.sample.Fw = self.sample.Fd + self.sample.Fc
+            Fwnorm = np.linalg.norm(self.sample.Fw, axis=1)
+            maxforce = np.max(Fwnorm)
+            imaxforce = np.argmax(Fwnorm)
+            print("Maximum force = {} au, on {}th atom (Fd = {}, Fc = {})".format(
+                maxforce, imaxforce, self.sample.Fd[imaxforce], self.sample.Fc[imaxforce]
             ))
             if maxforce < self.F_tol:
                 print("CDFTSolver: force convergence achieved!")
                 break
 
             # add constraint force to DFT force
-            self.dft_driver.set_Fc(Fc)
+            self.dft_driver.set_Fc()
 
             # run optimization
             self.dft_driver.run_opt()

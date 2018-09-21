@@ -92,8 +92,10 @@ class QboxDriver(DFTDriver):
         self.run_cmd(self.scf_cmd)
         self.copy_output()
         self.scf_xml = etree.parse(self.output_file).getroot()
-        self.sample.Edft_total = float(self.scf_xml.findall("iteration/etotal")[-1].text)
-        self.sample.Edft_bare = self.sample.Edft_total - float(self.scf_xml.findall("iteration/eext")[-1].text)
+        etotal = float(self.scf_xml.findall("iteration/etotal")[-1].text)
+        eext = float(self.scf_xml.findall("iteration/eext")[-1].text)
+        self.sample.Ec = eext
+        self.sample.Ed = etotal - eext
         self.icscf += 1
 
     def run_opt(self):
@@ -130,7 +132,7 @@ class QboxDriver(DFTDriver):
     def get_force(self):
         """ Implement abstract fetch_force method for Qbox."""
         # parse from self.scf_xml
-        Fdft = np.zeros([self.sample.natoms, 3])
+        self.sample.Fd = np.zeros([self.sample.natoms, 3])
 
         for i in self.scf_xml.findall('iteration')[-1:]:
             for atoms in i.findall('atomset'):
@@ -143,21 +145,22 @@ class QboxDriver(DFTDriver):
                     a = atom.findall('force')
                     f = np.array(a[0].text.split()).astype(np.float)
 
-                    Fdft[index-1] = f
+                    self.sample.Fd[index-1] = f
 
-        return Fdft
-
-    def set_Fc(self, Fc):
+    def set_Fc(self):
         """ Implement abstract set_force method for Qbox."""
         cmd = ""
         for i in range(self.sample.natoms):
             symbol = self.sample.atoms[i].symbol
             cmd += "extforce delete f{}{}\n".format(symbol, i + 1)
 
+        Fc = self.sample.Fc
         for i in range(self.sample.natoms):
             symbol = self.sample.atoms[i].symbol
             qb_sym = symbol + str(i+1)
-            cmd += "extforce define f{} {} {:06f} {:06f} {:06f}\n".format(qb_sym, qb_sym, Fc[i][0], Fc[i][1], Fc[i][2])
+            cmd += "extforce define f{} {} {:06f} {:06f} {:06f}\n".format(
+                qb_sym, qb_sym, Fc[i][0], Fc[i][1], Fc[i][2]
+            )
         self.run_cmd(cmd)
 
     def get_structure(self):

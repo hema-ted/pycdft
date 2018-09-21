@@ -68,8 +68,8 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
 
     # H matrix (Eq. 9-11 in CP2K paper, Eq. 5 in QE paper)
     H = np.zeros([2, 2])
-    H[0, 0] = solver1.sample.Edft_bare
-    H[1, 1] = solver2.sample.Edft_bare
+    H[0, 0] = solver1.sample.Ed
+    H[1, 1] = solver2.sample.Ed
     Fa = solver1.sample.W
     Fb = solver2.sample.W
     H[0, 1] = H[1, 0] = 0.5 * (Fa + Fb) * S[0, 1] - Vab

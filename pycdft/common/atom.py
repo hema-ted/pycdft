@@ -19,7 +19,7 @@ class Atom(object):
     Extra attributes are welcomed to be attached to an atom.
     """
 
-    _extra_attr_to_print = ["Fc", "Fdft", "Ftotal"]
+    _extra_attr_to_print = []
 
     def __init__(self, sample, ase_atom):
         self.sample = sample
