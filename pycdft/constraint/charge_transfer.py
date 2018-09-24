@@ -33,10 +33,15 @@ class ChargeTransferConstraint(Constraint):
             self.w = np.append(w, w, axis=0).reshape(2, *w.shape)
 
     def compute_w_grad_r(self, atom):
-        delta = 1 if atom in self.donor.atoms else -1  # it is assumed donor + acceptor = whole system
+        if atom in self.donor.atoms:
+            delta = 1
+        elif atom in self.acceptor.atoms:
+            delta = -1
+        else:
+            delta = 0
+
         rho_grad_r = self.sample.compute_rhoatom_grad_r(atom)
         w_grad = (delta - self.w) * rho_grad_r / self.sample.rhopro_tot_r
         for i in range(3):
             w_grad[i][self.sample.rhopro_tot_r < self._eps] = 0.0
-
         return w_grad
