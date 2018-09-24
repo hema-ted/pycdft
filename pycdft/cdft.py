@@ -126,7 +126,7 @@ class CDFTSolver:
             print("*Constrained SCF NOT converged after {} iterations!*".format(self.maxcscf))
 
     def solve_scf_with_new_V(self, Vs):
-        """ Given V for all constraints, solve KS problem."""
+        """ Given V for all constraints, solve the KS problem."""
         self.itscf += 1
 
         # Update constraints
@@ -165,7 +165,6 @@ class CDFTSolver:
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
         if all(c.is_converged for c in self.constraints):
-
             raise CDFTSCFConverged
 
         # return the negative of W and dW/dV to be used by scipy minimizers

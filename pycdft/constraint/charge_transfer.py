@@ -41,7 +41,9 @@ class ChargeTransferConstraint(Constraint):
             delta = 0
 
         rho_grad_r = self.sample.compute_rhoatom_grad_r(atom)
-        w_grad = (delta - self.w) * rho_grad_r / self.sample.rhopro_tot_r
-        for i in range(3):
-            w_grad[i][self.sample.rhopro_tot_r < self._eps] = 0.0
+        w_grad = np.einsum(
+            "sijk,aijk,ijk->asijk", delta - self.w, rho_grad_r, 1 / self.sample.rhopro_tot_r
+        )
+        for icart, ispin in np.ndindex(3, self.sample.vspin):
+            w_grad[icart, ispin][self.sample.rhopro_tot_r < self._eps] = 0.0
         return w_grad

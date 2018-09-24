@@ -79,12 +79,13 @@ class Constraint(object):
         """ Update constraint force. """
         omega = self.sample.omega
         n = self.sample.n
-        rhor = np.sum(self.sample.rho_r, axis=0)
         self.Fc = np.zeros([self.sample.natoms, 3])
 
         for iatom, atom in enumerate(self.sample.atoms):
             w_grad = self.compute_w_grad_r(atom)
-            self.Fc[iatom] = - self.V * (omega / n) * np.einsum("ijk,aijk->a", rhor, w_grad)
+            self.Fc[iatom] = - self.V * (omega / n) * np.einsum(
+                "sijk,asijk->a", self.sample.rho_r, w_grad
+            )
 
     @abstractmethod
     def compute_w_grad_r(self, atom):
