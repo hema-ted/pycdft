@@ -15,8 +15,8 @@ class Constraint(object):
         V (float): Lagrangian multiplier associate with the constraint.
         V_init (float): Initial guess or bracket for V, used for certain optimization algorithms.
         V_brak (2-tuple of float): Search bracket for V, used for certain optimization algorithms.
-        Vc (np.ndarray, shape = [nspin, n1, n2, n3]): constraint potential.
-        w (np.ndarray, shape = [nspin, n1, n2, n3]): weight function.
+        Vc (np.ndarray, shape = [vspin, n1, n2, n3]): constraint potential.
+        w (np.ndarray, shape = [vspin, n1, n2, n3]): weight function.
         N_tol (float): convergence threshold for N - N0 (= dW/dV).
     """
 

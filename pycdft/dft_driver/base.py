@@ -29,7 +29,7 @@ class DFTDriver(object):
     def set_Vc(self, Vc):
         """ Set the constraint potential Vc in DFT code.
 
-        Given constraint potential Vc as an array of shape [nspin, n1, n2, n3],
+        Given constraint potential Vc as an array of shape [vspin, n1, n2, n3],
         this method send the constraint potential to the DFT code.
 
         Args:

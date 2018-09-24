@@ -24,7 +24,7 @@ class ChargeConstraint(Constraint):
     def update_w(self):
         w = self.fragment.rhopro_r / self.sample.rhopro_tot_r
         w[self.sample.rhopro_tot_r < self._eps] = 0.0
-        if self.sample.nspin == 1:
+        if self.sample.vspin == 1:
             self.w = w[None, ...]
         else:
             self.w = np.append(w, w, axis=0).reshape(2, *w.shape)

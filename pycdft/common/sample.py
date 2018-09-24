@@ -29,8 +29,8 @@ class Sample(object):
         atoms (list of Atoms): list of atoms.
         fragments (list of Fragments): list of fragments defined on the sample.
         rhopro_tot_r (np.ndarray, shape = [n1, n2, n3]): total promolecule density.
-        nspin (int): number of spin channels (1 or 2) for constraint potential. Note that
-                     as long as only charge constraints are present, nspin = 1 even if the
+        vspin (int): number of spin channels (1 or 2) for constraint potential. Note that
+                     as long as only charge constraints are present, vspin = 1 even if the
                      system may be spin-polarized.
         n1, n2, n3 (int): FFT grid for charge density, weight function and constraint potential.
         Ed (float): DFT energy.
@@ -41,7 +41,7 @@ class Sample(object):
         Fw (float): -grad(W). Fw = Fd + Fc.
     """
 
-    def __init__(self, ase_cell: Atoms, nspin: int, n1: int, n2: int, n3: int,
+    def __init__(self, ase_cell: Atoms, vspin: int, n1: int, n2: int, n3: int,
                  atomic_density_files: dict=None):
 
         # define cell
@@ -58,8 +58,8 @@ class Sample(object):
         self.fragments = []
         self.constraints = []
 
-        # define nspin and FFT grid
-        self.nspin = nspin
+        # define vspin and FFT grid
+        self.vspin = vspin
         self.n1, self.n2, self.n3 = n1, n2, n3
         self.n = n1 * n2 * n3
 

@@ -70,11 +70,11 @@ class QboxDriver(DFTDriver):
 
     def set_Vc(self, Vc):
         """ Write Vc in cube format, then send set vext command to Qbox."""
-        nspin = self.sample.nspin
-        if nspin == 2:
+        vspin = self.sample.vspin
+        if vspin == 2:
             raise NotImplementedError("Spin-dependent Vext not implemented in Qbox yet.")
         n1, n2, n3 = self.sample.n1, self.sample.n2, self.sample.n3
-        assert isinstance(Vc, np.ndarray) and Vc.shape == (nspin, n1, n2, n3)
+        assert isinstance(Vc, np.ndarray) and Vc.shape == (vspin, n1, n2, n3)
 
         ase_cell = self.sample.ase_cell
         write_cube(open(self.Vc_file, "w"), atoms=ase_cell, data=Vc[0])
@@ -113,13 +113,13 @@ class QboxDriver(DFTDriver):
 
         Send plot charge density commands to Qbox, then parse charge density.
         """
-        nspin = self.sample.nspin
+        vspin = self.sample.vspin
         n1, n2, n3 = self.sample.n1, self.sample.n2, self.sample.n3
-        self.sample.rho_r = np.zeros([nspin, n1, n2, n3])
+        self.sample.rho_r = np.zeros([vspin, n1, n2, n3])
 
-        for ispin in range(nspin):
+        for ispin in range(vspin):
             self.run_cmd(cmd="plot -density {} {}".format(
-                "-spin {}".format(ispin + 1) if nspin == 2 else "",
+                "-spin {}".format(ispin + 1) if vspin == 2 else "",
                 self.rhor_file
             ))
 
@@ -208,7 +208,7 @@ class QboxDriver(DFTDriver):
         for event, leaf in iterxml:
             if event == "start" and leaf.tag == "wavefunction":
                 nspin = int(leaf.attrib["nspin"])
-                assert nspin >= self.sample.nspin
+                assert nspin >= self.sample.vspin
                 nbnd = np.zeros((nspin, nkpt))
                 occs = np.zeros((nspin, nkpt), dtype=object)
 

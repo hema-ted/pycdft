@@ -23,7 +23,7 @@ class CDFTSolver:
         maxcscf (int): maximum number of CDFT iterations.
         maxstep (int): maximum geometry optimization steps.
         F_tol (float): force threshold for optimization.
-        Vc_tot (float array, shape == [nspin, n1, n2, n3]): total constraint potential
+        Vc_tot (float array, shape == [vspin, n1, n2, n3]): total constraint potential
             as a sum of all constraints defined on all fragments.
     """
 
