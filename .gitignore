@@ -9,3 +9,8 @@ qb_cdft.*
 gs.xml
 wfc.xml
 *.cube
+
+bin/
+build/
+dist/
+lib/

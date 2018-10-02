@@ -1,0 +1,13 @@
+1) Compile DFT driver
+
+--> Qbox: http://qboxcode.org/doc/html/usage/installation.html
+--> Qbox on Mira: https://www.alcf.anl.gov/user-guides/qbox
+
+2) Install PyCDFT
+
+The basic command is:
+python setup.py install 
+
+You may need to mess around with which directory to install in with "--prefix=/directory/path"
+
+3) 
