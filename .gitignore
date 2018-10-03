@@ -9,8 +9,12 @@ qb_cdft.*
 gs.xml
 wfc.xml
 *.cube
+__pycache__
 
 bin/
 build/
 dist/
 lib/
+
+doc/html
+doc/latex
