@@ -14,17 +14,22 @@ class CDFTSCFConverged(Exception):
 
 class CDFTSolver:
     """ Constrained DFT solver.
+        In atomic units (Ry, Bohr...)
 
     Attributes:
         job (str): "scf" or "opt".
         sample (Sample): the whole system for which CDFT calculation is performed.
         constraints (list of Constraint): constraints on the system.
-        dft_driver (DFTDriver): the interface to DFT code (e.g. Qbox or PW).
-        maxcscf (int): maximum number of CDFT iterations.
-        maxstep (int): maximum geometry optimization steps.
-        F_tol (float): force threshold for optimization.
+        dft_driver (DFTDriver): the interface to DFT code (e.g., Qbox or PWscf).
+        optimizer (str): optimization strategy for constrained Hamiltonian, default = "secant"
+        maxcscf (int): maximum number of CDFT iterations, default =1000.
+        maxstep (int): maximum geometry optimization steps, default = 100.
+        F_tol (float): force threshold for optimization, default = 1e-02.
+
+    Internal Parameters:
         Vc_tot (float array, shape == [vspin, n1, n2, n3]): total constraint potential
             as a sum of all constraints defined on all fragments.
+
     """
 
     nsolver = 0
@@ -44,6 +49,7 @@ class CDFTSolver:
         self.Vc_tot = None
         self.itscf = None
 
+        # make output folder, keeping any previous runs
         CDFTSolver.nsolver += 1
         self.isolver = CDFTSolver.nsolver
         self.output_path = "./pycdft_outputs/solver{}/".format(self.isolver)

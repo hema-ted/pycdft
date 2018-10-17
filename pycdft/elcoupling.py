@@ -6,7 +6,14 @@ from pycdft.common.units import hartree_to_ev, hartree_to_millihartree
 
 
 def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
-    """ Compute electronic coupling in mH between two KS wavefunctions."""
+    """ Compute electronic coupling in mH between two KS wavefunctions.
+   
+        Notes on implementation, see:
+        1) Oberhofer & Blumberger 2010; dx.doi.org/10.1063/1.3507878
+        2) Kaduk, et al 2012; dx.doi.org/10.1021/cr200148b, esp. p 344, Eq. 51 
+        3) Goldey, et al 2017; dx.doi.org/10.1021/acs.jctc.7b00088
+  
+    """
     assert solver1.sample.vspin == solver2.sample.vspin
     vspin = solver1.sample.vspin
     if vspin != 1:
@@ -33,6 +40,8 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
     m = m1 * m2 * m3
     omega = sample.omega
 
+
+    ### build overlap matrix S
     # orbital overlap matrix O
     O = np.zeros([norb, norb])
     for ispin in range(nspin):
@@ -52,6 +61,7 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
     print("S matrix:")
     print(S)
 
+    ###  
     # cofactor matrix C
     C = Odet * Oinv.T
     # print("C:", C)
@@ -73,7 +83,8 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
     Vab = np.trace(P @ C)
     print("Vab:", Vab)
 
-    # H matrix between nonorthogonal diabatic states (Eq. 9-11 in CP2K paper, Eq. 5 in QE paper)
+    # H matrix between nonorthogonal diabatic states (Eq. 9-11 in Oberhofer2010, Eq. 5 in Goldey2017)
+    # see also p 344 of Kaduk2012
     H = np.zeros([2, 2])
     H[0, 0] = solver1.sample.Ed
     H[1, 1] = solver2.sample.Ed

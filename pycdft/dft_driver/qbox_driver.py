@@ -16,7 +16,7 @@ class QboxLockfileError(Exception):
 
 
 class QboxDriver(DFTDriver):
-    """ DFT driver.
+    """ DFT driver for Qbox.
 
     Extra attributes:
         init_cmd (str): initialization command for Qbox.
@@ -118,6 +118,7 @@ class QboxDriver(DFTDriver):
         self.sample.rho_r = np.zeros([vspin, n1, n2, n3])
 
         for ispin in range(vspin):
+            # Qbox generates charge density
             self.run_cmd(cmd="plot -density {} {}".format(
                 "-spin {}".format(ispin + 1) if vspin == 2 else "",
                 self.rhor_file
@@ -126,6 +127,7 @@ class QboxDriver(DFTDriver):
             rhor_raw = read_cube_data(self.rhor_file)[0]
             assert rhor_raw.shape == (n1, n2, n3)
 
+            # 
             rhor1 = np.roll(rhor_raw, n1//2, axis=0)
             rhor2 = np.roll(rhor1, n2//2, axis=1)
             rhor3 = np.roll(rhor2, n3//2, axis=2)

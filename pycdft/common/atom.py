@@ -17,6 +17,7 @@ class Atom(object):
         cry_coord (np.ndarray, shape = [3]): crystal coordinate.
 
     Extra attributes are welcomed to be attached to an atom.
+    These will be printed out in the representation of Atom object.
     """
 
     _extra_attr_to_print = []
@@ -40,7 +41,7 @@ class Atom(object):
                        position=self.abs_coord * bohr_to_angstrom)
 
     def __repr__(self):
-        rep = "Atom {}. Abs coord ({}). ".format(
+        rep = "Atom {}. Abs coordi (Bohr) ({}). ".format(
                 self.symbol,
                 ", ".join("{:.3f}".format(coord) for coord in self.abs_coord)
             )

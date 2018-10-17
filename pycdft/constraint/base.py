@@ -82,6 +82,8 @@ class Constraint(object):
         self.Fc = np.zeros([self.sample.natoms, 3])
 
         for iatom, atom in enumerate(self.sample.atoms):
+            # s is spin index, a is coordinate (i.e., x,y,z) index
+            # i,j,k is dimensions of FFT grid = n1, n2, n3
             w_grad = self.compute_w_grad_r(atom)
             self.Fc[iatom] = - self.V * (omega / n) * np.einsum(
                 "sijk,asijk->a", self.sample.rho_r, w_grad

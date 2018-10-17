@@ -5,7 +5,8 @@ from pycdft.common.sample import Sample
 
 
 class Fragment(object):
-    """ A part of the system to which constraints may apply.
+    """ 
+    A part of the system to which constraints may apply.
 
     Attributes:
         sample (Sample): sample.

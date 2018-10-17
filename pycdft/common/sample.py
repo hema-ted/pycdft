@@ -80,10 +80,12 @@ class Sample(object):
 
         # compute the norm of all G vectors on the [n1, n2, n3] grid
         G1, G2, G3 = self.G
+        # all Gx,Gy,Gz values
         G1s = np.outer(G1, fftfreq(n1, d=1. / n1))
         G2s = np.outer(G2, fftfreq(n2, d=1. / n2))
         G3s = np.outer(G3, fftfreq(n3, d=1. / n3))
 
+        # make grid from G1s, G2s,G3s using Python built-in broadcasting
         self.Gx_g = (G1s[0, :, np.newaxis, np.newaxis]
                      + G2s[0, np.newaxis, :, np.newaxis]
                      + G3s[0, np.newaxis, np.newaxis, :])
@@ -109,8 +111,17 @@ class Sample(object):
                 self.rhoatom_g[s] = omega / self.n * fftn(rho_r3)
         else:
             # calculate atomic density from pre-computed spherically-averaged atomic density
+            # located in atomic/rho
 
-            # define mapping from all G vectors to G vectors with different norm
+            # define mapping from all G vectors to G vectors with unique norm
+            #  i.e., repeated |G| are excluded
+
+            # tocheck: is 5A cutoff for atomic densities sufficient
+            # tocheck: is 0.02 integration step sufficient
+            
+            # rd_grid size set to [251,]
+            # Gmapping, rho_g: n1 x n2 x n3 
+            # sinrG: rd_grid x unique |G| 
             G2_d = np.sort(np.array(list(set(self.G2_g.flatten()))))
             self.Gmapping = np.searchsorted(G2_d, self.G2_g)
             self.G_d = np.sqrt(G2_d)

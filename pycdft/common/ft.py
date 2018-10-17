@@ -69,6 +69,7 @@ def ftgg(fg, source, dest, real=False):
         idxs = np.zeros(3, dtype=int)
         for i in range(3):
             if m[i] % 2 == 0:
+                # needed ?
                 idxs[i] = (d[i] - 1) // 2 + 1
             else:
                 idxs[i] = d[i] // 2
