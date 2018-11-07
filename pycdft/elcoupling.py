@@ -48,6 +48,7 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
         for ibnd, jbnd in np.ndindex(nbnd[ispin, 0], nbnd[ispin, 0]):
             i = wfc1.skb2idx(ispin, 0, ibnd)
             j = wfc1.skb2idx(ispin, 0, jbnd)
+            # tocheck: complex conjugation of PW coefficients
             O[i, j] = (omega / m) * np.sum(wfc1.psi_r[i] * wfc2.psi_r[j])
     Odet = np.linalg.det(O)
     Oinv = np.linalg.inv(O)
@@ -61,16 +62,17 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
     print("S matrix:")
     print(S)
 
-    ###  
+    # see Eq. 25 in Oberhofer2010
     # cofactor matrix C
     C = Odet * Oinv.T
     # print("C:", C)
 
     # constraint potential matrix element Vab = <psi_a| (V_a + V_b)/2 |psi_b>
+    # V_i = \sum V w_j
     Vc_dense = 0.5 * (solver1.Vc_tot + solver2.Vc_tot)[0, ...]
     Vc = ftrr(Vc_dense, source=FFTGrid(n1, n2, n3), dest=FFTGrid(m1, m2, m3)).real
 
-    # constraint potential matrix P
+    # constraint potential matrix P 
     P = np.zeros([norb, norb])
     for ispin in range(nspin):
         for ibnd, jbnd in np.ndindex(nbnd[ispin, 0], nbnd[ispin, 0]):
