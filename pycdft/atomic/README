@@ -1,5 +1,8 @@
 The following *.spavr files are spherically averaged charge density for an isolated atom.
-They are generated using the QE + westpp code (http://www.west-code.org/doc/INPUT_WESTPP.html)
+They are generated using the QE + westpp code (http://www.west-code.org/doc/INPUT_WESTPP.html).
+Based on PBE wavefunctions of ONCV pseudopotentials.
+Post-processing through WEST interface for charge density. 
+Units are 
 
 A note from He (Sept 2018):
 Note that there was a bug in westpp code that incorrectly treats the G=0 component of rho, 
