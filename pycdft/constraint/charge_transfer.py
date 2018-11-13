@@ -13,7 +13,8 @@ class ChargeTransferConstraint(Constraint):
     """
 
     type = "charge transfer"
-    _eps = 0.0001  # cutoff of Hirshfeld weight when the density approaches zero
+    #_eps = 0.0001  # cutoff of Hirshfeld weight when the density approaches zero
+    _eps = 1E-8  # cutoff of Hirshfeld weight when the density approaches zero
 
     def __init__(self, sample: Sample, donor: Fragment, acceptor: Fragment, N0: float,
                  V_init=0, V_brak=(-1, 1), N_tol=1.0E-3):

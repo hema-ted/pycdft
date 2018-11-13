@@ -207,11 +207,17 @@ class CDFTSolver:
             maxforce = np.max(Fwnorm)
             imaxforce = np.argmax(Fwnorm)
             print("Maximum force = {:.6f} au, on {}th atom ({}).  Fw = {:.6f}, {:.6f}, {:.6f}".format(
-                maxforce, imaxforce, self.sample.atoms[imaxforce].symbol, *self.sample.Fw[imaxforce]
+                maxforce, imaxforce+1, self.sample.atoms[imaxforce].symbol, *self.sample.Fw[imaxforce]
             ))
             print("  Fd = {:.6f}, {:.6f}, {:.6f}; Fc = {:.6f}, {:.6f}, {:.6f}".format(
                 *self.sample.Fd[imaxforce], *self.sample.Fc[imaxforce]
             ))
+ 
+            #print all forces
+            for i in np.arange(len(self.sample.atoms)):
+              print("{}th atom ({})  Fd = {:.6f}, {:.6f}, {:.6f}; Fc = {:.6f}, {:.6f}, {:.6f}".format(
+                 i+1,self.sample.atoms[i].symbol,*self.sample.Fd[i], *self.sample.Fc[i]
+              ))
             if maxforce < self.F_tol:
                 print("\n**Constrained optimization converged!**\n")
                 break
