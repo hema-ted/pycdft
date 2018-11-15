@@ -16,7 +16,7 @@ class Sample(object):
 
     All physical quantities are in atomic unit.
 
-    Variables ending with _r are defined on G space grid.
+    Variables ending with _r are defined on R space grid.
     Variables ending with _g are defined on G space grid.
     Variables ending with _rd are defined on radial grid in R space; variables ending
     with _d correspond to all G vectors with different norm. They are used to compute
@@ -119,7 +119,7 @@ class Sample(object):
             # tocheck: is 5A cutoff for atomic densities sufficient
             # tocheck: is 0.02 integration step sufficient
             
-            # rd_grid size set to [251,]
+            # rd_grid size set to [251,]; 5 Ang cutoff with 0.02 Ang step
             # Gmapping, rho_g: n1 x n2 x n3 
             # sinrG: rd_grid x unique |G| 
             G2_d = np.sort(np.array(list(set(self.G2_g.flatten()))))
@@ -171,7 +171,7 @@ class Sample(object):
             c.update_structure()
 
     def compute_eigr(self, atom: Atom, axis=None):
-        """ Compute e^{-iGr} array where r is coordinate of atom."""
+        """ Compute e^{-iGR} array where R is coordinate of atom."""
         n1, n2, n3 = self.n1, self.n2, self.n3
 
         if axis is None:
