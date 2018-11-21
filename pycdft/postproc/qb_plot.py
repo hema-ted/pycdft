@@ -31,7 +31,10 @@ def get_hirsh_ct(CDFTSolver,origin):
         For ChargeTransfer constraint only 
  
         origin: 3-tuple; same as rhor.cube file; origin of volumetric data
-                give in Angstroms; gets converted to Bohr in program """
+                give in Angstroms; gets converted to Bohr in program 
+
+        TODO: proper passing of atoms, so can also get atomic number printed"""
+
     constraints = CDFTSolver.sample.constraints
 
     index=1
@@ -39,7 +42,6 @@ def get_hirsh_ct(CDFTSolver,origin):
         atoms = CDFTSolver.sample.ase_cell
         # write to cube file for visualizing
         weights_dat = parse(c.w[0],-1)
-        #print(c.w)
 
         filname="hirshr"+str(index)+".cube"
         fileobj=open(filname,"w")
