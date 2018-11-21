@@ -12,7 +12,8 @@ class ChargeConstraint(Constraint):
     """
 
     type = "charge"
-    _eps = 0.0001  # cutoff of Hirshfeld weight and its derivative when density -> 0
+    #_eps = 0.0001  # cutoff of Hirshfeld weight and its derivative when density -> 0
+    _eps = 1e-8  # cutoff of Hirshfeld weight and its derivative when density -> 0
 
     def __init__(self, sample: Sample, fragment: Fragment, N0: float,
                  V_init=0, V_brak=(-1, 1), N_tol=1.0E-3):
