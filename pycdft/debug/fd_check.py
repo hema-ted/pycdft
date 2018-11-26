@@ -1,5 +1,6 @@
 import numpy as np
 from ase.io.cube import read_cube_data, write_cube
+from ase import Atom
 
 # Compatible for PyCDFT v0.5
 #   Helper functions for debugging the forces in PyCDFT
@@ -27,7 +28,7 @@ def parse(dat,mode):
     parse_dat = dat3
     return parse_dat
 
-#===================== Hirshfeld and its gradient ====================
+#===================== Hirshfeld weights per constraint ====================
 
 def get_hirsh(CDFTSolver,origin):
     """ Extract Hirschfeld weights 
@@ -41,8 +42,8 @@ def get_hirsh(CDFTSolver,origin):
 
     index=1
     for c in constraints:
-        ase_cell = CDFTSolver.sample.ase_cell
-        atoms = list(Atom(sample=CDFTSolver.sample,ase_atom=atom) for atom in ase_cell)
+        atoms_iter = CDFTSolver.sample.atoms    # calculating requires pycdft-modified Atom type
+        atoms_write = CDFTSolver.sample.ase_cell # writing requires ASE Atom type
 
         # write to cube file for visualizing
         weights_dat = parse(c.w[0],-1)
@@ -50,23 +51,24 @@ def get_hirsh(CDFTSolver,origin):
         filname="hirshr"+str(index)+".cube"
         fileobj=open(filname,"w")
 
-        write_cube(fileobj,atoms,weights_dat,origin=origin)
+        write_cube(fileobj,atoms_write,weights_dat,origin=origin)
         fileobj.close()
         print("Generated cube file for Constraint %d"% (index))
         
     print("Completed Hirshfeld weight extraction!")
 
       
-#===================== Charge density and its gradient =========================
+#===================== Charge density- total and per atom  =========================
 
 def get_rho_atom(CDFTSolver):
     """ Generate charge density for each atom """
-    atoms = list(Atom(sample=CDFTSolver.sample,ase_atom=atom) for atom in ase_cell)
-    n = CDFTSolver.n1 * CDFTSolver.n2 * CDFTSolver.n3
-    omega = CDFTSolver.omega
+    atoms_iter = CDFTSolver.sample.atoms    # calculating requires pycdft-modified Atom type
+    atoms_write = CDFTSolver.sample.ase_cell # writing requires ASE Atom type
+    n = CDFTSolver.sample.n
+    omega = CDFTSolver.sample.omega
 
     index = 1
-    for atom in atoms:
+    for atom in atoms_iter:
         rhoatom_g = CDFTSolver.sample.compute_rhoatom_g(atom)
         rhoatom_r = (n / omega) * np.fft.ifftn(rhoatom_g).real # FT G -> R
 
@@ -76,10 +78,11 @@ def get_rho_atom(CDFTSolver):
         filname="rhoatom_r_"+str(index)+".cube"
         fileobj=open(filname,"w")
 
-        write_cube(fileobj,atom,rhoatom_r,origin=origin)
+        write_cube(fileobj,atoms_write,rhoatom_r,origin=origin)
         fileobj.close()
         print("Generated rhoatom_r cube file for Atom %d"% (index))
         index += 1
+    print("Completed get_rho_atom")
 
 def get_rho(CDFTSolver):
     """ Borrowed from implementation of abstract fetch_rhor method for Qbox 
@@ -116,34 +119,37 @@ def get_grad(CDFTSolver,origin):
     ic = 1
     for c in constraints:
        
-        ase_cell = CDFTSolver.sample.ase_cell
-        atoms = list(Atom(sample=CDFTSolver.sample,ase_atom=atom) for atom in ase_cell)
+        atoms_iter = CDFTSolver.sample.atoms    # calculating requires pycdft-modified Atom type
+        atoms_write = CDFTSolver.sample.ase_cell # writing requires ASE Atom type
 
         ia = 1
-        for atom in atoms: 
+        for atom in atoms_iter: 
    
-           w_grad, rho_grad_r = c.debug_w_grad_r(atom)
+            w_grad, rho_grad_r = c.debug_w_grad_r(atom)
   
-           # write to cube file for visualizing
-           w_grad = parse(w_grad[0],-1)
-           rho_grad_r = parse(rho_grad_r,-1)
+            # write to cube file for visualizing
+            # separate file for each cartesian direction
+            for icart in range(3):               
+                w_grad_tmp = parse(w_grad[icart][0],-1)
+                rho_grad_r_tmp = parse(rho_grad_r[icart],-1)
    
-           fil1="w_grad_"+str(index)+".cube"
-           fil2="rhoatom_grad_"+str(index)+".cube"
+                fil1="w_grad_atom"+str(ia)+"_c"+str(ic)+"_i"+str(icart)+".cube"
+                fil2="rhoatom_grad_atom"+str(ia)+"_c"+str(ic)+"_i"+str(icart)+".cube"
 
-           fileobj=open(fil1,"w")
-           write_cube(fileobj,atom,w_grad,origin=origin)
-           fileobj.close()
-           print("Generated Hirshfeld wts cube file for Atom %d,  constraint %d"% (ia, ic))
+                fileobj=open(fil1,"w")
+                write_cube(fileobj,atoms_write,w_grad_tmp,origin=origin)
+                fileobj.close()
+                print("Generated Hirshfeld wts cube file for Atom %d,  constraint %d, dir %d"% (ia, ic, icart))
 
-           fileobj=open(fil2,"w")
-           write_cube(fileobj,atom,rho_grad_r,origin=origin)
-           fileobj.close()
-           print("Generated charge density cube file for Atom %d, constraint %d"% (ia,ic))
-           ia += 1
+                fileobj=open(fil2,"w")
+                write_cube(fileobj,atoms_write,rho_grad_r_tmp,origin=origin)
+                fileobj.close()
+                print("Generated charge density cube file for Atom %d, constraint %d, dir %d"% (ia,ic, icart))
+            ia += 1
         ic += 1
            
     print("Completed extraction of grad quantities!")
+
 #--------------------------------------------------------
 ## testing of parse
 #rhor=np.arange(60).reshape(3,4,5)
