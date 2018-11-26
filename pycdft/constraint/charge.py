@@ -38,3 +38,14 @@ class ChargeConstraint(Constraint):
         for icart, ispin in np.ndindex(3, self.sample.vspin):
             w_grad[icart, ispin][self.sample.rhopro_tot_r < self._eps] = 0.0
         return w_grad
+
+    # added for debugging forces 
+    def debug_w_grad_r(self, atom):
+        delta = 1 if atom in self.fragment.atoms else 0
+        rho_grad_r = self.sample.compute_rhoatom_grad_r(atom)
+        w_grad = np.einsum(
+            "sijk,aijk,ijk->asijk", delta - self.w, rho_grad_r, 1/self.sample.rhopro_tot_r
+        )
+        for icart, ispin in np.ndindex(3, self.sample.vspin):
+            w_grad[icart, ispin][self.sample.rhopro_tot_r < self._eps] = 0.0
+        return w_grad,rho_grad_r
