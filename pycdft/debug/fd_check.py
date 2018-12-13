@@ -60,7 +60,7 @@ def get_hirsh(CDFTSolver,origin):
       
 #===================== Charge density- total and per atom  =========================
 
-def get_rho_atom(CDFTSolver):
+def get_rho_atom(CDFTSolver,origin):
     """ Generate charge density for each atom """
     atoms_iter = CDFTSolver.sample.atoms    # calculating requires pycdft-modified Atom type
     atoms_write = CDFTSolver.sample.ase_cell # writing requires ASE Atom type
