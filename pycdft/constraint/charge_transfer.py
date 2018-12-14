@@ -16,10 +16,11 @@ class ChargeTransferConstraint(Constraint):
     #_eps = 0.0001  # cutoff of Hirshfeld weight when the density approaches zero
 
     def __init__(self, sample: Sample, donor: Fragment, acceptor: Fragment, N0: float,
-                 V_init=0, V_brak=(-1, 1), N_tol=1.0E-3):
+                 V_init=0, V_brak=(-1, 1), N_tol=1.0E-3,eps=1e-6):
         super(ChargeTransferConstraint, self).__init__(
             sample, N0, V_init=V_init, V_brak=V_brak, N_tol=N_tol
         )
+        self._eps = eps
         self.donor = donor
         self.acceptor = acceptor
         assert set(self.donor.atoms + self.acceptor.atoms) == set(self.sample.atoms)

@@ -22,10 +22,10 @@ class Constraint(object):
 
     __metaclass__ = ABCMeta
     type = None
-    #_eps = 1E-8  # cutoff of Hirshfeld weight when the density approaches zero
+    _eps = 1E-6  # cutoff of Hirshfeld weight when the density approaches zero
 
     @abstractmethod
-    def __init__(self, sample: Sample, N0, V_init=None, V_brak=None, N_tol=None, eps=1e-6):
+    def __init__(self, sample: Sample, N0, V_init=None, V_brak=None, N_tol=None):
         """
         Args:
             V_init (float): initial guess for V.
@@ -35,7 +35,6 @@ class Constraint(object):
         self.V_init = V_init
         self.V_brak = V_brak
         self.N_tol = N_tol
-        self._eps = eps
 
         self.V = None
         self.w = None
