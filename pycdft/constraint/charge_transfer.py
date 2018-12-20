@@ -24,9 +24,12 @@ class ChargeTransferConstraint(Constraint):
         self.donor = donor
         self.acceptor = acceptor
         assert set(self.donor.atoms + self.acceptor.atoms) == set(self.sample.atoms)
+        print("N_tol %.5f, eps %.2E" %(self.N_tol, self._eps))
 
     def update_w(self):
-        w = (self.acceptor.rhopro_r - self.donor.rhopro_r) / self.sample.rhopro_tot_r
+        #w = (self.acceptor.rhopro_r - self.donor.rhopro_r) / self.sample.rhopro_tot_r
+        print("D-A")
+        w = (self.donor.rhopro_r - self.acceptor.rhopro_r) / self.sample.rhopro_tot_r
         w[self.sample.rhopro_tot_r < self._eps] = 0.0
         if self.sample.vspin == 1:
             self.w = w[None, ...]
@@ -62,6 +65,10 @@ class ChargeTransferConstraint(Constraint):
         w_grad = np.einsum(
             "sijk,aijk,ijk->asijk", delta - self.w, rho_grad_r, 1 / self.sample.rhopro_tot_r
         )
+        w_grad_part = np.einsum(
+            "sijk,ijk-> sijk", delta - self.w, 1 / self.sample.rhopro_tot_r
+        )
+
         for icart, ispin in np.ndindex(3, self.sample.vspin):
             w_grad[icart, ispin][self.sample.rhopro_tot_r < self._eps] = 0.0
-        return w_grad,rho_grad_r
+        return w_grad,rho_grad_r,w_grad_part

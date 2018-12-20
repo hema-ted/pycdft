@@ -125,16 +125,18 @@ def get_grad(CDFTSolver,origin):
         ia = 1
         for atom in atoms_iter: 
    
-            w_grad, rho_grad_r = c.debug_w_grad_r(atom)
+            w_grad, rho_grad_r,w_grad_part = c.debug_w_grad_r(atom)
   
             # write to cube file for visualizing
             # separate file for each cartesian direction
             for icart in range(3):               
                 w_grad_tmp = parse(w_grad[icart][0],-1)
                 rho_grad_r_tmp = parse(rho_grad_r[icart],-1)
+                w_grad_part_tmp = parse(w_grad_part[icart][0],-1)
    
                 fil1="w_grad_atom"+str(ia)+"_c"+str(ic)+"_i"+str(icart)+".cube"
                 fil2="rhoatom_grad_atom"+str(ia)+"_c"+str(ic)+"_i"+str(icart)+".cube"
+                fil3="w_grad_part_atom"+str(ia)+"_c"+str(ic)+"_i"+str(icart)+".cube"
 
                 fileobj=open(fil1,"w")
                 write_cube(fileobj,atoms_write,w_grad_tmp,origin=origin)
@@ -143,6 +145,10 @@ def get_grad(CDFTSolver,origin):
 
                 fileobj=open(fil2,"w")
                 write_cube(fileobj,atoms_write,rho_grad_r_tmp,origin=origin)
+                fileobj.close()
+
+                fileobj=open(fil3,"w")
+                write_cube(fileobj,atoms_write,w_grad_part_tmp,origin=origin)
                 fileobj.close()
                 print("Generated charge density cube file for Atom %d, constraint %d, dir %d"% (ia,ic, icart))
             ia += 1

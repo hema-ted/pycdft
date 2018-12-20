@@ -20,6 +20,7 @@ class ChargeConstraint(Constraint):
         )
         self.fragment = fragment
         self._eps = eps
+        print("N_tol %.5f, eps %.2E" %(self.N_tol, self._eps))
 
     def update_w(self):
         w = self.fragment.rhopro_r / self.sample.rhopro_tot_r
