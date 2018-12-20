@@ -47,6 +47,9 @@ class ChargeConstraint(Constraint):
         w_grad = np.einsum(
             "sijk,aijk,ijk->asijk", delta - self.w, rho_grad_r, 1/self.sample.rhopro_tot_r
         )
+        w_grad_part = np.einsum(
+            "sijk,ijk->sijk", delta - self.w, 1/self.sample.rhopro_tot_r
+        )
         for icart, ispin in np.ndindex(3, self.sample.vspin):
             w_grad[icart, ispin][self.sample.rhopro_tot_r < self._eps] = 0.0
-        return w_grad,rho_grad_r
+        return w_grad,rho_grad_r,w_grad_part,self.sample.rhopro_tot_r
