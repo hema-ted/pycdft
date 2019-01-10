@@ -16,11 +16,13 @@ class ChargeConstraint(Constraint):
     _eps = 1e-8  # cutoff of Hirshfeld weight and its derivative when density -> 0
 
     def __init__(self, sample: Sample, fragment: Fragment, N0: float,
-                 V_init=0, V_brak=(-1, 1), N_tol=1.0E-3):
+                 V_init=0, V_brak=(-1, 1), N_tol=1.0E-3,eps=1e-6):
         super(ChargeConstraint, self).__init__(
-            sample, N0, V_init=V_init, V_brak=V_brak, N_tol=N_tol
+            sample, N0, V_init=V_init, V_brak=V_brak, N_tol=N_tol,
         )
         self.fragment = fragment
+        self._eps = eps
+        print("N_tol %.5f, eps %.2E" %(self.N_tol, self._eps))
 
     def update_w(self):
         w = self.fragment.rhopro_r / self.sample.rhopro_tot_r
@@ -39,3 +41,17 @@ class ChargeConstraint(Constraint):
         for icart, ispin in np.ndindex(3, self.sample.vspin):
             w_grad[icart, ispin][self.sample.rhopro_tot_r < self._eps] = 0.0
         return w_grad
+
+    # added for debugging forces 
+    def debug_w_grad_r(self, atom):
+        delta = 1 if atom in self.fragment.atoms else 0
+        rho_grad_r = self.sample.compute_rhoatom_grad_r(atom)
+        w_grad = np.einsum(
+            "sijk,aijk,ijk->asijk", delta - self.w, rho_grad_r, 1/self.sample.rhopro_tot_r
+        )
+        w_grad_part = np.einsum(
+            "sijk,ijk->sijk", delta - self.w, 1/self.sample.rhopro_tot_r
+        )
+        for icart, ispin in np.ndindex(3, self.sample.vspin):
+            w_grad[icart, ispin][self.sample.rhopro_tot_r < self._eps] = 0.0
+        return w_grad,rho_grad_r,w_grad_part,self.sample.rhopro_tot_r
