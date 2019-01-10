@@ -156,7 +156,7 @@ def get_grad(CDFTSolver,origin):
     write_cube(fileobj,atoms_write,w_grad_part_tmp,origin=origin)
     fileobj.close()
 
-    rhopro_tmp  = parse(rhopro_r[0],-1)
+    rhopro_tmp  = parse(rhopro_r,-1)
     fil4="pro_rho_r.cube"
     fileobj=open(fil4,"w")
     write_cube(fileobj,atoms_write,rhopro_tmp,origin=origin)

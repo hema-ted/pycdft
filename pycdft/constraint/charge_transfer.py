@@ -58,6 +58,8 @@ class ChargeTransferConstraint(Constraint):
             delta = 1
         elif atom in self.acceptor.atoms:
             delta = -1
+            #delta = 0 # should reproduce charge constains in He_2^+
+                       # but instead half reproduces a-d and w_grad is no longer symmetric
         else:
             delta = 0
 
