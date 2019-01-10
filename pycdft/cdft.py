@@ -6,6 +6,7 @@ import scipy.optimize
 from pycdft.common import Sample
 from pycdft.constraint import Constraint
 from pycdft.dft_driver import DFTDriver
+import time 
 
 
 class CDFTSCFConverged(Exception):
@@ -48,6 +49,7 @@ class CDFTSolver:
         self.F_tol = F_tol
         self.Vc_tot = None
         self.itscf = None
+        self.start_time = time.time()
 
         # make output folder, keeping any previous runs
         CDFTSolver.nsolver += 1
@@ -85,6 +87,7 @@ class CDFTSolver:
             assert len(self.constraints) == 1
 
         self.itscf = 0
+
         try:
             if self.optimizer == "secant":
                 self.constraints[0].V_init = scipy.optimize.newton(
@@ -135,6 +138,9 @@ class CDFTSolver:
         """ Given V for all constraints, solve the KS problem."""
         self.itscf += 1
 
+        print("===================== Initializing Run ====================")
+        print("Running optimizer: ", self.optimizer)
+
         # Update constraints
         for c, V in zip(self.constraints, Vs):
             c.V = V
@@ -148,8 +154,10 @@ class CDFTSolver:
 
         # Order DFT code to perform SCF calculation under the constraint potential Vc.
         # After dft driver run_scf command should read etotal and force
+        start_dft = time.time()
         self.dft_driver.run_scf()
         self.dft_driver.get_rho_r()
+        end_dft = time.time()
 
         for i, c in enumerate(self.constraints):
             c.update_N()
@@ -168,7 +176,11 @@ class CDFTSolver:
             ))
             print("    N = {:.6f}".format(c.N))
             print("    dW/dV = N - N0 = {:.6f}".format(c.dW_by_dV))
+        print("Elapsed time: ")
+        self.timer(start_dft,end_dft)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        
+        self.timer(self.start_time,time.time())
 
         if all(c.is_converged for c in self.constraints):
             raise CDFTSCFConverged
@@ -240,3 +252,8 @@ class CDFTSolver:
 
     def copy(self):
         return deepcopy(self)
+  
+    def timer(start,end):
+        hours, rem = divmod(end-start,3600)
+        minutes, seconds = divmod(rem, 60)
+        print("{:0>2}h:{:0>2}m:{:05.2f}s".format(int(hours),int(minutes),seconds))
