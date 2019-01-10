@@ -149,20 +149,6 @@ def get_grad(CDFTSolver,origin):
         ic += 1
         print("Generated charge density cube file for Atom %d, constraint %d, dir %d"% (ia,ic, icart))
 
-    #write out other quantities
-    w_grad_part_tmp = parse(w_grad_part[0],-1)
-    fil3="w_grad_part_atom.cube"
-    fileobj=open(fil3,"w")
-    write_cube(fileobj,atoms_write,w_grad_part_tmp,origin=origin)
-    fileobj.close()
-
-    rhopro_tmp  = parse(rhopro_r,-1)
-    fil4="pro_rho_r.cube"
-    fileobj=open(fil4,"w")
-    write_cube(fileobj,atoms_write,rhopro_tmp,origin=origin)
-    fileobj.close()
-
-           
     print("Completed extraction of grad quantities!")
 
 #--------------------------------------------------------
