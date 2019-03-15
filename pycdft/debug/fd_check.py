@@ -125,7 +125,8 @@ def get_grad(CDFTSolver,origin):
         ia = 1
         for atom in atoms_iter: 
    
-            w_grad, rho_grad_r,w_grad_part,rhopro_r = c.debug_w_grad_r(atom)
+            #w_grad, rho_grad_r,w_grad_part,rhopro_r = c.debug_w_grad_r(atom)
+            w_grad, rho_grad_r = c.debug_w_grad_r(atom)
   
             # write to cube file for visualizing
             # separate file for each cartesian direction

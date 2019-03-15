@@ -202,11 +202,19 @@ class Sample(object):
         """ Compute charge density for an atom with specific coordinate in cell. """
         rhog0 = self.rhoatom_g[atom.symbol]
         eigr = self.compute_eigr(atom)
+ 
         return rhog0 * eigr
 
     def compute_rhoatom_grad_r(self, atom: Atom):
         """ Compute nuclear gradient for atom. """
-        rhog = self.rhoatom_g[atom.symbol]
+        rhog = self.rhoatom_g[atom.symbol] # missing the eigr term in rho_g
+        print("no eigr, compute_rhoatom_grad_r")
+       # rhog = self.compute_rhoatom_g(atom)
+       # print("+ eigr, compute_rhoatom_grad_r")
+
+        print(np.shape(rhog))
+        print(rhog)
+
         n1, n2, n3 = self.n1, self.n2, self.n3
         rho_grad_r = np.zeros([3, n1, n2, n3])
         n = self.n
@@ -215,10 +223,37 @@ class Sample(object):
         for i in range(3):
             eigr = self.compute_eigr(atom, axis=i)
             g = [self.Gx_g, self.Gy_g, self.Gz_g][i]
-            rho_grad_r[i] = (n / omega) * ifftn(1j * g * eigr * rhog).real
-            # print(eigr)
+            #rho_grad_r[i] = (n / omega) * ifftn(1j * g * eigr * rhog).real
+            ## make consistent ifftn with rest of code, e.g., construction of rhoatom from
+            ##   atomic densities
+            rho_grad_r[i] = (n / omega) * np.fft.ifftn(1j * g * eigr * rhog).real
+            #print(eigr)
 
         return rho_grad_r
+
+    # debuggin the derivative of charge density
+    def debug_compute_rhoatom_grad_r(self, atom: Atom):
+        """ Compute nuclear gradient for atom. """
+        rhog = self.rhoatom_g[atom.symbol] # missing the eigr term in rho_g
+        #rhog = self.compute_rhoatom_g(atom) 
+        n1, n2, n3 = self.n1, self.n2, self.n3
+        rho_grad_r = np.zeros([3, n1, n2, n3])
+        n = self.n
+        omega = self.omega
+
+        for i in range(3):
+            eigr = self.compute_eigr(atom, axis=i)
+            g = [self.Gx_g, self.Gy_g, self.Gz_g][i]
+            #rho_grad_r[i] = (n / omega) * ifftn(1j * g * eigr * rhog).real
+            ## make consistent ifftn with rest of code, e.g., construction of rhoatom from
+            ##   atomic densities
+            rho_grad_r[i] = (n / omega) * np.fft.ifftn(1j * g * eigr * rhog).real
+            print("Entering compute_rhoatom_grad_r")
+            print("eigr",np.shape(eigr),eigr)
+            print("-"*20)
+            print("g", np.shape(g), g)
+
+        return rhog,rho_grad_r
 
     @property
     def ase_cell(self):

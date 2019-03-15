@@ -253,7 +253,7 @@ class CDFTSolver:
     def copy(self):
         return deepcopy(self)
   
-    def timer(start,end):
+    def timer(self,start,end):
         hours, rem = divmod(end-start,3600)
         minutes, seconds = divmod(rem, 60)
         print("{:0>2}h:{:0>2}m:{:05.2f}s".format(int(hours),int(minutes),seconds))
