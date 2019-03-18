@@ -111,7 +111,8 @@ class Sample(object):
                 rho_r1 = np.roll(rho_r, n1 // 2, axis=0)
                 rho_r2 = np.roll(rho_r1, n2 // 2, axis=1)
                 rho_r3 = np.roll(rho_r2, n3 // 2, axis=2)
-                self.rhoatom_g[s] = omega / self.n * fftn(rho_r3)
+                #self.rhoatom_g[s] = omega / self.n * fftn(rho_r3)
+                self.rhoatom_g[s] = omega / self.n * np.fft.fftn(rho_r3)
         else:
             # calculate atomic density from pre-computed spherically-averaged atomic density
             # located in atomic/rho
@@ -165,11 +166,11 @@ class Sample(object):
                 if atom in f.atoms:
                     f.rhopro_r += rhog
 
-        #self.rhopro_tot_r = (n / omega) * np.fft.ifftn(self.rhopro_tot_r).real  # FT G -> R
-        self.rhopro_tot_r = (n / omega) * ifftn(self.rhopro_tot_r).real  # FT G -> R
+        self.rhopro_tot_r = (n / omega) * np.fft.ifftn(self.rhopro_tot_r).real  # FT G -> R
+        #self.rhopro_tot_r = (n / omega) * ifftn(self.rhopro_tot_r).real  # FT G -> R
         for f in self.fragments:
-            #f.rhopro_r = (n / omega) * np.fft.ifftn(f.rhopro_r).real
-            f.rhopro_r = (n / omega) * ifftn(f.rhopro_r).real
+            f.rhopro_r = (n / omega) * np.fft.ifftn(f.rhopro_r).real
+            #f.rhopro_r = (n / omega) * ifftn(f.rhopro_r).real
 
         # Update weights
         for c in self.constraints:
@@ -209,10 +210,7 @@ class Sample(object):
 
     def compute_rhoatom_grad_r(self, atom: Atom):
         """ Compute nuclear gradient for atom. """
-        rhog = self.rhoatom_g[atom.symbol] # missing the eigr term in rho_g??
-        print("no eigr, compute_rhoatom_grad_r")
-        #rhog = self.compute_rhoatom_g(atom)
-        #print("+ eigr, compute_rhoatom_grad_r") # not right symmetry in derivatives
+        rhog = self.rhoatom_g[atom.symbol] # eigr in update_weights
 
         print(np.shape(rhog))
         print(rhog)
@@ -225,19 +223,15 @@ class Sample(object):
         for i in range(3):
             eigr = self.compute_eigr(atom, axis=i)
             g = [self.Gx_g, self.Gy_g, self.Gz_g][i]
-            rho_grad_r[i] = (n / omega) * ifftn(1j * g * eigr * rhog).real
-            ## make consistent ifftn with rest of code, e.g., construction of rhoatom from
-            ##   atomic densities
-            #rho_grad_r[i] = (n / omega) * np.fft.ifftn(1j * g * eigr * rhog).real
-            #print(eigr)
+            #rho_grad_r[i] = (n / omega) * ifftn(1j * g * eigr * rhog).real
+            rho_grad_r[i] = (n / omega) * np.fft.ifftn(-1j * g * eigr * rhog).real
 
         return rho_grad_r
 
     # debuggin the derivative of charge density
     def debug_compute_rhoatom_grad_r(self, atom: Atom):
         """ Compute nuclear gradient for atom. """
-        rhog = self.rhoatom_g[atom.symbol] # missing the eigr term in rho_g
-        #rhog = self.compute_rhoatom_g(atom) 
+        rhog = self.rhoatom_g[atom.symbol] # eigr in update_weights
         n1, n2, n3 = self.n1, self.n2, self.n3
         rho_grad_r = np.zeros([3, n1, n2, n3])
         n = self.n
@@ -246,10 +240,8 @@ class Sample(object):
         for i in range(3):
             eigr = self.compute_eigr(atom, axis=i)
             g = [self.Gx_g, self.Gy_g, self.Gz_g][i]
-            rho_grad_r[i] = (n / omega) * ifftn(1j * g * eigr * rhog).real
-            ## make consistent ifftn with rest of code, e.g., construction of rhoatom from
-            ##   atomic densities
-            #rho_grad_r[i] = (n / omega) * np.fft.ifftn(1j * g * eigr * rhog).real
+            #rho_grad_r[i] = (n / omega) * ifftn(1j * g * eigr * rhog).real
+            rho_grad_r[i] = (n / omega) * np.fft.ifftn(1j * g * eigr * rhog).real
             print("Entering compute_rhoatom_grad_r")
             print("eigr",np.shape(eigr),eigr)
             print("-"*20)
