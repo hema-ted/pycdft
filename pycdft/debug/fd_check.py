@@ -70,7 +70,8 @@ def get_rho_atom(CDFTSolver,origin):
     index = 1
     for atom in atoms_iter:
         rhoatom_g = CDFTSolver.sample.compute_rhoatom_g(atom)
-        rhoatom_r = (n / omega) * np.fft.ifftn(rhoatom_g).real # FT G -> R
+        #rhoatom_r = (n / omega) * np.fft.ifftn(rhoatom_g).real # FT G -> R
+        rhoatom_r = (n / omega) * ifftn(rhoatom_g).real # FT G -> R
 
         # write to cube file 
         rhoatom_r = parse(rhoatom_r,-1)
