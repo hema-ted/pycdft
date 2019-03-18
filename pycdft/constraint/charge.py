@@ -12,8 +12,7 @@ class ChargeConstraint(Constraint):
     """
 
     type = "charge"
-    #_eps = 0.0001  # cutoff of Hirshfeld weight and its derivative when density -> 0
-    _eps = 1e-8  # cutoff of Hirshfeld weight and its derivative when density -> 0
+    _eps = 1e-6
 
     def __init__(self, sample: Sample, fragment: Fragment, N0: float,
                  V_init=0, V_brak=(-1, 1), N_tol=1.0E-3,eps=1e-6):
@@ -22,7 +21,7 @@ class ChargeConstraint(Constraint):
         )
         self.fragment = fragment
         self._eps = eps
-        print("N_tol %.5f, eps %.2E" %(self.N_tol, self._eps))
+        print("Constraint %s: N_tol %.5f, eps %.2E" %(self.type,self.N_tol, self._eps))
 
     def update_w(self):
         w = self.fragment.rhopro_r / self.sample.rhopro_tot_r

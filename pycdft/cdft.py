@@ -222,6 +222,7 @@ class CDFTSolver:
             print("Maximum force = {:.6f} au, on {}th atom ({}).  Fw = {:.6f}, {:.6f}, {:.6f}".format(
                 maxforce, imaxforce+1, self.sample.atoms[imaxforce].symbol, *self.sample.Fw[imaxforce]
             ))
+            print("--")
             print("  Fd = {:.6f}, {:.6f}, {:.6f}; Fc = {:.6f}, {:.6f}, {:.6f}".format(
                 *self.sample.Fd[imaxforce], *self.sample.Fc[imaxforce]
             ))

@@ -24,11 +24,10 @@ class ChargeTransferConstraint(Constraint):
         self.donor = donor
         self.acceptor = acceptor
         assert set(self.donor.atoms + self.acceptor.atoms) == set(self.sample.atoms)
-        print("N_tol %.5f, eps %.2E" %(self.N_tol, self._eps))
+        print("Constraint %s: N_tol %.5f, eps %.2E" %(self.type,self.N_tol, self._eps))
 
     def update_w(self):
         #w = (self.acceptor.rhopro_r - self.donor.rhopro_r) / self.sample.rhopro_tot_r
-        print("D-A")
         w = (self.donor.rhopro_r - self.acceptor.rhopro_r) / self.sample.rhopro_tot_r
         w[self.sample.rhopro_tot_r < self._eps] = 0.0
         if self.sample.vspin == 1:
