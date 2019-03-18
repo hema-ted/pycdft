@@ -64,6 +64,7 @@ class CDFTSolver:
 
     def solve(self):
         """ Solve CDFT SCF or optimization problem."""
+        print("===================== Initializing Run ====================")
         self.dft_driver.get_rho_r()
         if self.job == "scf":
             self.solve_scf()
@@ -138,7 +139,6 @@ class CDFTSolver:
         """ Given V for all constraints, solve the KS problem."""
         self.itscf += 1
 
-        print("===================== Initializing Run ====================")
         print("Running optimizer: ", self.optimizer)
 
         # Update constraints
@@ -164,6 +164,7 @@ class CDFTSolver:
         self.sample.W = self.sample.Ed + self.sample.Ec - np.sum(c.N * c.V for c in self.constraints)
 
         # Print intermediate results
+        print("=======================================")
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("SCF iteration {}".format(self.itscf))
         print("  Ed (DFT energy) = {:.6f}".format(self.sample.Ed))

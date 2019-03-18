@@ -166,11 +166,11 @@ class Sample(object):
                 if atom in f.atoms:
                     f.rhopro_r += rhog
 
-        self.rhopro_tot_r = (n / omega) * np.fft.ifftn(self.rhopro_tot_r).real  # FT G -> R
-        #self.rhopro_tot_r = (n / omega) * ifftn(self.rhopro_tot_r).real  # FT G -> R
+        #self.rhopro_tot_r = (n / omega) * np.fft.ifftn(self.rhopro_tot_r).real  # FT G -> R
+        self.rhopro_tot_r = (n / omega) * ifftn(self.rhopro_tot_r).real  # FT G -> R
         for f in self.fragments:
-            f.rhopro_r = (n / omega) * np.fft.ifftn(f.rhopro_r).real
-            #f.rhopro_r = (n / omega) * ifftn(f.rhopro_r).real
+            #f.rhopro_r = (n / omega) * np.fft.ifftn(f.rhopro_r).real
+            f.rhopro_r = (n / omega) * ifftn(f.rhopro_r).real
 
         # Update weights
         for c in self.constraints:
@@ -212,9 +212,6 @@ class Sample(object):
         """ Compute nuclear gradient for atom. """
         rhog = self.rhoatom_g[atom.symbol] # eigr in update_weights
 
-        print(np.shape(rhog))
-        print(rhog)
-
         n1, n2, n3 = self.n1, self.n2, self.n3
         rho_grad_r = np.zeros([3, n1, n2, n3])
         n = self.n
@@ -223,31 +220,10 @@ class Sample(object):
         for i in range(3):
             eigr = self.compute_eigr(atom, axis=i)
             g = [self.Gx_g, self.Gy_g, self.Gz_g][i]
-            #rho_grad_r[i] = (n / omega) * ifftn(1j * g * eigr * rhog).real
-            rho_grad_r[i] = (n / omega) * np.fft.ifftn(-1j * g * eigr * rhog).real
+            #rho_grad_r[i] = (n / omega) * np.fft.ifftn(-1j * g * eigr * rhog).real
+            rho_grad_r[i] = (n / omega) * ifftn(-1j * g * eigr * rhog).real
 
         return rho_grad_r
-
-    # debuggin the derivative of charge density
-    def debug_compute_rhoatom_grad_r(self, atom: Atom):
-        """ Compute nuclear gradient for atom. """
-        rhog = self.rhoatom_g[atom.symbol] # eigr in update_weights
-        n1, n2, n3 = self.n1, self.n2, self.n3
-        rho_grad_r = np.zeros([3, n1, n2, n3])
-        n = self.n
-        omega = self.omega
-
-        for i in range(3):
-            eigr = self.compute_eigr(atom, axis=i)
-            g = [self.Gx_g, self.Gy_g, self.Gz_g][i]
-            #rho_grad_r[i] = (n / omega) * ifftn(1j * g * eigr * rhog).real
-            rho_grad_r[i] = (n / omega) * np.fft.ifftn(1j * g * eigr * rhog).real
-            print("Entering compute_rhoatom_grad_r")
-            print("eigr",np.shape(eigr),eigr)
-            print("-"*20)
-            print("g", np.shape(g), g)
-
-        return rhog,rho_grad_r
 
     @property
     def ase_cell(self):
