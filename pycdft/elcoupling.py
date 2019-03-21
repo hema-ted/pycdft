@@ -52,13 +52,15 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
             O[i, j] = (omega / m) * np.sum(wfc1.psi_r[i] * wfc2.psi_r[j])
     Odet = np.linalg.det(O)
     Oinv = np.linalg.inv(O)
-    # print("O matrix:")
-    # print(O)
-    # print("|O|:", Odet)
+    print("O matrix:")
+    print(O)
+    print("|O|:", Odet)
 
     # 2x2 state overlap matrix S
     S = np.eye(2)
-    S[0, 1] = S[1, 0] = Odet
+    #S[0, 1] = S[1, 0] = Odet
+    #S[1,0] = Odet
+    #S[0,1] = np.conjugate(Odet) # Eq. 12, Oberhofer2010
     print("S matrix:")
     print(S)
 
@@ -72,7 +74,7 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
     Vc_dense = 0.5 * (solver1.Vc_tot + solver2.Vc_tot)[0, ...]
     Vc = ftrr(Vc_dense, source=FFTGrid(n1, n2, n3), dest=FFTGrid(m1, m2, m3)).real
 
-    # constraint potential matrix P 
+    # constraint potential matrix P, for finding W_ab aka Vab, see Eq. 22 in Oberhofer2010
     P = np.zeros([norb, norb])
     for ispin in range(nspin):
         for ibnd, jbnd in np.ndindex(nbnd[ispin, 0], nbnd[ispin, 0]):
@@ -80,9 +82,11 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
             j = wfc1.skb2idx(ispin, 0, jbnd)
             p = (omega / m) * np.sum(wfc1.psi_r[i] * Vc * wfc2.psi_r[j])
             # print(p)
-            P[i, j] = p
-    # print("P:", P)
-    Vab = np.trace(P @ C)
+            P[i, j] = p # orbital overlaps, <\phi_B | w | \phi_a>
+    print("P:", P)
+    print("C:", C)
+    print("P @ C", P @ C)
+    Vab = np.trace(P @ C) #<- need check if off diagonal elements important 
     print("Vab:", Vab)
 
     # H matrix between nonorthogonal diabatic states (Eq. 9-11 in Oberhofer2010, Eq. 5 in Goldey2017)
