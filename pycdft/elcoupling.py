@@ -14,6 +14,9 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
         3) Goldey, et al 2017; dx.doi.org/10.1021/acs.jctc.7b00088
   
     """
+
+    print(" See Oberhofer & Blumberger 2010: dx.doi.org/10.1063/1.3507878 ")
+    print(" Below is a breakdown of components that go into calculating H_ab" )
     assert solver1.sample.vspin == solver2.sample.vspin
     vspin = solver1.sample.vspin
     if vspin != 1:
@@ -56,18 +59,17 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
     print(O)
     print("|O|:", Odet)
 
-    # 2x2 state overlap matrix S
-    S = np.eye(2)
-    #S[0, 1] = S[1, 0] = Odet
-    #S[1,0] = Odet
-    #S[0,1] = np.conjugate(Odet) # Eq. 12, Oberhofer2010
-    print("S matrix:")
-    print(S)
-
     # see Eq. 25 in Oberhofer2010
     # cofactor matrix C
     C = Odet * Oinv.T
-    # print("C:", C)
+
+    # 2x2 state overlap matrix S
+    S = np.eye(2)
+    #S[0, 1] = S[1, 0] = Odet
+    S[1,0] = Odet
+    S[0,1] = np.conjugate(Odet) # Eq. 12, Oberhofer2010
+    print("S matrix containing (plane wave) orbital overlaps:")
+    print(S)
 
     # constraint potential matrix element Vab = <psi_a| (V_a + V_b)/2 |psi_b>
     # V_i = \sum V w_j
@@ -83,11 +85,15 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
             p = (omega / m) * np.sum(wfc1.psi_r[i] * Vc * wfc2.psi_r[j])
             # print(p)
             P[i, j] = p # orbital overlaps, <\phi_B | w | \phi_a>
-    print("P:", P)
-    print("C:", C)
+    print("P (<phi_m|w(r)|phi_n>):", P)
+    print("C (cofactor matrix):", C)
     print("P @ C", P @ C)
     Vab = np.trace(P @ C) #<- need check if off diagonal elements important 
-    print("Vab:", Vab)
+    W = np.eye(2)
+    W[0,0] = solver1.sample.constraints.N
+    W[1,1] = solver2.sample.constraints.N
+    W[0,1] = W [1,0] = Vab
+    print("W (weight function matrix):", W)
 
     # H matrix between nonorthogonal diabatic states (Eq. 9-11 in Oberhofer2010, Eq. 5 in Goldey2017)
     # see also p 344 of Kaduk2012
