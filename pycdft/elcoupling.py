@@ -66,8 +66,8 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
     # 2x2 state overlap matrix S
     S = np.eye(2)
     #S[0, 1] = S[1, 0] = Odet
-    S[1,0] = Odet
-    S[0,1] = np.conjugate(Odet) # Eq. 12, Oberhofer2010
+    S[1,0] = Odet # S_BA
+    S[0,1] = np.conjugate(Odet) # Eq. 12, Oberhofer2010 # S_AB
     print("S matrix containing (plane wave) orbital overlaps:")
     print(S)
 
@@ -92,8 +92,8 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
     W = np.eye(2)
     W[0,0] = solver1.sample.constraints.N
     W[1,1] = solver2.sample.constraints.N
-    W[0,1] = W [1,0] = Vab
-    print("W (weight function matrix):", W)
+    #W[0,1] = W [1,0] = Wab
+    #print("W (weight function matrix):", W)
 
     # H matrix between nonorthogonal diabatic states (Eq. 9-11 in Oberhofer2010, Eq. 5 in Goldey2017)
     # see also p 344 of Kaduk2012
