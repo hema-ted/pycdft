@@ -172,11 +172,11 @@ class CDFTSolver:
         print("  E (Ed + Ec) = {:.6f}".format(self.sample.Ed + self.sample.Ec))
         print("  W (free energy) = {:.6f}".format(self.sample.W))
         for i, c in enumerate(self.constraints):
-            print("  > Constraint #{} (type = {}, N0 = {}, V = {:.6f}):".format(
+            print("  > Constraint #{} (type = {}, N0 = {}, V = {:.12f}):".format(
                 i, c.type, c.N0, c.V
             ))
             print("    N = {:.6f}".format(c.N))
-            print("    dW/dV = N - N0 = {:.6f}".format(c.dW_by_dV))
+            print("    dW/dV = N - N0 = {:.8f}".format(c.dW_by_dV))
         print("Elapsed time: ")
         self.timer(start_dft,end_dft)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
