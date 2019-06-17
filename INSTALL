@@ -23,5 +23,5 @@ module load python/3.6.1+intel-16.0
 
 For personal reference:
 
-export PYTHONPATH="${PYTHONPATH}:/home/wwwennie/bin/pycdft/lib/python3.6/site-packages"
-python setup.py install --prefix="/home/wwwennie/bin/pycdft/"
+export PYTHONPATH="${PYTHONPATH}:/home/wwwennie/bin2/pycdft/lib/python3.7/site-packages"
+python setup.py install --prefix="/home/wwwennie/bin2/pycdft/"
