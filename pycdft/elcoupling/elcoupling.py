@@ -15,6 +15,7 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
         2) Kaduk, et al 2012; dx.doi.org/10.1021/cr200148b, esp. p 344, Eq. 51 
         3) Goldey, et al 2017; dx.doi.org/10.1021/acs.jctc.7b00088
   
+        For Qbox, only @ Gamma point, so quantities are real; but keep conjugate operations for now
     """
 
     assert solver1.sample.vspin == solver2.sample.vspin
@@ -54,6 +55,7 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
     S = cdft_get_S(wfc1,wfc2)
 
     # W matrix 
+    # TODO: averaging for Hermitian H in *get_H; remove here ?
     # constraint potential matrix element Vab = <psi_a| (V_a + V_b)/2 |psi_b>
     # where V_i = \sum V w_j, i.e., the constraint lagrange multiplier is included 
     Vc_dense = 0.5 * (solver1.Vc_tot + solver2.Vc_tot)[0, ...]
@@ -133,8 +135,7 @@ def cdft_get_W(wfc1,wfc2,Vc,O,omega,m):
             P[i, j] = p # orbital overlaps, <\phi_B | w | \phi_a>
     print("P (<phi_m|w(r)|phi_n>):", P)
     print("C (cofactor matrix):", C)
-    print("P @ C", P @ C)
-    Vab = np.trace(P @ C) #<- need check if off diagonal elements important 
+    Vab = np.trace(P @ C) # \sum_ij = Tr(A_ij * B_ij) 
     Vba = np.conjugate(Vab)
 
     W = np.zeros([2,2])
