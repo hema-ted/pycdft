@@ -55,7 +55,7 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
     print(" Below is a breakdown of components that go into calculating H_ab" )
     # S matrix
     O = cdft_get_O(wfc1,wfc2,omega,m)
-    S = cdft_get_S(O,nspin)
+    S = cdft_get_S(wfc1,wfc2)
 
     # W matrix 
     # TODO: averaging for Hermitian H in *get_H; remove here ?
@@ -88,8 +88,8 @@ def cdft_get_O(wfc1,wfc2,omega,m):
             j = wfc2.skb2idx(ispin, 0, jbnd) # before was wfc1 
             O[i, j] = (omega / m) * np.sum(np.conjugate(wfc1.psi_r[i]) * wfc2.psi_r[j])
  
-    print("O matrix:")
-    print(O)
+    #print("O matrix:")
+    #print(O)
     return O
 
 def cdft_get_S(O,nspin):
@@ -102,10 +102,13 @@ def cdft_get_S(O,nspin):
     Odet = np.linalg.det(O)
     print("|O|:", Odet)
 
-    # 2x2 state overlap matrix S
-    S = np.eye(2)
-    S[1,0] = Odet # S_BA
-    S[0,1] = np.conjugate(Odet) # Eq. 12, Oberhofer2010 # S_AB
+    if nspin == 1:
+       # 2x2 state overlap matrix S
+       S = np.eye(2)
+       S[1,0] = Odet # S_BA
+       S[0,1] = np.conjugate(Odet) # Eq. 12, Oberhofer2010 # S_AB
+    elif nspin == 2:
+       pass
     print("S matrix containing (plane wave) orbital overlaps:")
     print(S)
    
