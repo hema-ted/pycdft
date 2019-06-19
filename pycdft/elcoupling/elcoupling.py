@@ -5,7 +5,7 @@ from pycdft.common.ft import FFTGrid, ftrr
 from pycdft.common.units import hartree_to_ev, hartree_to_millihartree
 import time 
 
-def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolveri,debug=True):
+def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver,debug=True):
     """ Compute electronic coupling in mH between two KS wavefunctions.
    
         Compatible for symmetric and non-symmetric systems
@@ -126,7 +126,7 @@ def cdft_get_S(O,nspin):
     for ispin in range(nspin):
        Odet[ispin] = np.linalg.det(O[:,:,ispin])
    
-       S[0,0,ispin] = S[1,1,ispin] = 1.0d0
+       S[0,0,ispin] = S[1,1,ispin] = 1.0
        S[1,0,ispin] = Odet[ispin] # S_BA
        S[0,1,ispin] = np.conjugate(Odet[ispin]) # Eq. 12, Oberhofer2010 # S_AB
  
@@ -148,7 +148,7 @@ def cdft_get_W(wfc1,wfc2,Vc,O,omega,m):
        # see Eq. 25 in Oberhofer2010
        # cofactor matrix C
        Odet[ispin]= np.linalg.det(O[:,:,ispin])
-       Oinv[ispin] = np.linalg.inv(O[:,:,ispin)
+       Oinv[ispin] = np.linalg.inv(O[:,:,ispin])
        CT[:,:,ispin] = Oinv[ispin] @ (Odet[ispin]*np.eye(norb))
        C[:,:,ispin] = CT[:,:,ispin].T
    
