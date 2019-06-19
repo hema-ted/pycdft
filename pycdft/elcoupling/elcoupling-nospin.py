@@ -5,7 +5,7 @@ from pycdft.common.ft import FFTGrid, ftrr
 from pycdft.common.units import hartree_to_ev, hartree_to_millihartree
 
 
-def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
+def compute_elcoupling_symm_nospin(solver1: CDFTSolver, solver2: CDFTSolver):
     """ Compute electronic coupling in mH between two KS wavefunctions.
         There is implicit symmetrization on the matrix elements.
         Works only for symmetric systems
@@ -110,7 +110,7 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
     print("|Hab| (mH):", np.abs(Hsymm[0, 1] * hartree_to_millihartree))
     print("|Hab| (eV):", np.abs(Hsymm[0, 1] * hartree_to_ev))
 
-def compute_elcoupling_nonsymm(solver1: CDFTSolver, solver2: CDFTSolver):
+def compute_elcoupling_nospin(solver1: CDFTSolver, solver2: CDFTSolver):
     """ Compute electronic coupling in mH between two KS wavefunctions.
         Non-symmetric systems
    
