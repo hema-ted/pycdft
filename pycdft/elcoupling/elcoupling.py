@@ -80,14 +80,12 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver,debug=True):
     # debug output
     print("")
     if debug:
-      for ispin in range(nspin):
-         print("~~~~~~~~~~~~~~~~~~ Spin Channel %d ~~~~~~~~~~~~~~~~"%ispin)
-         print("O matrix"); print(O[:,:,ispin]); print("|O|:",Odet[ispin]); print("")
-         print("S matrix"); print(S[:,:,ispin]); print("")
-         print("W matrix"); print(W[:,:,ispin]); print("")
-         print("--> Cofactor:"); print(C[:,:,ispin]); print("")
-         print("H matrix"); print(H); print("")
-         print("H ortho. Lowdin"); print(Hsymm); print("")
+       print("O matrix"); print(O); print("|O|:",Odet]); print("")
+       print("S matrix"); print(S); print("")
+       print("W matrix"); print(W); print("")
+       print("--> Cofactor:"); print(C); print("")
+       print("H matrix"); print(H); print("")
+       print("H ortho. Lowdin"); print(Hsymm); print("")
 
     # final output
     print("~~~~~~~~~~~~~~~~~ Electronic Coupling ~~~~~~~~~~~~~~~~~~")
@@ -134,8 +132,8 @@ def cdft_get_W(wfc1,wfc2,Vc,O,omega,m):
     """
 
     nspin, nkpt, nbnd, norb = wfc1.nspin, wfc1.nkpt, wfc1.nbnd, wfc1.norb
-    P12 = np.zeros([norb, norb,nspin]); 
-    P11 = np.zeros([norb, norb,nspin]); P22 = np.zeros([norb, norb,nspin]); 
+    P12 = np.zeros([norb, norb]); 
+    P11 = np.zeros([norb, norb]); P22 = np.zeros([norb, norb]); 
     W = np.zeros([2,2])
 
     # see Eq. 25 in Oberhofer2010
@@ -162,13 +160,13 @@ def cdft_get_W(wfc1,wfc2,Vc,O,omega,m):
         #P11[i, j] = p # orbital overlaps, <\phi_A | w | \phi_A>
 
         #p = (omega / m) * np.sum(np.conjugate(wfc2.psi_r[i]) * Vc * wfc2.psi_r[j])
-        #P22[i, j,ispin] = p # orbital overlaps, <\phi_B | w | \phi_B>
+        #P22[i, j] = p # orbital overlaps, <\phi_B | w | \phi_B>
       
-       Vab = np.trace(P12[:,:,ispin] @ C[:,:,ispin]) # \sum_ij = Tr(A_ij * B_ij) 
-       Vba = np.trace(P21[:,:,ispin] @ C[:,:,ispin])
+       Vab = np.trace(P12 @ C) # \sum_ij = Tr(A_ij * B_ij) 
+       Vba = np.trace(P21 @ C)
 
-       #Vaa = np.trace(P11[:,:,ispin] @ C[:,:,ispin])
-       #Vbb = np.trace(P22[:,:,ispin] @ C[:,:,ispin]) 
+       #Vaa = np.trace(P11 @ C)
+       #Vbb = np.trace(P22 @ C) 
    
        #W[0,0] = Vaa
        #W[1,1] = Vbb
