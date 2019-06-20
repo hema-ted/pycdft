@@ -60,7 +60,7 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver,debug=True):
     O = cdft_get_O(wfc1,wfc2,omega,m)
     S,Odet = cdft_get_S(O)
     print("DONE: S") 
-    timer(start_time,time.time()))
+    timer(start_time,time.time())
 
     # W matrix 
     # TODO: averaging for Hermitian H in *get_H; remove here ?
@@ -70,12 +70,12 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver,debug=True):
     Vc = ftrr(Vc_dense, source=FFTGrid(n1, n2, n3), dest=FFTGrid(m1, m2, m3)).real
     W,C = cdft_get_W(wfc1,wfc2,Vc,O,omega,m)
     print("DONE: W")
-    timer(start_time,time.time()))
+    timer(start_time,time.time())
     
     # H matrix 
     H = cdft_get_H(solver1,solver2,S,W)
     print("DONE: H")
-    timer(start_time,time.time()))
+    timer(start_time,time.time())
 
     # H matrix between orthogonal diabatic states 
     Hsymm = cdft_get_Hsymm(H,S)
