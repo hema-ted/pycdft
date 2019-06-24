@@ -65,6 +65,7 @@ class CDFTSolver:
     def solve(self):
         """ Solve CDFT SCF or optimization problem."""
         print("===================== Initializing Run ====================")
+#        try:
         self.dft_driver.get_rho_r()
         if self.job == "scf":
             self.solve_scf()
@@ -73,6 +74,10 @@ class CDFTSolver:
         else:
             raise ValueError
         self.dft_driver.get_wfc()
+#        except:
+#            print("Something went wrong! See above error messages")
+#            print("Quitting DFT driver")
+#            self.dft_driver.exit() 
 
     def solve_scf(self):
         """ Iteratively solve the CDFT problem.
@@ -259,3 +264,4 @@ class CDFTSolver:
         hours, rem = divmod(end-start,3600)
         minutes, seconds = divmod(rem, 60)
         print("{:0>2}h:{:0>2}m:{:05.2f}s".format(int(hours),int(minutes),seconds))
+

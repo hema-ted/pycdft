@@ -3,6 +3,7 @@ import re
 import shutil
 import time
 import base64
+import sys
 import numpy as np
 from lxml import etree
 from ase.io.cube import read_cube_data, write_cube
@@ -13,7 +14,6 @@ from pycdft.dft_driver.base import DFTDriver
 
 class QboxLockfileError(Exception):
     pass
-
 
 class QboxDriver(DFTDriver):
     """ DFT driver for Qbox.
@@ -273,3 +273,7 @@ class QboxDriver(DFTDriver):
                 break
 
         self.sample.wfc = wfc
+
+    def exit(self):
+        """ quit DFT driver """
+        self.run_cmd("quit")

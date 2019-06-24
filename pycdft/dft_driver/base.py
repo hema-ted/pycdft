@@ -74,3 +74,8 @@ class DFTDriver(object):
     def get_wfc(self):
         """ Fetch the wavefunction from the DFT code."""
         pass
+  
+    @abstractmethod
+    def exit(self):
+        """ exit out of DFT driver"""
+        pass

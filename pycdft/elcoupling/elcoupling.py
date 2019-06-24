@@ -19,24 +19,28 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver,debug=True):
   
         only @ Gamma point, so quantities are real; but keep conjugate operations for now
     """
-    start_time = time.time()
-    assert solver1.sample.vspin == solver2.sample.vspin
-    vspin = solver1.sample.vspin
+    try:
+       start_time = time.time()
+       assert solver1.sample.vspin == solver2.sample.vspin
+       vspin = solver1.sample.vspin
+      
+       if vspin != 1:
+           raise NotImplementedError
    
-    if vspin != 1:
-        raise NotImplementedError
-
-    wfc1 = solver1.sample.wfc
-    wfc2 = solver2.sample.wfc
-
-    assert wfc1.nspin == wfc2.nspin
-    assert wfc1.nkpt == wfc2.nkpt
-    assert np.all(wfc1.nbnd == wfc2.nbnd)
-    nspin, nkpt, nbnd, norb = wfc1.nspin, wfc1.nkpt, wfc1.nbnd, wfc1.norb
-
-    # Gamma point only
-    if nspin not in [1, 2] or nkpt != 1:
-        raise NotImplementedError
+       wfc1 = solver1.sample.wfc
+       wfc2 = solver2.sample.wfc
+   
+       assert wfc1.nspin == wfc2.nspin
+       assert wfc1.nkpt == wfc2.nkpt
+       assert np.all(wfc1.nbnd == wfc2.nbnd)
+       nspin, nkpt, nbnd, norb = wfc1.nspin, wfc1.nkpt, wfc1.nbnd, wfc1.norb
+   
+       # Gamma point only
+       if nspin not in [1, 2] or nkpt != 1:
+           raise NotImplementedError
+    except:
+       print("Check your solvers!")
+       solver1.dft_driver.exit()
 
     sample = solver1.sample
     # density grid
@@ -99,6 +103,9 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver,debug=True):
     print("|Hab| (eV):", np.abs(Hsymm[0, 1] * hartree_to_ev))
     print(""); print("Elapsed time for Electronic Coupling:")
     timer(start_time,time.time())
+
+    print("Exiting....")
+    solver1.dft_driver.exit()
 
 def cdft_get_O(wfc1,wfc2,omega,m):
     """ Overlap matrix 
