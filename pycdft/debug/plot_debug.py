@@ -23,7 +23,7 @@ def parse(dat,mode):
         mode = 1 from read CUBE -> PyCDFT
              = -1 from PyCDFT -> write CUBE
     """
-    assert(np.abs(mode)==1)
+    #assert(np.abs(mode)==1)
     n1,n2,n3 = np.shape(dat)
     if mode==1:
         dat1 = np.roll(dat, n1//2, axis=0)
@@ -64,6 +64,32 @@ def get_hirsh(CDFTSolver,origin):
         print("Generated cube file for Constraint %d"% (index))
         
     print("Completed Hirshfeld weight extraction!")
+
+def get_hirsh_ct(CDFTSolver,origin):
+    """ Extract Hirschfeld weights for plotting  
+        For ChargeTransfer constraint only 
+ 
+        origin: 3-tuple; same as rhor.cube file; origin of volumetric data
+                give in Angstroms; gets converted to Bohr in program 
+
+        TODO: proper passing of atoms, so can also get atomic number printed"""
+
+    constraints = CDFTSolver.sample.constraints
+
+    index=1
+    for c in constraints:
+        atoms = CDFTSolver.sample.ase_cell
+        # write to cube file for visualizing
+        weights_dat = parse(c.w[0],-1)
+
+        filname="hirshr"+str(index)+".cube"
+        fileobj=open(filname,"w")
+
+        write_cube(fileobj,atoms,weights_dat,origin=origin)
+        fileobj.close()
+        print("Generated for Constraint %d"% (index))
+        
+    print("Completed! Have fun plotting")
 
       
 #===================== Charge density- total and per atom  =========================
@@ -109,7 +135,7 @@ def get_rho(CDFTSolver):
 
         # quick check
         rhor_raw = read_cube_data(CDFTSolver.dft_driver.rhor_file)[0]
-        assert rhor_raw.shape == (n1, n2, n3)
+        #assert rhor_raw.shape == (n1, n2, n3)
         
     print("Generated charge density cube file!")
 
