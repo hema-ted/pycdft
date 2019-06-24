@@ -39,8 +39,9 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver,debug=True):
        if nspin not in [1, 2] or nkpt != 1:
            raise NotImplementedError
     except:
-       print("Check your solvers!")
+       print("Error in elcoupling! Check your solvers!")
        solver1.dft_driver.exit()
+       sys.exit()
 
     sample = solver1.sample
     # density grid
@@ -104,7 +105,6 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver,debug=True):
     print(""); print("Elapsed time for Electronic Coupling:")
     timer(start_time,time.time())
 
-    print("Exiting....")
     solver1.dft_driver.exit()
 
 def cdft_get_O(wfc1,wfc2,omega,m):

@@ -276,4 +276,7 @@ class QboxDriver(DFTDriver):
 
     def exit(self):
         """ quit DFT driver """
-        self.run_cmd("quit")
+        open(self.input_file, "w").write("quit" + "\n")
+        os.remove(self.lock_file)
+        print("Qbox session ended")
+        sys.exit()

@@ -65,19 +65,19 @@ class CDFTSolver:
     def solve(self):
         """ Solve CDFT SCF or optimization problem."""
         print("===================== Initializing Run ====================")
-#        try:
-        self.dft_driver.get_rho_r()
-        if self.job == "scf":
-            self.solve_scf()
-        elif self.job == "opt":
-            self.solve_opt()
-        else:
-            raise ValueError
-        self.dft_driver.get_wfc()
-#        except:
-#            print("Something went wrong! See above error messages")
-#            print("Quitting DFT driver")
-#            self.dft_driver.exit() 
+        try:
+           self.dft_driver.get_rho_r()
+           if self.job == "scf":
+               self.solve_scf()
+           elif self.job == "opt":
+               self.solve_opt()
+           else:
+               raise ValueError
+           self.dft_driver.get_wfc()
+        except:
+            print("Something went wrong! See above error messages")
+            print("Quitting DFT driver")
+            self.dft_driver.exit() 
 
     def solve_scf(self):
         """ Iteratively solve the CDFT problem.
