@@ -1,0 +1,9 @@
+*.dot files generated using pyreverse
+https://www.logilab.org/blogentry/6883
+
+To view *.dot files, use graphviz
+To convert *.dot to *.pdf
+>> dot -Tpdf graph.dot -o graph.pdf
+
+To convert *.dot to *.eps
+>> dot -Tps2 graph.dot -o graph.eps

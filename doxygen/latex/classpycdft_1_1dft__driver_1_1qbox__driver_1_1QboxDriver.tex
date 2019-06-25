@@ -1,0 +1,179 @@
+\hypertarget{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver}{\section{pycdft.\-dft\-\_\-driver.\-qbox\-\_\-driver.\-Qbox\-Driver Class Reference}
+\label{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver}\index{pycdft.\-dft\-\_\-driver.\-qbox\-\_\-driver.\-Qbox\-Driver@{pycdft.\-dft\-\_\-driver.\-qbox\-\_\-driver.\-Qbox\-Driver}}
+}
+
+
+D\-F\-T driver.  
+
+
+Inheritance diagram for pycdft.\-dft\-\_\-driver.\-qbox\-\_\-driver.\-Qbox\-Driver\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_a12adab83eaf8c203e7090df57a6f18cd}{wait\-\_\-for\-\_\-lock\-\_\-file}
+\begin{DoxyCompactList}\small\item\em Wait for Qbox lock file to appear. \end{DoxyCompactList}\item 
+def \hyperlink{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_a2a92fb321ec4c409e41ffc05d5530e8d}{run\-\_\-cmd}
+\begin{DoxyCompactList}\small\item\em Order Qbox to run given command. \end{DoxyCompactList}\item 
+def \hyperlink{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_aa1ee28917546ba09ef936e6d9d90f25b}{set\-\_\-\-Vc}
+\begin{DoxyCompactList}\small\item\em Write Vc in cube format, then send set vext command to Qbox. \end{DoxyCompactList}\item 
+def \hyperlink{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_aa9bbf9ae41bef1093a71649267e583d7}{copy\-\_\-output}
+\begin{DoxyCompactList}\small\item\em Copy Qbox output file to self.\-output\-\_\-path. \end{DoxyCompactList}\item 
+def \hyperlink{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_ad6a35ece44aeb4888cb8c7733d01e93e}{run\-\_\-scf}
+\begin{DoxyCompactList}\small\item\em Run S\-C\-F calculation in Qbox. \end{DoxyCompactList}\item 
+def \hyperlink{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_a0484cb2353364e85a54a2035b06ac110}{run\-\_\-opt}
+\begin{DoxyCompactList}\small\item\em Run geometry optimization in Qbox. \end{DoxyCompactList}\item 
+def \hyperlink{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_afa29050fa90a8586389b36fa77a2e076}{get\-\_\-rho\-\_\-r}
+\begin{DoxyCompactList}\small\item\em Implement abstract fetch\-\_\-rhor method for Qbox. \end{DoxyCompactList}\item 
+def \hyperlink{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_af4b1d6e55d0511ea8e8ec4792a8193ef}{get\-\_\-force}
+\begin{DoxyCompactList}\small\item\em Implement abstract fetch\-\_\-force method for Qbox. \end{DoxyCompactList}\item 
+def \hyperlink{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_afeae534fe966c097bfd21a341628e2b5}{set\-\_\-\-Fc}
+\begin{DoxyCompactList}\small\item\em Implement abstract set\-\_\-force method for Qbox. \end{DoxyCompactList}\item 
+def \hyperlink{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_a6cce53566b9e443bf961ca371a8c9360}{get\-\_\-structure}
+\begin{DoxyCompactList}\small\item\em Implement abstract fetch\-\_\-structure method for Qbox. \end{DoxyCompactList}\item 
+\hypertarget{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_a5db17c3ce62425de455b38eff759e0bc}{def \hyperlink{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_a5db17c3ce62425de455b38eff759e0bc}{clean}}\label{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_a5db17c3ce62425de455b38eff759e0bc}
+
+\begin{DoxyCompactList}\small\item\em Clean qb\-\_\-cdft.\-in qb\-\_\-cdft.\-out qb\-\_\-cdft.\-in.\-lock. \end{DoxyCompactList}\item 
+def \hyperlink{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_a27981f1558fd63dfe053ec676fdcd2bf}{get\-\_\-wfc}
+\begin{DoxyCompactList}\small\item\em Parse wavefunction from Qbox. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+D\-F\-T driver. 
+
+Extra attributes\-: init\-\_\-cmd initialization command for Qbox. scf\-\_\-cmd command for running constrained S\-C\-F. opt\-\_\-cmd command for running geometry optimization. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_aa9bbf9ae41bef1093a71649267e583d7}{\index{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver@{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver}!copy\-\_\-output@{copy\-\_\-output}}
+\index{copy\-\_\-output@{copy\-\_\-output}!pycdft::dft_driver::qbox_driver::QboxDriver@{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver}}
+\subsubsection[{copy\-\_\-output}]{\setlength{\rightskip}{0pt plus 5cm}def pycdft.\-dft\-\_\-driver.\-qbox\-\_\-driver.\-Qbox\-Driver.\-copy\-\_\-output (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}\label{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_aa9bbf9ae41bef1093a71649267e583d7}
+
+
+Copy Qbox output file to self.\-output\-\_\-path. 
+
+\hypertarget{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_af4b1d6e55d0511ea8e8ec4792a8193ef}{\index{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver@{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver}!get\-\_\-force@{get\-\_\-force}}
+\index{get\-\_\-force@{get\-\_\-force}!pycdft::dft_driver::qbox_driver::QboxDriver@{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver}}
+\subsubsection[{get\-\_\-force}]{\setlength{\rightskip}{0pt plus 5cm}def pycdft.\-dft\-\_\-driver.\-qbox\-\_\-driver.\-Qbox\-Driver.\-get\-\_\-force (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}\label{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_af4b1d6e55d0511ea8e8ec4792a8193ef}
+
+
+Implement abstract fetch\-\_\-force method for Qbox. 
+
+\hypertarget{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_afa29050fa90a8586389b36fa77a2e076}{\index{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver@{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver}!get\-\_\-rho\-\_\-r@{get\-\_\-rho\-\_\-r}}
+\index{get\-\_\-rho\-\_\-r@{get\-\_\-rho\-\_\-r}!pycdft::dft_driver::qbox_driver::QboxDriver@{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver}}
+\subsubsection[{get\-\_\-rho\-\_\-r}]{\setlength{\rightskip}{0pt plus 5cm}def pycdft.\-dft\-\_\-driver.\-qbox\-\_\-driver.\-Qbox\-Driver.\-get\-\_\-rho\-\_\-r (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}\label{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_afa29050fa90a8586389b36fa77a2e076}
+
+
+Implement abstract fetch\-\_\-rhor method for Qbox. 
+
+Send plot charge density commands to Qbox, then parse charge density. \hypertarget{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_a6cce53566b9e443bf961ca371a8c9360}{\index{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver@{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver}!get\-\_\-structure@{get\-\_\-structure}}
+\index{get\-\_\-structure@{get\-\_\-structure}!pycdft::dft_driver::qbox_driver::QboxDriver@{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver}}
+\subsubsection[{get\-\_\-structure}]{\setlength{\rightskip}{0pt plus 5cm}def pycdft.\-dft\-\_\-driver.\-qbox\-\_\-driver.\-Qbox\-Driver.\-get\-\_\-structure (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}\label{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_a6cce53566b9e443bf961ca371a8c9360}
+
+
+Implement abstract fetch\-\_\-structure method for Qbox. 
+
+\hypertarget{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_a27981f1558fd63dfe053ec676fdcd2bf}{\index{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver@{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver}!get\-\_\-wfc@{get\-\_\-wfc}}
+\index{get\-\_\-wfc@{get\-\_\-wfc}!pycdft::dft_driver::qbox_driver::QboxDriver@{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver}}
+\subsubsection[{get\-\_\-wfc}]{\setlength{\rightskip}{0pt plus 5cm}def pycdft.\-dft\-\_\-driver.\-qbox\-\_\-driver.\-Qbox\-Driver.\-get\-\_\-wfc (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}\label{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_a27981f1558fd63dfe053ec676fdcd2bf}
+
+
+Parse wavefunction from Qbox. 
+
+\hypertarget{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_a2a92fb321ec4c409e41ffc05d5530e8d}{\index{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver@{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver}!run\-\_\-cmd@{run\-\_\-cmd}}
+\index{run\-\_\-cmd@{run\-\_\-cmd}!pycdft::dft_driver::qbox_driver::QboxDriver@{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver}}
+\subsubsection[{run\-\_\-cmd}]{\setlength{\rightskip}{0pt plus 5cm}def pycdft.\-dft\-\_\-driver.\-qbox\-\_\-driver.\-Qbox\-Driver.\-run\-\_\-cmd (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{cmd}
+\end{DoxyParamCaption}
+)}}\label{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_a2a92fb321ec4c409e41ffc05d5530e8d}
+
+
+Order Qbox to run given command. 
+
+\hypertarget{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_a0484cb2353364e85a54a2035b06ac110}{\index{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver@{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver}!run\-\_\-opt@{run\-\_\-opt}}
+\index{run\-\_\-opt@{run\-\_\-opt}!pycdft::dft_driver::qbox_driver::QboxDriver@{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver}}
+\subsubsection[{run\-\_\-opt}]{\setlength{\rightskip}{0pt plus 5cm}def pycdft.\-dft\-\_\-driver.\-qbox\-\_\-driver.\-Qbox\-Driver.\-run\-\_\-opt (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}\label{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_a0484cb2353364e85a54a2035b06ac110}
+
+
+Run geometry optimization in Qbox. 
+
+\hypertarget{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_ad6a35ece44aeb4888cb8c7733d01e93e}{\index{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver@{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver}!run\-\_\-scf@{run\-\_\-scf}}
+\index{run\-\_\-scf@{run\-\_\-scf}!pycdft::dft_driver::qbox_driver::QboxDriver@{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver}}
+\subsubsection[{run\-\_\-scf}]{\setlength{\rightskip}{0pt plus 5cm}def pycdft.\-dft\-\_\-driver.\-qbox\-\_\-driver.\-Qbox\-Driver.\-run\-\_\-scf (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}\label{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_ad6a35ece44aeb4888cb8c7733d01e93e}
+
+
+Run S\-C\-F calculation in Qbox. 
+
+\hypertarget{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_afeae534fe966c097bfd21a341628e2b5}{\index{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver@{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver}!set\-\_\-\-Fc@{set\-\_\-\-Fc}}
+\index{set\-\_\-\-Fc@{set\-\_\-\-Fc}!pycdft::dft_driver::qbox_driver::QboxDriver@{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver}}
+\subsubsection[{set\-\_\-\-Fc}]{\setlength{\rightskip}{0pt plus 5cm}def pycdft.\-dft\-\_\-driver.\-qbox\-\_\-driver.\-Qbox\-Driver.\-set\-\_\-\-Fc (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}\label{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_afeae534fe966c097bfd21a341628e2b5}
+
+
+Implement abstract set\-\_\-force method for Qbox. 
+
+\hypertarget{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_aa1ee28917546ba09ef936e6d9d90f25b}{\index{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver@{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver}!set\-\_\-\-Vc@{set\-\_\-\-Vc}}
+\index{set\-\_\-\-Vc@{set\-\_\-\-Vc}!pycdft::dft_driver::qbox_driver::QboxDriver@{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver}}
+\subsubsection[{set\-\_\-\-Vc}]{\setlength{\rightskip}{0pt plus 5cm}def pycdft.\-dft\-\_\-driver.\-qbox\-\_\-driver.\-Qbox\-Driver.\-set\-\_\-\-Vc (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{Vc}
+\end{DoxyParamCaption}
+)}}\label{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_aa1ee28917546ba09ef936e6d9d90f25b}
+
+
+Write Vc in cube format, then send set vext command to Qbox. 
+
+\hypertarget{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_a12adab83eaf8c203e7090df57a6f18cd}{\index{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver@{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver}!wait\-\_\-for\-\_\-lock\-\_\-file@{wait\-\_\-for\-\_\-lock\-\_\-file}}
+\index{wait\-\_\-for\-\_\-lock\-\_\-file@{wait\-\_\-for\-\_\-lock\-\_\-file}!pycdft::dft_driver::qbox_driver::QboxDriver@{pycdft\-::dft\-\_\-driver\-::qbox\-\_\-driver\-::\-Qbox\-Driver}}
+\subsubsection[{wait\-\_\-for\-\_\-lock\-\_\-file}]{\setlength{\rightskip}{0pt plus 5cm}def pycdft.\-dft\-\_\-driver.\-qbox\-\_\-driver.\-Qbox\-Driver.\-wait\-\_\-for\-\_\-lock\-\_\-file (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}\label{classpycdft_1_1dft__driver_1_1qbox__driver_1_1QboxDriver_a12adab83eaf8c203e7090df57a6f18cd}
+
+
+Wait for Qbox lock file to appear. 
+
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+qbox\-\_\-driver.\-py\end{DoxyCompactItemize}

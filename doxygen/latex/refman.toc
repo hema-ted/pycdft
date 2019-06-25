@@ -1,0 +1,110 @@
+\contentsline {chapter}{\numberline {1}Hierarchical Index}{1}{chapter.1}
+\contentsline {section}{\numberline {1.1}Class Hierarchy}{1}{section.1.1}
+\contentsline {chapter}{\numberline {2}Class Index}{3}{chapter.2}
+\contentsline {section}{\numberline {2.1}Class List}{3}{section.2.1}
+\contentsline {chapter}{\numberline {3}Class Documentation}{5}{chapter.3}
+\contentsline {section}{\numberline {3.1}pycdft.\discretionary {-}{}{}common.\discretionary {-}{}{}atom.\discretionary {-}{}{}Atom Class Reference}{5}{section.3.1}
+\contentsline {subsection}{\numberline {3.1.1}Detailed Description}{5}{subsection.3.1.1}
+\contentsline {subsection}{\numberline {3.1.2}Member Data Documentation}{5}{subsection.3.1.2}
+\contentsline {subsubsection}{\numberline {3.1.2.1}sample}{5}{subsubsection.3.1.2.1}
+\contentsline {subsubsection}{\numberline {3.1.2.2}symbol}{5}{subsubsection.3.1.2.2}
+\contentsline {section}{\numberline {3.2}pycdft.\discretionary {-}{}{}cdft.\discretionary {-}{}{}C\discretionary {-}{}{}D\discretionary {-}{}{}F\discretionary {-}{}{}T\discretionary {-}{}{}Solver Class Reference}{6}{section.3.2}
+\contentsline {subsection}{\numberline {3.2.1}Detailed Description}{6}{subsection.3.2.1}
+\contentsline {subsection}{\numberline {3.2.2}Member Function Documentation}{6}{subsection.3.2.2}
+\contentsline {subsubsection}{\numberline {3.2.2.1}solve}{6}{subsubsection.3.2.2.1}
+\contentsline {subsubsection}{\numberline {3.2.2.2}solve\discretionary {-}{}{}\_\discretionary {-}{}{}opt}{6}{subsubsection.3.2.2.2}
+\contentsline {subsubsection}{\numberline {3.2.2.3}solve\discretionary {-}{}{}\_\discretionary {-}{}{}scf}{7}{subsubsection.3.2.2.3}
+\contentsline {subsubsection}{\numberline {3.2.2.4}solve\discretionary {-}{}{}\_\discretionary {-}{}{}scf\discretionary {-}{}{}\_\discretionary {-}{}{}for\discretionary {-}{}{}\_\discretionary {-}{}{}d\discretionary {-}{}{}W\discretionary {-}{}{}\_\discretionary {-}{}{}by\discretionary {-}{}{}\_\discretionary {-}{}{}d\discretionary {-}{}{}V}{7}{subsubsection.3.2.2.4}
+\contentsline {subsubsection}{\numberline {3.2.2.5}solve\discretionary {-}{}{}\_\discretionary {-}{}{}scf\discretionary {-}{}{}\_\discretionary {-}{}{}with\discretionary {-}{}{}\_\discretionary {-}{}{}new\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}V}{7}{subsubsection.3.2.2.5}
+\contentsline {subsection}{\numberline {3.2.3}Member Data Documentation}{7}{subsection.3.2.3}
+\contentsline {subsubsection}{\numberline {3.2.3.1}dft\discretionary {-}{}{}\_\discretionary {-}{}{}driver}{7}{subsubsection.3.2.3.1}
+\contentsline {subsubsection}{\numberline {3.2.3.2}F\discretionary {-}{}{}\_\discretionary {-}{}{}tol}{7}{subsubsection.3.2.3.2}
+\contentsline {subsubsection}{\numberline {3.2.3.3}job}{7}{subsubsection.3.2.3.3}
+\contentsline {subsubsection}{\numberline {3.2.3.4}maxcscf}{7}{subsubsection.3.2.3.4}
+\contentsline {subsubsection}{\numberline {3.2.3.5}maxstep}{7}{subsubsection.3.2.3.5}
+\contentsline {subsubsection}{\numberline {3.2.3.6}sample}{7}{subsubsection.3.2.3.6}
+\contentsline {section}{\numberline {3.3}pycdft.\discretionary {-}{}{}constraint.\discretionary {-}{}{}charge.\discretionary {-}{}{}Charge\discretionary {-}{}{}Constraint Class Reference}{7}{section.3.3}
+\contentsline {subsection}{\numberline {3.3.1}Detailed Description}{8}{subsection.3.3.1}
+\contentsline {section}{\numberline {3.4}pycdft.\discretionary {-}{}{}constraint.\discretionary {-}{}{}charge\discretionary {-}{}{}\_\discretionary {-}{}{}transfer.\discretionary {-}{}{}Charge\discretionary {-}{}{}Transfer\discretionary {-}{}{}Constraint Class Reference}{8}{section.3.4}
+\contentsline {subsection}{\numberline {3.4.1}Detailed Description}{8}{subsection.3.4.1}
+\contentsline {section}{\numberline {3.5}pycdft.\discretionary {-}{}{}constraint.\discretionary {-}{}{}base.\discretionary {-}{}{}Constraint Class Reference}{8}{section.3.5}
+\contentsline {subsection}{\numberline {3.5.1}Detailed Description}{9}{subsection.3.5.1}
+\contentsline {subsection}{\numberline {3.5.2}Constructor \& Destructor Documentation}{9}{subsection.3.5.2}
+\contentsline {subsubsection}{\numberline {3.5.2.1}\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}\_\discretionary {-}{}{}init\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}\_\discretionary {-}{}{}}{9}{subsubsection.3.5.2.1}
+\contentsline {subsection}{\numberline {3.5.3}Member Function Documentation}{9}{subsection.3.5.3}
+\contentsline {subsubsection}{\numberline {3.5.3.1}d\discretionary {-}{}{}W\discretionary {-}{}{}\_\discretionary {-}{}{}by\discretionary {-}{}{}\_\discretionary {-}{}{}d\discretionary {-}{}{}V}{9}{subsubsection.3.5.3.1}
+\contentsline {subsubsection}{\numberline {3.5.3.2}update\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Fc}{10}{subsubsection.3.5.3.2}
+\contentsline {subsubsection}{\numberline {3.5.3.3}update\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}N}{10}{subsubsection.3.5.3.3}
+\contentsline {subsubsection}{\numberline {3.5.3.4}update\discretionary {-}{}{}\_\discretionary {-}{}{}structure}{10}{subsubsection.3.5.3.4}
+\contentsline {subsubsection}{\numberline {3.5.3.5}update\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Vc}{10}{subsubsection.3.5.3.5}
+\contentsline {subsubsection}{\numberline {3.5.3.6}update\discretionary {-}{}{}\_\discretionary {-}{}{}w}{10}{subsubsection.3.5.3.6}
+\contentsline {subsection}{\numberline {3.5.4}Member Data Documentation}{10}{subsection.3.5.4}
+\contentsline {subsubsection}{\numberline {3.5.4.1}N\discretionary {-}{}{}\_\discretionary {-}{}{}tol}{10}{subsubsection.3.5.4.1}
+\contentsline {subsubsection}{\numberline {3.5.4.2}sample}{10}{subsubsection.3.5.4.2}
+\contentsline {subsubsection}{\numberline {3.5.4.3}V}{10}{subsubsection.3.5.4.3}
+\contentsline {subsubsection}{\numberline {3.5.4.4}V\discretionary {-}{}{}\_\discretionary {-}{}{}init}{10}{subsubsection.3.5.4.4}
+\contentsline {section}{\numberline {3.6}pycdft.\discretionary {-}{}{}dft\discretionary {-}{}{}\_\discretionary {-}{}{}driver.\discretionary {-}{}{}base.\discretionary {-}{}{}D\discretionary {-}{}{}F\discretionary {-}{}{}T\discretionary {-}{}{}Driver Class Reference}{10}{section.3.6}
+\contentsline {subsection}{\numberline {3.6.1}Detailed Description}{11}{subsection.3.6.1}
+\contentsline {subsection}{\numberline {3.6.2}Member Function Documentation}{11}{subsection.3.6.2}
+\contentsline {subsubsection}{\numberline {3.6.2.1}get\discretionary {-}{}{}\_\discretionary {-}{}{}force}{11}{subsubsection.3.6.2.1}
+\contentsline {subsubsection}{\numberline {3.6.2.2}get\discretionary {-}{}{}\_\discretionary {-}{}{}rho\discretionary {-}{}{}\_\discretionary {-}{}{}r}{12}{subsubsection.3.6.2.2}
+\contentsline {subsubsection}{\numberline {3.6.2.3}get\discretionary {-}{}{}\_\discretionary {-}{}{}structure}{12}{subsubsection.3.6.2.3}
+\contentsline {subsubsection}{\numberline {3.6.2.4}get\discretionary {-}{}{}\_\discretionary {-}{}{}wfc}{12}{subsubsection.3.6.2.4}
+\contentsline {subsubsection}{\numberline {3.6.2.5}reset}{12}{subsubsection.3.6.2.5}
+\contentsline {subsubsection}{\numberline {3.6.2.6}run\discretionary {-}{}{}\_\discretionary {-}{}{}opt}{12}{subsubsection.3.6.2.6}
+\contentsline {subsubsection}{\numberline {3.6.2.7}run\discretionary {-}{}{}\_\discretionary {-}{}{}scf}{12}{subsubsection.3.6.2.7}
+\contentsline {subsubsection}{\numberline {3.6.2.8}set\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Fc}{12}{subsubsection.3.6.2.8}
+\contentsline {subsubsection}{\numberline {3.6.2.9}set\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Vc}{12}{subsubsection.3.6.2.9}
+\contentsline {subsection}{\numberline {3.6.3}Member Data Documentation}{12}{subsection.3.6.3}
+\contentsline {subsubsection}{\numberline {3.6.3.1}icscf}{12}{subsubsection.3.6.3.1}
+\contentsline {subsubsection}{\numberline {3.6.3.2}istep}{12}{subsubsection.3.6.3.2}
+\contentsline {subsubsection}{\numberline {3.6.3.3}output\discretionary {-}{}{}\_\discretionary {-}{}{}path}{13}{subsubsection.3.6.3.3}
+\contentsline {subsubsection}{\numberline {3.6.3.4}sample}{13}{subsubsection.3.6.3.4}
+\contentsline {section}{\numberline {3.7}pycdft.\discretionary {-}{}{}common.\discretionary {-}{}{}fragment.\discretionary {-}{}{}Fragment Class Reference}{13}{section.3.7}
+\contentsline {subsection}{\numberline {3.7.1}Detailed Description}{13}{subsection.3.7.1}
+\contentsline {subsection}{\numberline {3.7.2}Member Data Documentation}{13}{subsection.3.7.2}
+\contentsline {subsubsection}{\numberline {3.7.2.1}sample}{13}{subsubsection.3.7.2.1}
+\contentsline {section}{\numberline {3.8}pycdft.\discretionary {-}{}{}dft\discretionary {-}{}{}\_\discretionary {-}{}{}driver.\discretionary {-}{}{}qbox\discretionary {-}{}{}\_\discretionary {-}{}{}driver.\discretionary {-}{}{}Qbox\discretionary {-}{}{}Driver Class Reference}{13}{section.3.8}
+\contentsline {subsection}{\numberline {3.8.1}Detailed Description}{14}{subsection.3.8.1}
+\contentsline {subsection}{\numberline {3.8.2}Member Function Documentation}{14}{subsection.3.8.2}
+\contentsline {subsubsection}{\numberline {3.8.2.1}copy\discretionary {-}{}{}\_\discretionary {-}{}{}output}{14}{subsubsection.3.8.2.1}
+\contentsline {subsubsection}{\numberline {3.8.2.2}get\discretionary {-}{}{}\_\discretionary {-}{}{}force}{14}{subsubsection.3.8.2.2}
+\contentsline {subsubsection}{\numberline {3.8.2.3}get\discretionary {-}{}{}\_\discretionary {-}{}{}rho\discretionary {-}{}{}\_\discretionary {-}{}{}r}{14}{subsubsection.3.8.2.3}
+\contentsline {subsubsection}{\numberline {3.8.2.4}get\discretionary {-}{}{}\_\discretionary {-}{}{}structure}{15}{subsubsection.3.8.2.4}
+\contentsline {subsubsection}{\numberline {3.8.2.5}get\discretionary {-}{}{}\_\discretionary {-}{}{}wfc}{15}{subsubsection.3.8.2.5}
+\contentsline {subsubsection}{\numberline {3.8.2.6}run\discretionary {-}{}{}\_\discretionary {-}{}{}cmd}{15}{subsubsection.3.8.2.6}
+\contentsline {subsubsection}{\numberline {3.8.2.7}run\discretionary {-}{}{}\_\discretionary {-}{}{}opt}{15}{subsubsection.3.8.2.7}
+\contentsline {subsubsection}{\numberline {3.8.2.8}run\discretionary {-}{}{}\_\discretionary {-}{}{}scf}{15}{subsubsection.3.8.2.8}
+\contentsline {subsubsection}{\numberline {3.8.2.9}set\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Fc}{15}{subsubsection.3.8.2.9}
+\contentsline {subsubsection}{\numberline {3.8.2.10}set\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Vc}{15}{subsubsection.3.8.2.10}
+\contentsline {subsubsection}{\numberline {3.8.2.11}wait\discretionary {-}{}{}\_\discretionary {-}{}{}for\discretionary {-}{}{}\_\discretionary {-}{}{}lock\discretionary {-}{}{}\_\discretionary {-}{}{}file}{15}{subsubsection.3.8.2.11}
+\contentsline {section}{\numberline {3.9}pycdft.\discretionary {-}{}{}common.\discretionary {-}{}{}sample.\discretionary {-}{}{}Sample Class Reference}{15}{section.3.9}
+\contentsline {subsection}{\numberline {3.9.1}Detailed Description}{16}{subsection.3.9.1}
+\contentsline {subsection}{\numberline {3.9.2}Member Function Documentation}{16}{subsection.3.9.2}
+\contentsline {subsubsection}{\numberline {3.9.2.1}ase\discretionary {-}{}{}\_\discretionary {-}{}{}cell}{16}{subsubsection.3.9.2.1}
+\contentsline {subsubsection}{\numberline {3.9.2.2}compute\discretionary {-}{}{}\_\discretionary {-}{}{}eigr}{16}{subsubsection.3.9.2.2}
+\contentsline {subsubsection}{\numberline {3.9.2.3}compute\discretionary {-}{}{}\_\discretionary {-}{}{}rhoatom\discretionary {-}{}{}\_\discretionary {-}{}{}g}{17}{subsubsection.3.9.2.3}
+\contentsline {subsubsection}{\numberline {3.9.2.4}compute\discretionary {-}{}{}\_\discretionary {-}{}{}rhoatom\discretionary {-}{}{}\_\discretionary {-}{}{}grad\discretionary {-}{}{}\_\discretionary {-}{}{}r}{17}{subsubsection.3.9.2.4}
+\contentsline {subsubsection}{\numberline {3.9.2.5}export}{17}{subsubsection.3.9.2.5}
+\contentsline {subsubsection}{\numberline {3.9.2.6}nel}{17}{subsubsection.3.9.2.6}
+\contentsline {subsubsection}{\numberline {3.9.2.7}save}{17}{subsubsection.3.9.2.7}
+\contentsline {subsubsection}{\numberline {3.9.2.8}show}{17}{subsubsection.3.9.2.8}
+\contentsline {subsubsection}{\numberline {3.9.2.9}update\discretionary {-}{}{}\_\discretionary {-}{}{}weights}{17}{subsubsection.3.9.2.9}
+\contentsline {subsection}{\numberline {3.9.3}Member Data Documentation}{17}{subsection.3.9.3}
+\contentsline {subsubsection}{\numberline {3.9.3.1}Ec}{17}{subsubsection.3.9.3.1}
+\contentsline {subsubsection}{\numberline {3.9.3.2}Ed}{17}{subsubsection.3.9.3.2}
+\contentsline {subsubsection}{\numberline {3.9.3.3}Fc}{17}{subsubsection.3.9.3.3}
+\contentsline {subsubsection}{\numberline {3.9.3.4}Fd}{17}{subsubsection.3.9.3.4}
+\contentsline {subsubsection}{\numberline {3.9.3.5}Fw}{18}{subsubsection.3.9.3.5}
+\contentsline {subsubsection}{\numberline {3.9.3.6}omega}{18}{subsubsection.3.9.3.6}
+\contentsline {subsubsection}{\numberline {3.9.3.7}vspin}{18}{subsubsection.3.9.3.7}
+\contentsline {subsubsection}{\numberline {3.9.3.8}W}{18}{subsubsection.3.9.3.8}
+\contentsline {section}{\numberline {3.10}pycdft.\discretionary {-}{}{}common.\discretionary {-}{}{}wfc.\discretionary {-}{}{}Wavefunction Class Reference}{18}{section.3.10}
+\contentsline {subsection}{\numberline {3.10.1}Detailed Description}{18}{subsection.3.10.1}
+\contentsline {subsection}{\numberline {3.10.2}Member Function Documentation}{19}{subsection.3.10.2}
+\contentsline {subsubsection}{\numberline {3.10.2.1}idx2skb}{19}{subsubsection.3.10.2.1}
+\contentsline {subsubsection}{\numberline {3.10.2.2}normalize}{19}{subsubsection.3.10.2.2}
+\contentsline {subsubsection}{\numberline {3.10.2.3}skb2idx}{19}{subsubsection.3.10.2.3}
+\contentsline {section}{\numberline {3.11}pycdft.\discretionary {-}{}{}common.\discretionary {-}{}{}wfc.\discretionary {-}{}{}Wfc\discretionary {-}{}{}Manager Class Reference}{19}{section.3.11}
+\contentsline {subsection}{\numberline {3.11.1}Detailed Description}{19}{subsection.3.11.1}
+\contentsline {part}{Index}{19}{subsection.3.11.1}

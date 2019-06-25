@@ -75,9 +75,10 @@ class CDFTSolver:
                raise ValueError
            self.dft_driver.get_wfc()
         except:
-            print("Something went wrong! See above error messages")
+            print("Something went wrong! Check scf, convergence, ..." )
             print("Quitting DFT driver")
             self.dft_driver.exit() 
+            print("DONE") 
 
     def solve_scf(self):
         """ Iteratively solve the CDFT problem.

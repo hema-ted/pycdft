@@ -1,0 +1,151 @@
+\hypertarget{classpycdft_1_1cdft_1_1CDFTSolver}{\section{pycdft.\-cdft.\-C\-D\-F\-T\-Solver Class Reference}
+\label{classpycdft_1_1cdft_1_1CDFTSolver}\index{pycdft.\-cdft.\-C\-D\-F\-T\-Solver@{pycdft.\-cdft.\-C\-D\-F\-T\-Solver}}
+}
+
+
+Constrained D\-F\-T solver.  
+
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{classpycdft_1_1cdft_1_1CDFTSolver_a972c67995d1d7a27dde9d4eb6f749821}{solve}
+\begin{DoxyCompactList}\small\item\em Solve C\-D\-F\-T S\-C\-F or optimization problem. \end{DoxyCompactList}\item 
+def \hyperlink{classpycdft_1_1cdft_1_1CDFTSolver_aab6b001aca774c7c6ef40e983c52433a}{solve\-\_\-scf}
+\begin{DoxyCompactList}\small\item\em Iteratively solve the C\-D\-F\-T problem. \end{DoxyCompactList}\item 
+def \hyperlink{classpycdft_1_1cdft_1_1CDFTSolver_a20e51ed93020505d046f1fdef0da8414}{solve\-\_\-scf\-\_\-with\-\_\-new\-\_\-\-V}
+\begin{DoxyCompactList}\small\item\em Given V for all constraints, solve the K\-S problem. \end{DoxyCompactList}\item 
+def \hyperlink{classpycdft_1_1cdft_1_1CDFTSolver_a28308930ffe9dd1e63019893aafd42f3}{solve\-\_\-scf\-\_\-for\-\_\-d\-W\-\_\-by\-\_\-d\-V}
+\begin{DoxyCompactList}\small\item\em Wrapper function for solve\-\_\-scf\-\_\-with\-\_\-new\-\_\-\-V returning d\-W/d\-V. \end{DoxyCompactList}\item 
+def \hyperlink{classpycdft_1_1cdft_1_1CDFTSolver_a614f82937b3bb796928dadf367d74171}{solve\-\_\-opt}
+\begin{DoxyCompactList}\small\item\em Relax the structure under constraint. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classpycdft_1_1cdft_1_1CDFTSolver_a0dbb216ba260e5fe5ac2d12af5972291}{job}
+\begin{DoxyCompactList}\small\item\em \char`\"{}scf\char`\"{} or \char`\"{}opt\char`\"{}. \end{DoxyCompactList}\item 
+\hyperlink{classpycdft_1_1cdft_1_1CDFTSolver_a05ea589d1ad333ed95cef64d86408773}{sample}
+\begin{DoxyCompactList}\small\item\em the whole system for which C\-D\-F\-T calculation is performed. \end{DoxyCompactList}\item 
+\hyperlink{classpycdft_1_1cdft_1_1CDFTSolver_a6fdf43a1aa722ae015cc3338bac8cdbf}{dft\-\_\-driver}
+\begin{DoxyCompactList}\small\item\em the interface to D\-F\-T code (e.\-g. \end{DoxyCompactList}\item 
+\hyperlink{classpycdft_1_1cdft_1_1CDFTSolver_a4bd78f134669a46d676a557d811949e5}{maxcscf}
+\begin{DoxyCompactList}\small\item\em maximum number of C\-D\-F\-T iterations. \end{DoxyCompactList}\item 
+\hyperlink{classpycdft_1_1cdft_1_1CDFTSolver_a5faef6c90a36457f9dc4dc7525f8f76a}{maxstep}
+\begin{DoxyCompactList}\small\item\em maximum geometry optimization steps. \end{DoxyCompactList}\item 
+\hyperlink{classpycdft_1_1cdft_1_1CDFTSolver_a2e23d3524341dfa49edb1c922b7ea76d}{F\-\_\-tol}
+\begin{DoxyCompactList}\small\item\em force threshold for optimization. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Constrained D\-F\-T solver. 
+
+Vc\-\_\-tot (float array, shape == \mbox{[}vspin, n1, n2, n3\mbox{]})\-: total constraint potential as a sum of all constraints defined on all fragments. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classpycdft_1_1cdft_1_1CDFTSolver_a972c67995d1d7a27dde9d4eb6f749821}{\index{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver@{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver}!solve@{solve}}
+\index{solve@{solve}!pycdft::cdft::CDFTSolver@{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver}}
+\subsubsection[{solve}]{\setlength{\rightskip}{0pt plus 5cm}def pycdft.\-cdft.\-C\-D\-F\-T\-Solver.\-solve (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}\label{classpycdft_1_1cdft_1_1CDFTSolver_a972c67995d1d7a27dde9d4eb6f749821}
+
+
+Solve C\-D\-F\-T S\-C\-F or optimization problem. 
+
+\hypertarget{classpycdft_1_1cdft_1_1CDFTSolver_a614f82937b3bb796928dadf367d74171}{\index{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver@{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver}!solve\-\_\-opt@{solve\-\_\-opt}}
+\index{solve\-\_\-opt@{solve\-\_\-opt}!pycdft::cdft::CDFTSolver@{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver}}
+\subsubsection[{solve\-\_\-opt}]{\setlength{\rightskip}{0pt plus 5cm}def pycdft.\-cdft.\-C\-D\-F\-T\-Solver.\-solve\-\_\-opt (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}\label{classpycdft_1_1cdft_1_1CDFTSolver_a614f82937b3bb796928dadf367d74171}
+
+
+Relax the structure under constraint. 
+
+A force from constraint potential is added to D\-F\-T force during optimization. \hypertarget{classpycdft_1_1cdft_1_1CDFTSolver_aab6b001aca774c7c6ef40e983c52433a}{\index{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver@{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver}!solve\-\_\-scf@{solve\-\_\-scf}}
+\index{solve\-\_\-scf@{solve\-\_\-scf}!pycdft::cdft::CDFTSolver@{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver}}
+\subsubsection[{solve\-\_\-scf}]{\setlength{\rightskip}{0pt plus 5cm}def pycdft.\-cdft.\-C\-D\-F\-T\-Solver.\-solve\-\_\-scf (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}\label{classpycdft_1_1cdft_1_1CDFTSolver_aab6b001aca774c7c6ef40e983c52433a}
+
+
+Iteratively solve the C\-D\-F\-T problem. 
+
+An outer loop (implemented below) is performed to maximize the free energy w.\-r.\-t. Lagrangian multipliers for all constrains, an inner loop (casted to a K\-S problem and outsourced to D\-F\-T code) is performed to minimize the free energy w.\-r.\-t. charge density. \hypertarget{classpycdft_1_1cdft_1_1CDFTSolver_a28308930ffe9dd1e63019893aafd42f3}{\index{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver@{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver}!solve\-\_\-scf\-\_\-for\-\_\-d\-W\-\_\-by\-\_\-d\-V@{solve\-\_\-scf\-\_\-for\-\_\-d\-W\-\_\-by\-\_\-d\-V}}
+\index{solve\-\_\-scf\-\_\-for\-\_\-d\-W\-\_\-by\-\_\-d\-V@{solve\-\_\-scf\-\_\-for\-\_\-d\-W\-\_\-by\-\_\-d\-V}!pycdft::cdft::CDFTSolver@{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver}}
+\subsubsection[{solve\-\_\-scf\-\_\-for\-\_\-d\-W\-\_\-by\-\_\-d\-V}]{\setlength{\rightskip}{0pt plus 5cm}def pycdft.\-cdft.\-C\-D\-F\-T\-Solver.\-solve\-\_\-scf\-\_\-for\-\_\-d\-W\-\_\-by\-\_\-d\-V (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{V}
+\end{DoxyParamCaption}
+)}}\label{classpycdft_1_1cdft_1_1CDFTSolver_a28308930ffe9dd1e63019893aafd42f3}
+
+
+Wrapper function for solve\-\_\-scf\-\_\-with\-\_\-new\-\_\-\-V returning d\-W/d\-V. 
+
+\hypertarget{classpycdft_1_1cdft_1_1CDFTSolver_a20e51ed93020505d046f1fdef0da8414}{\index{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver@{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver}!solve\-\_\-scf\-\_\-with\-\_\-new\-\_\-\-V@{solve\-\_\-scf\-\_\-with\-\_\-new\-\_\-\-V}}
+\index{solve\-\_\-scf\-\_\-with\-\_\-new\-\_\-\-V@{solve\-\_\-scf\-\_\-with\-\_\-new\-\_\-\-V}!pycdft::cdft::CDFTSolver@{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver}}
+\subsubsection[{solve\-\_\-scf\-\_\-with\-\_\-new\-\_\-\-V}]{\setlength{\rightskip}{0pt plus 5cm}def pycdft.\-cdft.\-C\-D\-F\-T\-Solver.\-solve\-\_\-scf\-\_\-with\-\_\-new\-\_\-\-V (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{Vs}
+\end{DoxyParamCaption}
+)}}\label{classpycdft_1_1cdft_1_1CDFTSolver_a20e51ed93020505d046f1fdef0da8414}
+
+
+Given V for all constraints, solve the K\-S problem. 
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classpycdft_1_1cdft_1_1CDFTSolver_a6fdf43a1aa722ae015cc3338bac8cdbf}{\index{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver@{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver}!dft\-\_\-driver@{dft\-\_\-driver}}
+\index{dft\-\_\-driver@{dft\-\_\-driver}!pycdft::cdft::CDFTSolver@{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver}}
+\subsubsection[{dft\-\_\-driver}]{\setlength{\rightskip}{0pt plus 5cm}pycdft.\-cdft.\-C\-D\-F\-T\-Solver.\-dft\-\_\-driver}}\label{classpycdft_1_1cdft_1_1CDFTSolver_a6fdf43a1aa722ae015cc3338bac8cdbf}
+
+
+the interface to D\-F\-T code (e.\-g. 
+
+Qbox or P\-W). \hypertarget{classpycdft_1_1cdft_1_1CDFTSolver_a2e23d3524341dfa49edb1c922b7ea76d}{\index{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver@{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver}!F\-\_\-tol@{F\-\_\-tol}}
+\index{F\-\_\-tol@{F\-\_\-tol}!pycdft::cdft::CDFTSolver@{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver}}
+\subsubsection[{F\-\_\-tol}]{\setlength{\rightskip}{0pt plus 5cm}pycdft.\-cdft.\-C\-D\-F\-T\-Solver.\-F\-\_\-tol}}\label{classpycdft_1_1cdft_1_1CDFTSolver_a2e23d3524341dfa49edb1c922b7ea76d}
+
+
+force threshold for optimization. 
+
+\hypertarget{classpycdft_1_1cdft_1_1CDFTSolver_a0dbb216ba260e5fe5ac2d12af5972291}{\index{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver@{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver}!job@{job}}
+\index{job@{job}!pycdft::cdft::CDFTSolver@{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver}}
+\subsubsection[{job}]{\setlength{\rightskip}{0pt plus 5cm}pycdft.\-cdft.\-C\-D\-F\-T\-Solver.\-job}}\label{classpycdft_1_1cdft_1_1CDFTSolver_a0dbb216ba260e5fe5ac2d12af5972291}
+
+
+\char`\"{}scf\char`\"{} or \char`\"{}opt\char`\"{}. 
+
+\hypertarget{classpycdft_1_1cdft_1_1CDFTSolver_a4bd78f134669a46d676a557d811949e5}{\index{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver@{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver}!maxcscf@{maxcscf}}
+\index{maxcscf@{maxcscf}!pycdft::cdft::CDFTSolver@{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver}}
+\subsubsection[{maxcscf}]{\setlength{\rightskip}{0pt plus 5cm}pycdft.\-cdft.\-C\-D\-F\-T\-Solver.\-maxcscf}}\label{classpycdft_1_1cdft_1_1CDFTSolver_a4bd78f134669a46d676a557d811949e5}
+
+
+maximum number of C\-D\-F\-T iterations. 
+
+\hypertarget{classpycdft_1_1cdft_1_1CDFTSolver_a5faef6c90a36457f9dc4dc7525f8f76a}{\index{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver@{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver}!maxstep@{maxstep}}
+\index{maxstep@{maxstep}!pycdft::cdft::CDFTSolver@{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver}}
+\subsubsection[{maxstep}]{\setlength{\rightskip}{0pt plus 5cm}pycdft.\-cdft.\-C\-D\-F\-T\-Solver.\-maxstep}}\label{classpycdft_1_1cdft_1_1CDFTSolver_a5faef6c90a36457f9dc4dc7525f8f76a}
+
+
+maximum geometry optimization steps. 
+
+\hypertarget{classpycdft_1_1cdft_1_1CDFTSolver_a05ea589d1ad333ed95cef64d86408773}{\index{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver@{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver}!sample@{sample}}
+\index{sample@{sample}!pycdft::cdft::CDFTSolver@{pycdft\-::cdft\-::\-C\-D\-F\-T\-Solver}}
+\subsubsection[{sample}]{\setlength{\rightskip}{0pt plus 5cm}pycdft.\-cdft.\-C\-D\-F\-T\-Solver.\-sample}}\label{classpycdft_1_1cdft_1_1CDFTSolver_a05ea589d1ad333ed95cef64d86408773}
+
+
+the whole system for which C\-D\-F\-T calculation is performed. 
+
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+cdft.\-py\end{DoxyCompactItemize}

@@ -1,0 +1,23 @@
+digraph "classes" {
+charset="utf-8"
+rankdir=BT
+"0" [label="{Atom|abs_coord\lase_atom\lcry_coord\lsample\lsymbol\l|}", shape="record"];
+"1" [fontcolor="red", label="{CDFTSCFConverged|\l|}", shape="record"];
+"2" [label="{CDFTSolver|F_tol : float\lVc_tot : NoneType\lconstraints\ldft_driver\lisolver\litscf : NoneType, int\ljob\lmaxcscf : int\lmaxstep : int\loptimizer : str\loutput_path : str\lsample\l|copy()\lsolve()\lsolve_opt()\lsolve_scf()\lsolve_scf_for_dW_by_dV()\lsolve_scf_with_new_V()\l}", shape="record"];
+"3" [label="{ChargeConstraint|fragment\ltype : str\lw\l|compute_w_grad_r()\lupdate_w()\l}", shape="record"];
+"4" [label="{ChargeTransferConstraint|acceptor\ldonor\ltype : str\lw\l|compute_w_grad_r()\lupdate_w()\l}", shape="record"];
+"5" [label="{Constraint|Fc : NoneType\lN : NoneType\lN0\lN_tol : NoneType\lV : NoneType\lV_brak : NoneType\lV_init : NoneType\lVc : NoneType\ldW_by_dV\lis_converged\lsample\ltype : NoneType\lw : NoneType\l|compute_w_grad_r()\lupdate_Fc()\lupdate_N()\lupdate_Vc()\lupdate_structure()\lupdate_w()\l}", shape="record"];
+"6" [label="{DFTDriver|icscf : NoneType\listep : NoneType\loutput_path : NoneType\lsample\l|get_force()\lget_rho_r()\lget_structure()\lget_wfc()\lreset()\lrun_opt()\lrun_scf()\lset_Fc()\lset_Vc()\l}", shape="record"];
+"7" [label="{FFTGrid|N\ln1\ln1h\ln2\ln2h\ln3\ln3h\lxyzlowerspace : zip\lyzlowerplane : zip\l|}", shape="record"];
+"8" [label="{Fragment|atoms\lname : str\lnatoms\lrhopro_r : NoneType\lsample\l|}", shape="record"];
+"9" [label="{QboxDriver|Vc_file : str\licscf : int\linit_cmd\linput_file : str\listep : int\llock_file : str\lmax_sleep_seconds : int\lopt_cmd : str\lopt_xml : NoneType\loutput_file : str\loutput_path\lrhor_file : str\lscf_cmd\lscf_xml : NoneType\lsleep_seconds : int\lwfc_cmd : str\lwfc_file : str\l|clean()\lcopy_output()\lget_force()\lget_rho_r()\lget_structure()\lget_wfc()\lreset()\lrun_cmd()\lrun_opt()\lrun_scf()\lset_Fc()\lset_Vc()\lwait_for_lock_file()\l}", shape="record"];
+"10" [fontcolor="red", label="{QboxLockfileError|\l|}", shape="record"];
+"11" [label="{Sample|Ec : NoneType\lEd : NoneType\lFc : NoneType\lFd : NoneType\lFw : NoneType\lG\lG2_g\lG_d\lGmapping\lGx_g\lGy_g\lGz_g\lR\lW : NoneType\lase_cell\latoms : list\lconstraints : list\lfragments : list\ln\ln1\ln2\ln3\lnatoms\lnspecies\lomega\lrho_r : NoneType\lrhoatom_g : dict\lrhoatom_rd : dict\lrhopro_tot_r : NoneType\lsinrG\lspecies\lvspin\lwfc : NoneType\l|compute_eigr()\lcompute_rhoatom_g()\lcompute_rhoatom_grad_r()\lexport()\lnel()\lsave()\lshow()\lupdate_weights()\l}", shape="record"];
+"12" [label="{Wavefunction|dgrid\lgamma : bool\lidx_skb_map : dict\lnbnd : recarray\lnkpt\lnorb : int\lnspin\locc\lpsi_g\lpsi_r\lsample\lskb_idx_map\lwgrid\l|idx2skb()\lnormalize()\lskb2idx()\l}", shape="record"];
+"13" [label="{WfcManager|qty : dict\ltransform\lwfc\l|clear()\lindices()\l}", shape="record"];
+"3" -> "5" [arrowhead="empty", arrowtail="none"];
+"4" -> "5" [arrowhead="empty", arrowtail="none"];
+"9" -> "6" [arrowhead="empty", arrowtail="none"];
+"13" -> "12" [arrowhead="diamond", arrowtail="none", fontcolor="green", label="psi_g", style="solid"];
+"13" -> "12" [arrowhead="diamond", arrowtail="none", fontcolor="green", label="psi_r", style="solid"];
+}

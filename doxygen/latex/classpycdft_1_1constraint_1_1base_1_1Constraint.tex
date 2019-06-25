@@ -1,0 +1,172 @@
+\hypertarget{classpycdft_1_1constraint_1_1base_1_1Constraint}{\section{pycdft.\-constraint.\-base.\-Constraint Class Reference}
+\label{classpycdft_1_1constraint_1_1base_1_1Constraint}\index{pycdft.\-constraint.\-base.\-Constraint@{pycdft.\-constraint.\-base.\-Constraint}}
+}
+
+
+\hyperlink{classpycdft_1_1constraint_1_1base_1_1Constraint}{Constraint}.  
+
+
+Inheritance diagram for pycdft.\-constraint.\-base.\-Constraint\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.555556cm]{classpycdft_1_1constraint_1_1base_1_1Constraint}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{classpycdft_1_1constraint_1_1base_1_1Constraint_a09b459804999f3c70182f059eaab0f03}{\-\_\-\-\_\-init\-\_\-\-\_\-}
+\item 
+def \hyperlink{classpycdft_1_1constraint_1_1base_1_1Constraint_abfac9dd50db90c2b98b2c3c0d68fbd97}{d\-W\-\_\-by\-\_\-d\-V}
+\begin{DoxyCompactList}\small\item\em The derivative of free energy with respect to V. \end{DoxyCompactList}\item 
+def \hyperlink{classpycdft_1_1constraint_1_1base_1_1Constraint_ad4434451e761dbc6c1a0d651ec6913bd}{update\-\_\-structure}
+\begin{DoxyCompactList}\small\item\em Update the constraint with new structure. \end{DoxyCompactList}\item 
+def \hyperlink{classpycdft_1_1constraint_1_1base_1_1Constraint_a351a7d832b50b90d6929ec457a494c19}{update\-\_\-w}
+\begin{DoxyCompactList}\small\item\em Update the weight with new structure. \end{DoxyCompactList}\item 
+def \hyperlink{classpycdft_1_1constraint_1_1base_1_1Constraint_ad94478e88e2cb3c4980c24b6727d11c7}{update\-\_\-\-N}
+\begin{DoxyCompactList}\small\item\em Update the electron number or electron number difference. \end{DoxyCompactList}\item 
+def \hyperlink{classpycdft_1_1constraint_1_1base_1_1Constraint_a4489a855f151cdc0da5e45c5f41429aa}{update\-\_\-\-Vc}
+\begin{DoxyCompactList}\small\item\em Update constraint potential. \end{DoxyCompactList}\item 
+def \hyperlink{classpycdft_1_1constraint_1_1base_1_1Constraint_a7a5b01d9aad18d7f57f7f106846cbce2}{update\-\_\-\-Fc}
+\begin{DoxyCompactList}\small\item\em Update constraint force. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classpycdft_1_1constraint_1_1base_1_1Constraint_afde90d6ecf3181a7def56d385f8d4343}{sample}
+\begin{DoxyCompactList}\small\item\em the whole system. \end{DoxyCompactList}\item 
+\hypertarget{classpycdft_1_1constraint_1_1base_1_1Constraint_ab42a0b84ae37bd40526fdde8434976a3}{\hyperlink{classpycdft_1_1constraint_1_1base_1_1Constraint_ab42a0b84ae37bd40526fdde8434976a3}{N0}}\label{classpycdft_1_1constraint_1_1base_1_1Constraint_ab42a0b84ae37bd40526fdde8434976a3}
+
+\begin{DoxyCompactList}\small\item\em the target value for the electron number or electron number difference, \end{DoxyCompactList}\item 
+\hyperlink{classpycdft_1_1constraint_1_1base_1_1Constraint_a10702275a9ba0a31ac92595d64099d08}{V\-\_\-init}
+\begin{DoxyCompactList}\small\item\em Initial guess or bracket for V, used for certain optimization algorithms. \end{DoxyCompactList}\item 
+\hyperlink{classpycdft_1_1constraint_1_1base_1_1Constraint_a843989087e2c8114ff2ce36bc6a391f8}{N\-\_\-tol}
+\begin{DoxyCompactList}\small\item\em convergence threshold for N -\/ N0 (= d\-W/d\-V). \end{DoxyCompactList}\item 
+\hyperlink{classpycdft_1_1constraint_1_1base_1_1Constraint_aa8ee88182fc2f1bd74bf5cafbedc11b4}{V}
+\begin{DoxyCompactList}\small\item\em Lagrangian multiplier associate with the constraint. \end{DoxyCompactList}\item 
+\hypertarget{classpycdft_1_1constraint_1_1base_1_1Constraint_adfdff34ccbfc538959d3cb2d097d9d29}{\hyperlink{classpycdft_1_1constraint_1_1base_1_1Constraint_adfdff34ccbfc538959d3cb2d097d9d29}{N}}\label{classpycdft_1_1constraint_1_1base_1_1Constraint_adfdff34ccbfc538959d3cb2d097d9d29}
+
+\begin{DoxyCompactList}\small\item\em the electron number or electron number difference for this constraint \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{classpycdft_1_1constraint_1_1base_1_1Constraint}{Constraint}. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classpycdft_1_1constraint_1_1base_1_1Constraint_a09b459804999f3c70182f059eaab0f03}{\index{pycdft\-::constraint\-::base\-::\-Constraint@{pycdft\-::constraint\-::base\-::\-Constraint}!\-\_\-\-\_\-init\-\_\-\-\_\-@{\-\_\-\-\_\-init\-\_\-\-\_\-}}
+\index{\-\_\-\-\_\-init\-\_\-\-\_\-@{\-\_\-\-\_\-init\-\_\-\-\_\-}!pycdft::constraint::base::Constraint@{pycdft\-::constraint\-::base\-::\-Constraint}}
+\subsubsection[{\-\_\-\-\_\-init\-\_\-\-\_\-}]{\setlength{\rightskip}{0pt plus 5cm}def pycdft.\-constraint.\-base.\-Constraint.\-\_\-\-\_\-init\-\_\-\-\_\- (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{sample}
+\end{DoxyParamCaption}
+)}}\label{classpycdft_1_1constraint_1_1base_1_1Constraint_a09b459804999f3c70182f059eaab0f03}
+
+\begin{DoxyParams}{Parameters}
+{\em V\-\_\-init} & initial guess for V. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classpycdft_1_1constraint_1_1base_1_1Constraint_abfac9dd50db90c2b98b2c3c0d68fbd97}{\index{pycdft\-::constraint\-::base\-::\-Constraint@{pycdft\-::constraint\-::base\-::\-Constraint}!d\-W\-\_\-by\-\_\-d\-V@{d\-W\-\_\-by\-\_\-d\-V}}
+\index{d\-W\-\_\-by\-\_\-d\-V@{d\-W\-\_\-by\-\_\-d\-V}!pycdft::constraint::base::Constraint@{pycdft\-::constraint\-::base\-::\-Constraint}}
+\subsubsection[{d\-W\-\_\-by\-\_\-d\-V}]{\setlength{\rightskip}{0pt plus 5cm}def pycdft.\-constraint.\-base.\-Constraint.\-d\-W\-\_\-by\-\_\-d\-V (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}\label{classpycdft_1_1constraint_1_1base_1_1Constraint_abfac9dd50db90c2b98b2c3c0d68fbd97}
+
+
+The derivative of free energy with respect to V. 
+
+d\-W/d\-V =  dr w\-\_\-i(r) n(r) -\/ N0 = N -\/ N0 \hypertarget{classpycdft_1_1constraint_1_1base_1_1Constraint_a7a5b01d9aad18d7f57f7f106846cbce2}{\index{pycdft\-::constraint\-::base\-::\-Constraint@{pycdft\-::constraint\-::base\-::\-Constraint}!update\-\_\-\-Fc@{update\-\_\-\-Fc}}
+\index{update\-\_\-\-Fc@{update\-\_\-\-Fc}!pycdft::constraint::base::Constraint@{pycdft\-::constraint\-::base\-::\-Constraint}}
+\subsubsection[{update\-\_\-\-Fc}]{\setlength{\rightskip}{0pt plus 5cm}def pycdft.\-constraint.\-base.\-Constraint.\-update\-\_\-\-Fc (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}\label{classpycdft_1_1constraint_1_1base_1_1Constraint_a7a5b01d9aad18d7f57f7f106846cbce2}
+
+
+Update constraint force. 
+
+\hypertarget{classpycdft_1_1constraint_1_1base_1_1Constraint_ad94478e88e2cb3c4980c24b6727d11c7}{\index{pycdft\-::constraint\-::base\-::\-Constraint@{pycdft\-::constraint\-::base\-::\-Constraint}!update\-\_\-\-N@{update\-\_\-\-N}}
+\index{update\-\_\-\-N@{update\-\_\-\-N}!pycdft::constraint::base::Constraint@{pycdft\-::constraint\-::base\-::\-Constraint}}
+\subsubsection[{update\-\_\-\-N}]{\setlength{\rightskip}{0pt plus 5cm}def pycdft.\-constraint.\-base.\-Constraint.\-update\-\_\-\-N (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}\label{classpycdft_1_1constraint_1_1base_1_1Constraint_ad94478e88e2cb3c4980c24b6727d11c7}
+
+
+Update the electron number or electron number difference. 
+
+\hypertarget{classpycdft_1_1constraint_1_1base_1_1Constraint_ad4434451e761dbc6c1a0d651ec6913bd}{\index{pycdft\-::constraint\-::base\-::\-Constraint@{pycdft\-::constraint\-::base\-::\-Constraint}!update\-\_\-structure@{update\-\_\-structure}}
+\index{update\-\_\-structure@{update\-\_\-structure}!pycdft::constraint::base::Constraint@{pycdft\-::constraint\-::base\-::\-Constraint}}
+\subsubsection[{update\-\_\-structure}]{\setlength{\rightskip}{0pt plus 5cm}def pycdft.\-constraint.\-base.\-Constraint.\-update\-\_\-structure (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}\label{classpycdft_1_1constraint_1_1base_1_1Constraint_ad4434451e761dbc6c1a0d651ec6913bd}
+
+
+Update the constraint with new structure. 
+
+\hypertarget{classpycdft_1_1constraint_1_1base_1_1Constraint_a4489a855f151cdc0da5e45c5f41429aa}{\index{pycdft\-::constraint\-::base\-::\-Constraint@{pycdft\-::constraint\-::base\-::\-Constraint}!update\-\_\-\-Vc@{update\-\_\-\-Vc}}
+\index{update\-\_\-\-Vc@{update\-\_\-\-Vc}!pycdft::constraint::base::Constraint@{pycdft\-::constraint\-::base\-::\-Constraint}}
+\subsubsection[{update\-\_\-\-Vc}]{\setlength{\rightskip}{0pt plus 5cm}def pycdft.\-constraint.\-base.\-Constraint.\-update\-\_\-\-Vc (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}\label{classpycdft_1_1constraint_1_1base_1_1Constraint_a4489a855f151cdc0da5e45c5f41429aa}
+
+
+Update constraint potential. 
+
+\hypertarget{classpycdft_1_1constraint_1_1base_1_1Constraint_a351a7d832b50b90d6929ec457a494c19}{\index{pycdft\-::constraint\-::base\-::\-Constraint@{pycdft\-::constraint\-::base\-::\-Constraint}!update\-\_\-w@{update\-\_\-w}}
+\index{update\-\_\-w@{update\-\_\-w}!pycdft::constraint::base::Constraint@{pycdft\-::constraint\-::base\-::\-Constraint}}
+\subsubsection[{update\-\_\-w}]{\setlength{\rightskip}{0pt plus 5cm}def pycdft.\-constraint.\-base.\-Constraint.\-update\-\_\-w (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}\label{classpycdft_1_1constraint_1_1base_1_1Constraint_a351a7d832b50b90d6929ec457a494c19}
+
+
+Update the weight with new structure. 
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classpycdft_1_1constraint_1_1base_1_1Constraint_a843989087e2c8114ff2ce36bc6a391f8}{\index{pycdft\-::constraint\-::base\-::\-Constraint@{pycdft\-::constraint\-::base\-::\-Constraint}!N\-\_\-tol@{N\-\_\-tol}}
+\index{N\-\_\-tol@{N\-\_\-tol}!pycdft::constraint::base::Constraint@{pycdft\-::constraint\-::base\-::\-Constraint}}
+\subsubsection[{N\-\_\-tol}]{\setlength{\rightskip}{0pt plus 5cm}pycdft.\-constraint.\-base.\-Constraint.\-N\-\_\-tol}}\label{classpycdft_1_1constraint_1_1base_1_1Constraint_a843989087e2c8114ff2ce36bc6a391f8}
+
+
+convergence threshold for N -\/ N0 (= d\-W/d\-V). 
+
+\hypertarget{classpycdft_1_1constraint_1_1base_1_1Constraint_afde90d6ecf3181a7def56d385f8d4343}{\index{pycdft\-::constraint\-::base\-::\-Constraint@{pycdft\-::constraint\-::base\-::\-Constraint}!sample@{sample}}
+\index{sample@{sample}!pycdft::constraint::base::Constraint@{pycdft\-::constraint\-::base\-::\-Constraint}}
+\subsubsection[{sample}]{\setlength{\rightskip}{0pt plus 5cm}pycdft.\-constraint.\-base.\-Constraint.\-sample}}\label{classpycdft_1_1constraint_1_1base_1_1Constraint_afde90d6ecf3181a7def56d385f8d4343}
+
+
+the whole system. 
+
+\hypertarget{classpycdft_1_1constraint_1_1base_1_1Constraint_aa8ee88182fc2f1bd74bf5cafbedc11b4}{\index{pycdft\-::constraint\-::base\-::\-Constraint@{pycdft\-::constraint\-::base\-::\-Constraint}!V@{V}}
+\index{V@{V}!pycdft::constraint::base::Constraint@{pycdft\-::constraint\-::base\-::\-Constraint}}
+\subsubsection[{V}]{\setlength{\rightskip}{0pt plus 5cm}pycdft.\-constraint.\-base.\-Constraint.\-V}}\label{classpycdft_1_1constraint_1_1base_1_1Constraint_aa8ee88182fc2f1bd74bf5cafbedc11b4}
+
+
+Lagrangian multiplier associate with the constraint. 
+
+\hypertarget{classpycdft_1_1constraint_1_1base_1_1Constraint_a10702275a9ba0a31ac92595d64099d08}{\index{pycdft\-::constraint\-::base\-::\-Constraint@{pycdft\-::constraint\-::base\-::\-Constraint}!V\-\_\-init@{V\-\_\-init}}
+\index{V\-\_\-init@{V\-\_\-init}!pycdft::constraint::base::Constraint@{pycdft\-::constraint\-::base\-::\-Constraint}}
+\subsubsection[{V\-\_\-init}]{\setlength{\rightskip}{0pt plus 5cm}pycdft.\-constraint.\-base.\-Constraint.\-V\-\_\-init}}\label{classpycdft_1_1constraint_1_1base_1_1Constraint_a10702275a9ba0a31ac92595d64099d08}
+
+
+Initial guess or bracket for V, used for certain optimization algorithms. 
+
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+constraint/base.\-py\end{DoxyCompactItemize}
