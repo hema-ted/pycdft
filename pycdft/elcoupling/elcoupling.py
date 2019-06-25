@@ -7,17 +7,23 @@ import time
 
 def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver,debug=True):
     """ Compute electronic coupling in mH between two KS wavefunctions.
-   
-        Compatible for symmetric and non-symmetric systems
-        TODO: implementation of spin  
-        TODO?: more than one constraint
- 
         Notes on implementation, see:
         1) Oberhofer & Blumberger 2010; dx.doi.org/10.1063/1.3507878
         2) Kaduk, et al 2012; dx.doi.org/10.1021/cr200148b, esp. p 344, Eq. 51 
         3) Goldey, et al 2017; dx.doi.org/10.1021/acs.jctc.7b00088
   
         only @ Gamma point, so quantities are real; but keep conjugate operations for now
+        
+        Attributes:
+           solver1, solver2 (CDFTSolver): instances of solver
+  
+        Internal Parameters:
+           O (array): overlap matrix of KS orbitals, norb x norb
+           S (array): overlap matrix of diabatic states, 2x2 
+           W (array): weight function matrix, 2x2
+           H (array): diabatic Hamiltonian matrix, 2x2
+           Hsymm (array): symmetrized diabatic Hamiltonian matrix, 2x2
+ 
     """
     try:
        start_time = time.time()

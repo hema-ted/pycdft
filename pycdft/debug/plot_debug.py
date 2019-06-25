@@ -18,10 +18,10 @@ from numpy.fft import fftshift, ifftshift
 
 def parse(dat,mode):
     """ parsing of e.g., charge density or weights for writing/reading to CUBE format
- 
-        dat (n1,n2,n3 array)
-        mode = 1 from read CUBE -> PyCDFT
-             = -1 from PyCDFT -> write CUBE
+        
+        Attributes: 
+           dat (array): volumetric data, n1 x n2 x n3
+           mode (int):  1 from read CUBE -> PyCDFT; -1 from PyCDFT -> write CUBE
     """
     #assert(np.abs(mode)==1)
     n1,n2,n3 = np.shape(dat)
@@ -40,12 +40,13 @@ def parse(dat,mode):
 
 def get_hirsh(CDFTSolver,origin):
     """ Extract Hirschfeld weights 
+        TOCHECK: proper passing of atoms, so can also get atomic number printed
  
-        origin: 3-tuple; same as rhor.cube file; origin of volumetric data
+        Attributes:
+           CDFTSolver (CDFSolver): solver
+           origin (tuple): (x,y,z) coord; same as rhor.cube file; origin of volumetric data
                 give in Angstroms; gets converted to Bohr in program 
-
-        TOCHECK: proper passing of atoms, so can also get atomic number printed"""
-
+    """
     constraints = CDFTSolver.sample.constraints
 
     index=1
@@ -66,14 +67,14 @@ def get_hirsh(CDFTSolver,origin):
     print("Completed Hirshfeld weight extraction!")
 
 def get_hirsh_ct(CDFTSolver,origin):
-    """ Extract Hirschfeld weights for plotting  
-        For ChargeTransfer constraint only 
+    """ Extract Hirschfeld weights for Charge_Transfer constraint 
+        TOCHECK: proper passing of atoms, so can also get atomic number printed
  
-        origin: 3-tuple; same as rhor.cube file; origin of volumetric data
+        Attributes:
+           CDFTSolver (CDFTSolver): solver
+           origin (tuple): (x,y,z) coord; same as rhor.cube file; origin of volumetric data
                 give in Angstroms; gets converted to Bohr in program 
-
-        TODO: proper passing of atoms, so can also get atomic number printed"""
-
+    """
     constraints = CDFTSolver.sample.constraints
 
     index=1
@@ -95,7 +96,13 @@ def get_hirsh_ct(CDFTSolver,origin):
 #===================== Charge density- total and per atom  =========================
 
 def get_rho_atom(CDFTSolver,origin):
-    """ Generate charge density for each atom """
+    """ Generate charge density for each atom 
+
+        Attributes:
+           CDFTSolver (CDFTSolver): solver
+           origin (tuple): (x,y,z) coord; same as rhor.cube file; origin of volumetric data
+                give in Angstroms; gets converted to Bohr in program 
+    """
     atoms_iter = CDFTSolver.sample.atoms    # calculating requires pycdft-modified Atom type
     atoms_write = CDFTSolver.sample.ase_cell # writing requires ASE Atom type
     n = CDFTSolver.sample.n
@@ -143,12 +150,13 @@ def get_rho(CDFTSolver):
 def get_grad(CDFTSolver,origin):
     """ Extract gradient of Hirschfeld weights and charge density; both are calculated in calculation
           of grad_w_r
+        TOCHECK: proper passing of atoms, so can also get atomic number printed
  
-        origin: 3-tuple; same as rhor.cube file; origin of volumetric data
+        Attributes:
+           CDFTSolver (CDFSolver): solver
+           origin (tuple): (x,y,z) coord; same as rhor.cube file; origin of volumetric data
                 give in Angstroms; gets converted to Bohr in program 
-
-        TOCHECK: proper passing of atoms, so can also get atomic number printed"""
-
+    """
     constraints = CDFTSolver.sample.constraints
 
     ic = 1
@@ -188,10 +196,3 @@ def get_grad(CDFTSolver,origin):
     print("Completed extraction of grad quantities!")
 
 #--------------------------------------------------------
-## testing of parse
-#rhor=np.arange(60).reshape(3,4,5)
-#rev_rhor=parse(rhor,1)
-#print(rhor)
-#print(rev_rhor)
-#print(rhor==parse(rev_rhor,-1))
-
