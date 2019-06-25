@@ -18,6 +18,5 @@ build/
 dist/
 lib/
 
-doc/html
-doc/latex
-doc/uml
+doxygen/latex
+doxygen/uml
