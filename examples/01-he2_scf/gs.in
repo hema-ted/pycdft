@@ -13,8 +13,6 @@ set wf_dyn JD
 set scf_tol 1.0E-8
 
 randomize_wf
-
 run 0 200 5
-
 save gs.xml
 

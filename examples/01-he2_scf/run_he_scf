@@ -1,0 +1,25 @@
+#!/bin/bash
+#SBATCH --partition=gagalli
+#SBATCH --mail-type=BEGIN,END,FAIL
+#SBATCH --qos=gagalli-debug
+#SBATCH --time=00:05:00
+#SBATCH --ntasks-per-node=28
+#SBATCH --nodes=2
+
+#SBATCH --constraint=e5-2680v4
+
+# modules compiled with Qbox Vext
+module unload python intelmpi mkl
+module load mkl/2017.up4 intelmpi/5.0+intel-15.0 xercesc/
+module load python/3.7.0 gcc/6.1
+
+qb="/home/wwwennie/bin2/qbox-vext/bin/qb_vext"
+NCORES=$(($SLURM_NTASKS_PER_NODE * $SLURM_JOB_NUM_NODES))
+export PATH="$PATH:/software/xercesc-2.8-el6-x86_64/lib/"
+
+#mpirun -np $NCORES $qb < gs.in > gs.out 
+
+rm coupling.out qb_cdft.*
+mpirun -np $NCORES $qb -server qb_cdft.in qb_cdft.out & 
+sleep 10
+python -u he2_scf.py > pycdft.out 
