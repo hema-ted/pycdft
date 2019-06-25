@@ -2,6 +2,8 @@
 .idea
 *.egg-info
 
+INSTALL_self
+
 *checkpoint.ipynb
 pycdft_outputs
 qb_cdft.*
