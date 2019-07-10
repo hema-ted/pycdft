@@ -15,7 +15,7 @@ class QboxLockfileError(Exception):
     pass
 
 
-class QboxDriver(DFTDriver):
+class QboxCubeDriver(DFTDriver):
     """ DFT driver for Qbox.
 
     Extra attributes:
@@ -30,29 +30,13 @@ class QboxDriver(DFTDriver):
     input_file = "qb_cdft.in"
     lock_file = "{}.lock".format(input_file)
     output_file = "qb_cdft.out"
-    Vc_file = "Vc.dat"
+    Vc_file = "Vc.cube"
     rhor_file = "rhor.cube"
     wfc_file = "wfc.xml"
     wfc_cmd = "save {}".format(wfc_file)
 
-    f3d_template = """\
-<?xml version="1.0" encoding="UTF-8"?>
-<fpmd:function3d xmlns:fpmd="http://www.quantum-simulation.org/ns/fpmd/fpmd-1.0"
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://www.quantum-simulation.org/ns/fpmd/fpmd-1.0 function3d.xsd"
- name="delta_v">
-<domain a="{R00:.5f}  {R01:.5f}  {R02:.5f}"
-        b="{R10:.5f}  {R11:.5f}  {R12:.5f}"
-        c="{R20:.5f}  {R21:.5f}  {R22:.5f}"/>
-<grid nx="{nx}" ny="{ny}" nz="{nz}"/>
-<grid_function type="double" nx="{nx}" ny="{ny}" nz="{nz}" encoding="base64">
-{data}
-</grid_function>
-</fpmd:function3d>
-"""
-
     def __init__(self, sample, init_cmd, scf_cmd, opt_cmd="run 1 0 0"):
-        super(QboxDriver, self).__init__(sample)
+        super(QboxCubeDriver, self).__init__(sample)
         self.init_cmd = init_cmd
         self.scf_cmd = scf_cmd
         self.opt_cmd = opt_cmd
@@ -92,16 +76,8 @@ class QboxDriver(DFTDriver):
         n1, n2, n3 = self.sample.n1, self.sample.n2, self.sample.n3
         assert isinstance(Vc, np.ndarray) and Vc.shape == (vspin, n1, n2, n3)
 
-        data = base64.encodebytes(Vc.T.tobytes()).strip()  # reverse order of x, y, z direction
-        R = self.sample.R
-        f = self.f3d_template.format(
-            R00=R[0, 0], R01=R[0, 1], R02=R[0, 2],
-            R10=R[1, 0], R11=R[1, 1], R12=R[1, 2],
-            R20=R[2, 0], R21=R[2, 1], R22=R[2, 2],
-            nx=n1, ny=n2, nz=n3,
-            data=data.decode("utf-8")
-        )
-        open(self.Vc_file, "w").write(f)
+        ase_cell = self.sample.ase_cell
+        write_cube(open(self.Vc_file, "w"), atoms=ase_cell, data=Vc[0])
 
         self.run_cmd("set vext {}".format(self.Vc_file))
 
