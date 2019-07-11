@@ -30,7 +30,6 @@ class CDFTSolver:
     Internal Parameters:
         Vc_tot (float array, shape == [vspin, n1, n2, n3]): total constraint potential
             as a sum of all constraints defined on all fragments.
-
     """
 
     nsolver = 0
