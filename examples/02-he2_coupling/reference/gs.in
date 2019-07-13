@@ -1,0 +1,20 @@
+set cell 30.000000 0.000000 0.000000 0.000000 30.000000 0.000000 0.000000 0.000000 30.000000
+
+species He He_ONCV_PBE-1.0.xml
+
+atom He1 He  0.00000000  0.00000000  0.00000000
+atom He2 He  0.00000000  0.00000000  5.66919 
+
+set net_charge 1
+set nspin 2
+set xc PBE
+set ecut 45
+set wf_dyn PSDA
+set scf_tol 1.0E-8
+
+randomize_wf
+
+run 0 200 5
+
+save gs.xml
+

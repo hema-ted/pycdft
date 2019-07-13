@@ -1,0 +1,60 @@
+#!/bin/bash
+#SBATCH --partition=gagalli
+#SBATCH --mail-type=END,FAIL
+#SBATCH --qos=gagalli-debug
+#SBATCH --time=02:00:00
+#SBATCH --ntasks-per-node=28
+#SBATCH --nodes=2
+
+#SBATCH --constraint=e5-2680v4
+
+# modules compiled with Qbox 1.67.4
+module unload python intelmpi mkl
+module load python/3.7.0 gcc
+module load mkl/2018.up2 intelmpi/2018.2.199+intel-18.0 xerces/3.1.4 
+
+# --------------------------------------------------------------------
+# Job submission script for calculating electron coupling for He-He+ dimer 
+#  as a function of bond length
+
+# It is needed to have good starting wavefunctions corresponding to the 
+#  starting geometry of the CDFT run
+
+# This is a short script for running the ground-state calculations in Qbox
+#   for a set of bond distances for the He-He+ dimer electron coupling example
+
+# requires a modified version of Qbox that can handle external potentials
+#----------------------------------------------------------------------
+
+#TODO: substitute the appropriate path of the Qbox executable
+export qb="/path/to/executable/qb_vext"
+
+ds=(2.5 3.0 4.0 5.0 6.0) # Angstroms
+ang2bohr=1.88973
+
+for d in ${ds[@]}; do
+  mkdir $d
+  cd $d
+  
+  # set up run
+  db=$(bc <<< $d*$ang2bohr)
+  frac_d=$(bc <<< $db*0.0333333)  # assumed box size, 30 Bohr
+  cp ../{gs.in,He2.cif,*ipynb,*1.0.xml} .
+  sed -i "s/REPL/$db/g" gs.in
+  sed -i "s/REPL/$frac_d/g" He2.cif
+ 
+  # set up notebook
+  mv he2_coupling-tmp.ipynb ${d}-he2-coupling.ipynb
+  sed -i "s/REPL/d = $d/g" ${d}-he2-coupling.ipynb
+  
+  echo "===  Running Qbox ===="
+  mpirun -np 4 $qb < gs.in > gs.out
+
+  echo "===  Running PyCDFT @ distance ${d} Ang. ===="
+  mpirun -np $NCORES $qb -server qb_cdft.in qb_cdft.out & 
+  sleep 10
+  python -u ${d}-he2-coupling.py > coupling_${d}.out 
+  wait
+  
+  cd ../
+done
