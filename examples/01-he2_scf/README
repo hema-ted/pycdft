@@ -1,0 +1,19 @@
+This example shows a single self-consistent cycle with the He-He+ dimer.
+It is most conveniently run through an interactive session in conjunction with
+the jupyter notebook (he2_scf.ipynb)
+
+On Midway 2, this looks like
+
+>> sinteractive --exclusive --partition=broadwl --nodes=2 --time=08:00:00
+
+In a separate terminal but the same directory
+
+>> ip=$(/sbin/ip route get 8.8.8.8 | awk ’{print $NF;exit}’)
+>> jupyter-notebook --no-browser --ip=${ip}
+
+to launch the jupyter notebook. 
+
+You may also choose to run using the submission queue. 
+Submit script for Midway2 is provided in run_he_scf
+
+NOTE: This particular example will NOT converge and exists for illustrative purposes.
