@@ -1,0 +1,48 @@
+#!/bin/bash
+#SBATCH --partition=gagalli
+#SBATCH --mail-type=FAIL,END
+#SBATCH --qos=gagalli-small
+#SBATCH --time=2:00:00
+#SBATCH --ntasks-per-node=28
+#SBATCH --nodes=4
+#SBATCH --constraint=e5-2680v4
+
+#------------------------------------------------
+# Thiophene coupling as a function of angular difference at 5 Ang distance
+
+# It is needed to have good starting wavefunctions corresponding to the 
+#  starting geometry of the CDFT run
+
+# This is a short script for running the ground-state calculations in Qbox
+#   for a set of bond distances for the thiophene dimer electron coupling example
+
+# requires a modified version of Qbox that can handle external potentials
+#------------------------------------------------
+
+NCORES=$(($SLURM_NTASKS_PER_NODE * $SLURM_JOB_NUM_NODES))
+
+# substitute the appropriate path of the Qbox executable
+export qb="/home/wwwennie/bin2/qbox-vext/bin/qb_vext"
+
+#inputs=$( ls *.in )
+inputs=( "delta90.in")
+
+# run gs calculation in Qbox
+for inp in ${inputs[@]}; do
+  IFS='.' read -ra name <<< $inp
+  fol=$name
+ 
+  mkdir $fol
+  cd $fol
+  
+  # set up run
+  #cp ../{${name}.in,${name}.cif,thiophene-coupling-tmp.ipynb,*xml} .
+ 
+  # set up notebook
+  #mv thiophene-coupling-tmp.ipynb ${name}-thiophene-coupling.ipynb
+  
+  echo "===  Running Qbox ===="
+  mpirun -np 112 $qb < ${name}.in > ${name}.out 
+  
+  cd ../
+done

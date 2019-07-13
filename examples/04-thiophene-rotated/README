@@ -1,0 +1,18 @@
+This folder contains input files for calculating the coupling between thiophene-thiophene+ dimer
+using PyCDFT.
+    delta*.in
+    delta*.cif
+
+where delta indicates the relative rotated angle of two thiophene molecules at 5 Angstrom distance 
+
+This example is configured for Midway 2 at UChicago RCC but can be easily adapted to other machines.
+To run this example on Midway 2:
+
+1) Run Qbox with external potentials (vext) implemented
+ >> qsub thio_delta_gs
+
+2) Set up CDFT calculation
+ >> bash ./setup_thio_delta
+
+3) Run CDFT calculation
+ >> qsub thio_delta_pycdft

@@ -1,0 +1,78 @@
+#!/bin/bash
+
+#------------------------------------------------
+# Set up or rerun calculation:
+# Thiophene coupling as a function of angular difference at 5 Ang distance
+# 
+# generates jupyter notebook for interactive sessions
+#  and python script for job submission to queue
+#  including for restarting interupted PyCDFT calculations
+#
+# A run for the initial ground state wavefunctions is needed first
+#------------------------------------------------
+
+# input parameters
+tol=2e-4                              # CDFT tolerance
+Vstart_a=Vstart_b="V_brak = V"        # CDFT constraint potential
+optimizer_a=optimizer_b="brenth"                    # search initial guess for V
+inputs=$( ls *.in )
+
+main () {
+for inp in ${inputs[@]}; do
+  IFS='.' read -ra name <<< $inp
+  fol=$name
+ 
+  cd ${fol}
+  # convert notebook to python script
+  cp ../thiophene-coupling-tmp.ipynb ./${name}-thiophene-coupling.ipynb
+  jupyter nbconvert --to script ${name}-thiophene-coupling.ipynb
+  cp ../${name}.cif .
+
+  # 
+  sed -i "s/REPL1/${name}.cif/g" ${name}-thiophene-coupling.py
+  if [ -f ${name}.out ]; then
+     grid=($(grep "np2v" ${name}.out | awk '{print $(NF-2),$(NF-1),$NF}'))
+     sed -i "s/REPLX/${grid[0]}/g" ${name}-thiophene-coupling.py
+     sed -i "s/REPLY/${grid[1]}/g" ${name}-thiophene-coupling.py
+     sed -i "s/REPLZ/${grid[2]}/g" ${name}-thiophene-coupling.py
+  else
+     echo "Missing DFT output file!"
+     exit 1 
+  fi
+
+  # if restart from previous CDFT calculation
+  if [ -f coupling_${name}.out ]; then
+     # search and replace up to/from line number l
+     l=$(grep -n "solver B" "coupling_${name}.out" | cut -d : -f 1)
+
+     # extract last Vc
+     if [[ $l -gt 0 ]]; then
+       Vca=$(sed -n "1,${l}p" "coupling_${name}.out" | grep "Constraint #" | tr -d ':' | tr -d ')' | awk '{print $(NF)}' | tail -n 1)
+       Vcb=$(sed -n "${l},$ p" "coupling_${name}.out" | grep "Constraint #" | tr -d ':' | tr -d ')' | awk '{print $(NF)}' | tail -n 1)
+       Vstart_a="V_init = ${Vca},"
+       Vstart_b="V_init = ${Vcb},"
+       optimizer_a=optimizer_b="secant"
+     else
+       Vca=$(grep "Constraint #" "coupling_${name}.out" | tr -d ':' | tr -d ')' | awk '{print $(NF)}' | tail -n 1)
+       Vstart_a="V_init = ${Vca},"
+       Vstart_b="V_brak = ${V}," # works well for symmetric; check: good enough for asymm?
+       optimizer_a="secant"
+     fi
+
+  fi
+ 
+  sed -i "s/REPLOPT_A/${optimizer}/g" ${name}-thiophene-coupling.py
+  sed -i "s/REPLOPT_B/${optimizer}/g" ${name}-thiophene-coupling.py
+  sed -i "s/REPL_TOL/${tol}/g" ${name}-thiophene-coupling.py
+  sed -i "s/REPLV_START_A/${Vstart_a}/g" ${name}-thiophene-coupling.py
+  sed -i "s/REPLV_START_B/${Vstart_b}/g" ${name}-thiophene-coupling.py
+
+ 
+  echo "====== Done setup:  ${name}  ======="
+  cd ../
+done
+}
+
+# actual running set up
+main
+exit

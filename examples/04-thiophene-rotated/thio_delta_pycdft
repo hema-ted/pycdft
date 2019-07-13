@@ -1,0 +1,50 @@
+#!/bin/bash
+#SBATCH --partition=broadwl
+#SBATCH --mail-type=FAIL,END
+#SBATCH --qos=broadwl
+#SBATCH --time=16:00:00
+#SBATCH --account=pi-mgovoni
+#SBATCH --ntasks-per-node=28
+#SBATCH --nodes=4
+#SBATCH --constraint=e5-2680v4
+
+#------------------------------------------------
+# Thiophene coupling as a function of angular difference at 5 Ang distance
+
+# This is a wrapper for running PyCDFT with Qbox
+# It is needed to have good starting wavefunctions corresponding to the 
+#  starting geometry of the CDFT run
+
+# This is a short script for running PyCDFT 
+#   for a set of bond distances for the thiophene dimer electron coupling 
+
+# requires a modified version of Qbox that can handle external potentials
+#------------------------------------------------
+
+NCORES=$(($SLURM_NTASKS_PER_NODE * $SLURM_JOB_NUM_NODES))
+
+# substitute the appropriate path of the Qbox executable
+export qb="/home/wwwennie/bin2/qbox-1.67.4/bin/qb"
+
+inputs=$( ls *.in )
+#inputs=( "delta40.in" )
+
+# There are two options for running PyCDFT
+# Interactive client-server modes --> best suited with jupyter notebook
+# or
+# SLURM queue (below) using python script
+
+# run PyCDFT
+for inp in ${inputs[@]}; do
+  IFS='.' read -ra name <<< $inp
+  fol=$name
+ 
+  cd ${fol}
+  echo "======  Running Qbox in client-server for ${name}  ======="
+  mpirun -np 112 $qb -server qb_cdft.in qb_cdft.out &
+  sleep 10
+  python -u ${name}-thiophene-coupling.py > coupling_${name}.out 
+  wait
+  cd ../
+done
+
