@@ -1,0 +1,85 @@
+#!/bin/bash
+#SBATCH --partition=gagalli
+#SBATCH --mail-type=FAIL,END
+#SBATCH --qos=gagalli-small
+#SBATCH --time=02:00:00
+#SBATCH --ntasks-per-node=28
+#SBATCH --nodes=4
+#SBATCH --constraint=e5-2680v4
+
+#------------------------------------------------
+# Tutorial 3: thiophene-thiophene+ dimer
+#
+# This is a wrapper for running PyCDFT with Qbox, step one
+# It is needed to have good starting wavefunctions corresponding to the 
+#  starting geometry of the CDFT run
+
+# This is a short script for running the ground-state calculations in Qbox
+#   for a set of bond distances for the He-He+ dimer electron coupling example
+
+# requires a modified version of Qbox that can handle external potentials
+#------------------------------------------------
+
+module unload python intelmpi mkl
+module load mkl/2018.up2 intelmpi/2018.2.199+intel-18.0 xerces/3.1.4
+module load python/ gcc/6.1
+NCORES=$(($SLURM_NTASKS_PER_NODE * $SLURM_JOB_NUM_NODES))
+
+#TODO: substitute the appropriate path of the Qbox executable
+export qb="/path/to/executable/qb_vext"
+
+ds=(3.5 4.0 4.5 5.0) 
+ang2bohr=1.889725989
+bohr2ang=0.529177249
+
+# run gs calculation in Qbox
+for d in ${ds[@]}; do
+  mkdir $d
+  cd $d
+  
+  # set up run
+  db=$(bc <<< $d*$ang2bohr)
+  frac_d=$(bc <<< $db*0.01763924163)  # assumed box size, 30 Ang
+  cp ../{align.in,align.cif,*ipynb,*1.0.xml} .
+  sed -i "s/REPL/$db/g" align.in
+  sed -i "s/REPL/$frac_d/g" align.cif
+  
+  echo "===  Running Qbox ===="
+  mpirun -np 40 $qb < align.in > align.out 
+  
+  cd ../
+done
+
+
+# There are two options for running PyCDFT
+# Interactive client-server modes --> best suited with jupyter notebook
+# or
+# SLURM queue (below) using python script
+#
+# run PyCDFT
+for d in ${ds[@]}; do
+  cd $d
+  
+  # set up run
+  rm *.ipynb
+  cp ../*ipynb ./${d}-thiophene-coupling.ipynb
+   
+  # convert notebook to python script
+  jupyter nbconvert --to script $d-thiophene-coupling.ipynb
+  sed -i "s/REPL1/align.cif/g" ${d}-thiophene-coupling.py
+  if [ -f "align.out" ]; then
+     grid=($(grep "np2v" align.out | awk '{print $(NF-2)," ",$(NF-1)," ",$NF}'))
+     sed -i "s/REPLX/${grid[0]}/g" ${d}-thiophene-coupling.py
+     sed -i "s/REPLY/${grid[1]}/g" ${d}-thiophene-coupling.py
+     sed -i "s/REPLZ/${grid[2]}/g" ${d}-thiophene-coupling.py
+  else
+     echo "Missing DFT output file!"
+     exit 1 
+  fi
+ 
+  echo "======  Running Qbox in client-server for ${d} distance ======="
+  mpirun -np 112 $qb -server qb_cdft.in qb_cdft.out &
+  sleep 10
+  python -u $d-thiophene-coupling.py > coupling_${d}.out  
+  cd ../
+done
