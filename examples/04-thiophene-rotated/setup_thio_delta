@@ -31,7 +31,7 @@ for inp in ${inputs[@]}; do
   # 
   sed -i "s/REPL1/${name}.cif/g" ${name}-thiophene-coupling.py
   if [ -f ${name}.out ]; then
-     grid=($(grep "np2v" ${name}.out | awk '{print $(NF-2),$(NF-1),$NF}'))
+     grid=($(grep "np2v" ${name}.out | awk '{print $(NF-7),$(NF-4),$(NF-1)}'))
      sed -i "s/REPLX/${grid[0]}/g" ${name}-thiophene-coupling.py
      sed -i "s/REPLY/${grid[1]}/g" ${name}-thiophene-coupling.py
      sed -i "s/REPLZ/${grid[2]}/g" ${name}-thiophene-coupling.py
