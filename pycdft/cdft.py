@@ -7,6 +7,7 @@ from pycdft.common import Sample
 from pycdft.constraint import Constraint
 from pycdft.dft_driver import DFTDriver
 import time 
+import sys
 
 
 class CDFTSCFConverged(Exception):
@@ -74,10 +75,12 @@ class CDFTSolver:
                raise ValueError
            self.dft_driver.get_wfc()
         except:
+              
             print("Something went wrong! Check scf, convergence, ..." )
+            e = sys.exc_info()
+            print(e)
             print("Quitting DFT driver")
             self.dft_driver.exit() 
-            print("DONE") 
 
     def solve_scf(self):
         """ Iteratively solve the CDFT problem.
@@ -182,10 +185,11 @@ class CDFTSolver:
             ))
             print("    N = {:.6f}".format(c.N))
             print("    dW/dV = N - N0 = {:.8f}".format(c.dW_by_dV))
-        print("Elapsed time: ")
+        print("SCF time cycle:")
         self.timer(start_dft,end_dft)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         
+        print("Elapsed time: ")
         self.timer(self.start_time,time.time())
 
         if all(c.is_converged for c in self.constraints):

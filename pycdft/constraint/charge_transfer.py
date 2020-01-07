@@ -23,7 +23,7 @@ class ChargeTransferConstraint(Constraint):
         self._eps = eps
         self.donor = donor
         self.acceptor = acceptor
-        assert set(self.donor.atoms + self.acceptor.atoms) == set(self.sample.atoms)
+        #assert set(self.donor.atoms + self.acceptor.atoms) == set(self.sample.atoms)
         print("Constraint %s: N_tol %.5f, eps %.2E" %(self.type,self.N_tol, self._eps))
 
     def update_w(self):
