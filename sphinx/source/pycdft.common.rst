@@ -1,62 +1,57 @@
-pycdft.common package
-=====================
+pycdft.common
+=============
 
-Submodules
-----------
+System-specific modules
+-----------------------
 
-pycdft.common.atom module
--------------------------
+pycdft.common.atom
+-------------------
 
 .. automodule:: pycdft.common.atom
    :members:
    :undoc-members:
    :show-inheritance:
 
-pycdft.common.fragment module
------------------------------
+pycdft.common.fragment
+----------------------
 
 .. automodule:: pycdft.common.fragment
    :members:
    :undoc-members:
    :show-inheritance:
 
-pycdft.common.ft module
------------------------
-
-.. automodule:: pycdft.common.ft
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pycdft.common.sample module
----------------------------
+pycdft.common.sample
+--------------------
 
 .. automodule:: pycdft.common.sample
    :members:
    :undoc-members:
    :show-inheritance:
 
-pycdft.common.units module
---------------------------
+Internal modules
+----------------
 
-.. automodule:: pycdft.common.units
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pycdft.common.wfc module
-------------------------
+pycdft.common.wfc
+-----------------
 
 .. automodule:: pycdft.common.wfc
    :members:
    :undoc-members:
    :show-inheritance:
 
+pycdft.common.ft
+----------------
 
-Module contents
----------------
+.. automodule:: pycdft.common.ft
+   :members: ftrr
+   :undoc-members:
+   :show-inheritance:
 
-.. automodule:: pycdft.common
+pycdft.common.units
+-------------------
+
+.. automodule:: pycdft.common.units
    :members:
    :undoc-members:
    :show-inheritance:
+

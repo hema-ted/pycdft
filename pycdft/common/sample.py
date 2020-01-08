@@ -12,7 +12,7 @@ from pycdft.common.units import angstrom_to_bohr, bohr_to_angstrom
 
 
 class Sample(object):
-    """ The physical system to be simulated.
+    r""" The physical system to be simulated.
 
     All physical quantities are in atomic unit.
 
@@ -33,12 +33,12 @@ class Sample(object):
                      as long as only charge constraints are present, vspin = 1 even if the
                      system may be spin-polarized.
         n1, n2, n3 (int): FFT grid for charge density, weight function and constraint potential.
-        Ed (float): DFT energy.
-        Ec (float): Constraint energy.
-        W (float): free energy. W = Ed + Ec - sum_k V_k N_k
-        Fd (float): DFT force.
-        Fc (float): Constraint force. Fc = sum_k V_k int grad(w_k(r)) n(r) dr
-        Fw (float): -grad(W). Fw = Fd + Fc.
+        Ed (float): :math:`E_d`, DFT energy.
+        Ec (float): :math:`E_c`, Constraint energy.
+        W (float): free energy. :math:`W = E_d + E_c - \sum_k V_k N_k`
+        Fd (float): :math:`F_d`, DFT force.
+        Fc (float): Constraint force. :math:`F_c = \sum_k V_k \int \nabla w_k({\bf r}) \cdot n({\bf r}) d{\bf r}`
+        Fw (float): :math:`-\nabla(W)`;:math:`F_w = F_d + F_c`.
     """
 
     def __init__(self, ase_cell: Atoms, vspin: int, n1: int, n2: int, n3: int,
@@ -177,7 +177,7 @@ class Sample(object):
             c.update_structure()
 
     def compute_eigr(self, atom: Atom, axis=None):
-        """ Compute e^{-iGR} array where R is coordinate of atom."""
+        r""" Compute :math:`e^{-i\bf{G} \cdot \bf{R}}` array where R is coordinate of atom."""
         n1, n2, n3 = self.n1, self.n2, self.n3
 
         if axis is None:

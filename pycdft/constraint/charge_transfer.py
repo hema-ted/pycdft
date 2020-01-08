@@ -8,8 +8,8 @@ class ChargeTransferConstraint(Constraint):
     """ Constraint on electron number difference between a donor and an acceptor fragment
 
     Extra attributes:
-        donor (Fragment): donor fragment.
-        acceptor (Fragment): acceptor fragment.
+         donor (Fragment): donor fragment.
+         acceptor (Fragment): acceptor fragment.
     """
 
     type = "charge transfer"

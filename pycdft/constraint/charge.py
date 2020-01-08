@@ -8,7 +8,7 @@ class ChargeConstraint(Constraint):
     """ Constraint on the absolute electron number of a fragment.
 
     Extra attributes:
-        fragment (Fragment): a fragment of the whole system.
+         fragment (Fragment): a fragment of the whole system.
     """
 
     type = "charge"

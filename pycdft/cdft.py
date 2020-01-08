@@ -11,6 +11,7 @@ import sys
 
 
 class CDFTSCFConverged(Exception):
+    """ Test for scf convergence """
     pass
 
 
@@ -89,8 +90,8 @@ class CDFTSolver:
         Lagrangian multipliers for all constrains, an inner loop (casted to a KS problem and
         outsourced to DFT code) is performed to minimize the free energy w.r.t. charge density.
 
-        Methods:
-             secant: requies V_init
+        Internal Parameters:
+             secant: requires V_init
              bisect, brentq, brenth: requires V_brak
 
         Note:

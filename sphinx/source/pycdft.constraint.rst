@@ -1,38 +1,27 @@
-pycdft.constraint package
-=========================
+pycdft.constraint
+=================
 
-Submodules
-----------
-
-pycdft.constraint.base module
------------------------------
+pycdft.constraint.base
+----------------------
 
 .. automodule:: pycdft.constraint.base
    :members:
    :undoc-members:
    :show-inheritance:
 
-pycdft.constraint.charge module
--------------------------------
+pycdft.constraint.charge
+-------------------------
 
 .. automodule:: pycdft.constraint.charge
    :members:
    :undoc-members:
    :show-inheritance:
 
-pycdft.constraint.charge\_transfer module
------------------------------------------
+pycdft.constraint.charge\_transfer
+-----------------------------------
 
 .. automodule:: pycdft.constraint.charge_transfer
    :members:
    :undoc-members:
    :show-inheritance:
 
-
-Module contents
----------------
-
-.. automodule:: pycdft.constraint
-   :members:
-   :undoc-members:
-   :show-inheritance:

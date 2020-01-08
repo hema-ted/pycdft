@@ -46,8 +46,8 @@ class Constraint(object):
 
     @property
     def dW_by_dV(self):
-        """ The derivative of free energy with respect to V.
-        dW/dV = \int dr w_i(r) n(r) - N0 = N - N0"""
+        r""" The derivative of free energy with respect to V.
+        :math:`dW/dV = \int dr w_i(r) n(r) - N_0 = N - N_0`"""
         return self.N - self.N0
 
     @property

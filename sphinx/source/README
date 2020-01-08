@@ -1,0 +1,3 @@
+
+# pull from source to automatically generate the appropriate *rst files
+sphinx-apidoc -o . ../../pycdft/

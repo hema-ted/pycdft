@@ -11,7 +11,8 @@ class Fragment(object):
     Attributes:
         sample (Sample): sample.
         atoms (list of Atom): list of atoms belonging to the fragment.
-        w (numpy array, shape = [n1, n2, n3]: Hirshfeld weight function.
+        natoms (int): number of atoms in fragment
+        rhopro_r (array): real space promolecule charge density
     """
 
     def __init__(self, sample: Sample, atoms: list, name: str=""):

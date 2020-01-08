@@ -1,20 +1,8 @@
 pycdft package
 ==============
 
-Subpackages
+Main Module
 -----------
-
-.. toctree::
-
-   pycdft.atomic
-   pycdft.common
-   pycdft.constraint
-   pycdft.debug
-   pycdft.dft_driver
-   pycdft.elcoupling
-
-Submodules
-----------
 
 pycdft.cdft module
 ------------------
@@ -24,11 +12,20 @@ pycdft.cdft module
    :undoc-members:
    :show-inheritance:
 
+Submodules
+-----------
 
-Module contents
----------------
+The main module depends on the following submodules:
 
-.. automodule:: pycdft
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. toctree::
+   :maxdepth: 1
+
+   pycdft.atomic
+   pycdft.common
+   pycdft.constraint
+   pycdft.debug
+   pycdft.dft_driver
+   pycdft.elcoupling
+
+
+

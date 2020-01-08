@@ -1,22 +1,11 @@
-pycdft.elcoupling package
-=========================
+pycdft.elcoupling 
+==================
 
-Submodules
-----------
-
-pycdft.elcoupling.elcoupling module
------------------------------------
+pycdft.elcoupling.elcoupling
+----------------------------
 
 .. automodule:: pycdft.elcoupling.elcoupling
    :members:
    :undoc-members:
    :show-inheritance:
 
-
-Module contents
----------------
-
-.. automodule:: pycdft.elcoupling
-   :members:
-   :undoc-members:
-   :show-inheritance:
