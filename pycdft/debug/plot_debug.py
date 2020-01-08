@@ -43,7 +43,7 @@ def get_hirsh(CDFTSolver,origin):
  
         Attributes:
            CDFTSolver (CDFTSolver)
-           origin (tuple): (x,y,z) coord; same as rhor.cube file; origin of volumetric data
+           origin (tuple): (x,y,z) coord; same as rhor.cube file; origin of volumetric data;
                 give in Angstroms; gets converted to Bohr in program 
     """
     constraints = CDFTSolver.sample.constraints
@@ -70,7 +70,7 @@ def get_hirsh_ct(CDFTSolver,origin):
  
         Attributes:
            CDFTSolver (CDFTSolver)
-           origin (tuple): (x,y,z) coord; same as rhor.cube file; origin of volumetric data
+           origin (tuple): (x,y,z) coord; same as rhor.cube file; origin of volumetric data;
                 give in Angstroms; gets converted to Bohr in program 
     """
     constraints = CDFTSolver.sample.constraints
@@ -147,11 +147,11 @@ def get_rho(CDFTSolver):
 #============== Charge and Hirshfeld gradients =============================
 def get_grad(CDFTSolver,origin):
     r""" Extract gradient of Hirschfeld weights and charge density; both are calculated in calculation
-          of :math:`\nabla w(\bf{r})`
+         of :math:`\nabla w(\bf{r})`
  
-        Attributes:
-           CDFTSolver (CDFTSolver)
-           origin (tuple): (x,y,z) coord; same as rhor.cube file; origin of volumetric data
+         Attributes:
+            CDFTSolver (CDFTSolver)
+            origin (tuple): (x,y,z) coord; same as rhor.cube file; origin of volumetric data;
                 give in Angstroms; gets converted to Bohr in program 
     """
     constraints = CDFTSolver.sample.constraints

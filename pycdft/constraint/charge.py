@@ -5,7 +5,11 @@ from pycdft.constraint.base import Constraint
 
 
 class ChargeConstraint(Constraint):
-    """ Constraint on the absolute electron number of a fragment.
+    r""" Constraint on the absolute electron number of a fragment.
+
+    For fragment F, Hirshfeld weight is defined as 
+    :math:`w_\text{F}({\bf r}) =  \frac{\sum_{I \in F} \rho_I}{\sum_I \rho_I}`
+
 
     Extra attributes:
          fragment (Fragment): a fragment of the whole system.

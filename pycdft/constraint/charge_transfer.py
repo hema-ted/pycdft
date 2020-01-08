@@ -5,7 +5,10 @@ from pycdft.constraint.base import Constraint
 
 
 class ChargeTransferConstraint(Constraint):
-    """ Constraint on electron number difference between a donor and an acceptor fragment
+    r""" Constraint on electron number difference between a donor and an acceptor fragment
+
+    For donor region D and acceptor region A, Hirshfeld weight is defined as
+    :math:`w({\bf r})= \frac{\sum_{I \in D} \rho_I-\sum_{I \in A} \rho_I}{\sum_I \rho_I}`
 
     Extra attributes:
          donor (Fragment): donor fragment.
