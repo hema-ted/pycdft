@@ -19,6 +19,9 @@ dist/
 lib/
 
 doxygen/latex
-doxygen/uml
+doyxgen/uml
+
+sphinx/west-doc/
+sphinx/build/
 
 examples/he2force

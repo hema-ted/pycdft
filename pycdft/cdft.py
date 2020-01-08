@@ -20,9 +20,9 @@ class CDFTSolver:
 
     Attributes:
         job (str): "scf" or "opt".
-        sample (Sample): the whole system for which CDFT calculation is performed.
-        constraints (list of Constraint): constraints on the system.
-        dft_driver (DFTDriver): the interface to DFT code (e.g., Qbox or PWscf).
+        sample (:class:`Sample`): the whole system for which CDFT calculation is performed.
+        constraints (list of :class:`Constraint`): constraints on the system.
+        dft_driver (:class:`DFTDriver`): the interface to DFT code (e.g., Qbox or PWscf).
         optimizer (str): optimization strategy for constrained Hamiltonian, default = "secant"
         maxcscf (int): maximum number of CDFT iterations, default =1000.
         maxstep (int): maximum geometry optimization steps, default = 100.
@@ -88,6 +88,16 @@ class CDFTSolver:
         An outer loop (implemented below) is performed to maximize the free energy w.r.t.
         Lagrangian multipliers for all constrains, an inner loop (casted to a KS problem and
         outsourced to DFT code) is performed to minimize the free energy w.r.t. charge density.
+
+        Methods:
+             secant: requies V_init
+             bisect, brentq, brenth: requires V_brak
+
+        Note:
+             For methods requiring V_brak = [a,b], the objective function f must be continuous
+             and f(a) and f(b) must have opposite signs. 
+             see scipy.optimize documentation
+           
         """
 
         self.sample.update_weights()
