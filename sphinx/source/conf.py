@@ -18,8 +18,8 @@ sys.path.insert(0, os.path.abspath('../../pycdft/'))
 # -- Project information -----------------------------------------------------
 
 project = 'pyCDFT'
-copyright = '2020, He Ma, Ma Hin Cheng, Wennie Wang, Siyoung Kim'
-author = 'He Ma, Ma Hin Cheng, Wennie Wang, Siyoung Kim'
+copyright = '2020, Galli Group, U. Chicago'
+author = 'He Ma, Ma Hin Cheng, Wennie Wang, Siyoung Kim, Marco Govoni, Giulia Galli'
 
 # The full version, including alpha/beta/rc tags
 release = '0.1'
@@ -49,18 +49,35 @@ autodoc_member_order = 'bysource'
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
+# master toctree document
+master_doc = 'index'
+
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build','_static','.ipynb_checkpoints']
 
+# The name of the Pygments (syntax highlighting) style to use.
+pygments_style = 'sphinx'
 
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+#html_theme = 'alabaster'
+
+# The theme to use for HTML and HTML Help pages.  See the documentation for
+# a list of builtin themes.
+# Add any paths that contain custom themes here, relative to this directory.
+html_theme = "sphinx_rtd_theme"
+#html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+##html_theme_path = ["_themes", ]
+#html_show_sourcelink = False
+#html_show_copyright = False
+#html_show_sphinx = False
+
+#---------------------------------------------------------------------------
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

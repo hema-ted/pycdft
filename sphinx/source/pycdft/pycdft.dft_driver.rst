@@ -1,7 +1,7 @@
 pycdft.dft\_driver
 ==================
 
-pyCDFT is compatible with the following DFT codes:
+**pyCDFT** is compatible with the following DFT codes:
   - `Qbox <http://qboxcode.org/>`_  (via client-server mode) 
 
 pycdft.dft\_driver.qbox\_driver

@@ -6,15 +6,35 @@
 Welcome to pyCDFT's documentation!
 ==================================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+Contents
+--------
 
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+   
+   installation
+   tutorial
+   quickreference
+   manual
+
+.. glossary::
+
+    :ref:`installation`
+      Instructions on how to install **pyCDFT**.
+ 
+    :ref:`tutorial`
+      Some tutorials on the usage of **pyCDFT**.
+ 
+    :ref:`quickreference`
+      Template for **pyCDFT** minimum working input file.
+ 
+    :ref:`manual`
+      The complete manual of the code itself.
 
 
 Indices and tables
 ==================
 
-* :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
