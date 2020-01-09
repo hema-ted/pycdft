@@ -16,7 +16,7 @@ class QboxLockfileError(Exception):
 
 
 class QboxCubeDriver(DFTDriver):
-    """ DFT driver for Qbox.
+    """ DFT driver for Qbox (older versions use CUBE format, prior to v 1.69.0)
 
     Extra attributes:
         init_cmd (str): initialization command for Qbox.

@@ -16,7 +16,7 @@ class QboxLockfileError(Exception):
     pass
 
 class QboxDriver(DFTDriver):
-    """ DFT driver for Qbox.
+    """ DFT driver for Qbox (v 1.69.0 +, post-XML conversion)
 
     Extra attributes:
         init_cmd (str): initialization command for Qbox.

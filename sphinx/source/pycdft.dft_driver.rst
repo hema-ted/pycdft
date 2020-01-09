@@ -1,10 +1,13 @@
 pycdft.dft\_driver
 ==================
 
-pycdft.dft\_driver.base
------------------------
+pyCDFT is compatible with the following DFT codes:
+  - `Qbox <http://qboxcode.org/>`_  (via client-server mode) 
 
-.. automodule:: pycdft.dft_driver.base
+pycdft.dft\_driver.qbox\_driver
+-------------------------------
+
+.. automodule:: pycdft.dft_driver.qbox_driver
    :members:
    :undoc-members:
    :show-inheritance:
@@ -17,11 +20,10 @@ pycdft.dft\_driver.qbox\_cube\_driver
    :undoc-members:
    :show-inheritance:
 
-pycdft.dft\_driver.qbox\_driver
--------------------------------
+pycdft.dft\_driver.base
+-----------------------
 
-.. automodule:: pycdft.dft_driver.qbox_driver
+.. automodule:: pycdft.dft_driver.base
    :members:
    :undoc-members:
    :show-inheritance:
-

@@ -7,10 +7,10 @@ import time
 
 def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver,debug=True):
     """ Compute electronic coupling in mH between two KS wavefunctions.
-        Notes on implementation, see:
-        1) Oberhofer & Blumberger 2010; dx.doi.org/10.1063/1.3507878
-        2) Kaduk, et al 2012; dx.doi.org/10.1021/cr200148b, esp. p 344, Eq. 51 
-        3) Goldey, et al 2017; dx.doi.org/10.1021/acs.jctc.7b00088
+        For theory on implementation, see:
+        1) Oberhofer2010; dx.doi.org/10.1063/1.3507878
+        2) Kaduk2012; dx.doi.org/10.1021/cr200148b
+        3) Goldey2017; dx.doi.org/10.1021/acs.jctc.7b00088
   
         only @ Gamma point, so quantities are real; but keep conjugate operations for now
         
@@ -23,7 +23,6 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver,debug=True):
            W (array): weight function matrix, 2x2
            H (array): diabatic Hamiltonian matrix, 2x2
            Hsymm (array): symmetrized diabatic Hamiltonian matrix, 2x2
- 
     """
     try:
        start_time = time.time()
@@ -114,8 +113,15 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver,debug=True):
     solver1.dft_driver.exit()
 
 def cdft_get_O(wfc1,wfc2,omega,m):
-    """ Overlap matrix 
-      For plane waves, see Eq. 20 in Oberhofer & Blumberger 2010"""
+    r""" construct orbital overlap matrix 
+     
+      :math:`{\bf O}_{ij} = \langle \phi^j_b | \phi^i_a \rangle`
+     
+      where :math:`\phi^i_a` corresponds to an orthogonal spin orbital *i* in the KS determinant of state *a*
+
+      see Eq. 20 in Oberhofer2010, which assumes plane wave basis
+
+    """
 
     nspin, nkpt, nbnd, norb = wfc1.nspin, wfc1.nkpt, wfc1.nbnd, wfc1.norb
     # Otot, containing spin up and down
@@ -129,10 +135,11 @@ def cdft_get_O(wfc1,wfc2,omega,m):
     return O
 
 def cdft_get_S(O):
-    """ build overlap matrix S
-      O  is orbital overlap matrix 
+    r""" build overlap matrix S
  
-      returns Stot 
+      :math:`{\bf S}_{ab} = \langle \psi_a | \psi_b \rangle \det{{\bf O}}`
+  
+      see Eq 20 in Oberhofer2010
     """
     S = np.zeros([2,2]) # 2x2 state overlap matrix S
     Odet = np.linalg.det(O)
@@ -144,8 +151,11 @@ def cdft_get_S(O):
     return S, Odet
 
 def cdft_get_W(wfc1,wfc2,Vc,O,omega,m): 
-    """ build W matrix 
-        returns Wtot
+    r""" build W matrix 
+
+        :math:`W_{ba} = \langle \psi_b | \sum_i w({\bf r}_i)| \psi_a \rangle = \sum_i \sum_j \langle \phi_A^i | w({\bf r}) | \phi_B^j \rangle {\bf C}_{ij}`
+
+        see Eqs. 21, 24, 25 in Oberhofer2010
     """
 
     nspin, nkpt, nbnd, norb = wfc1.nspin, wfc1.nkpt, wfc1.nbnd, wfc1.norb
@@ -195,16 +205,19 @@ def cdft_get_W(wfc1,wfc2,Vc,O,omega,m):
     return W, C
 
 def cdft_get_H(solver1,solver2,S,W):
-    """ 
+    r""" 
      H matrix between nonorthogonal diabatic states 
-     (Eq. 9-11 in Oberhofer2010, Eq. 5 in Goldey2017)
+     
+     (Eq. 9-11 in Oberhofer2010, Eq. 5 in Goldey2017);
      see also p 344 of Kaduk2012
 
-       H_aa = <\psi_a|H_KS|\psi_a>
-       H_ab = F_b * S_ab - V_b * W_ab
-       H_ba = F_a * S_ba - V_a * W_ba
+       :math:`H_{aa} = \langle \psi_a|H_{KS}|\psi_a \rangle`
 
-       F_a = <\psi_a|H_KS + V*w | \psi_a>
+       :math:`H_{ab} = F_b S_{ab} - V_b  W_{ab}`
+
+       :math:`H_{ba} = F_a  S_{ba} - V_a  W_{ba}`
+
+       :math:`F_a = \langle \psi_a|H_{KS} + V \cdot w | \psi_a \rangle`
 
     """ 
     H = np.zeros([2, 2])
