@@ -80,7 +80,7 @@ Debugging
 ---------
 
 To use the debugging module simply add the following commands to your python script. 
-See :ref:`pycdft/pycdft.debug` for details. 
+See **pycdft/pycdft.debug** for details. 
 
 .. code-block:: bash
 

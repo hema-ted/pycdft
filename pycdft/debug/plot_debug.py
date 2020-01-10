@@ -124,24 +124,31 @@ def get_rho_atom(CDFTSolver,origin):
         index += 1
     print("Completed get_rho_atom")
 
-def get_rho(CDFTSolver):
+def get_rho(CDFTSolver,origin,index):
     """ Borrowed from implementation of abstract ``fetch_rhor`` method for Qbox 
-       Generate from Qbox the rhor.cube file """
+       Generate from Qbox the rhor.cube file 
+    
+    """
     vspin = CDFTSolver.sample.vspin
+    nspin = CDFTSolver.sample.wfc.nspin
+    atoms = CDFTSolver.sample.ase_cell
     n1, n2, n3 = CDFTSolver.sample.n1, CDFTSolver.sample.n2, CDFTSolver.sample.n3
     rho_r = np.zeros([vspin, n1, n2, n3])
-
+  
     for ispin in range(vspin):
-        # Qbox generates charge density
-        CDFTSolver.dft_driver.run_cmd(cmd="plot -density {} {}".format(
-            "-spin {}".format(ispin + 1) if vspin == 2 else "",
-            CDFTSolver.dft_driver.rhor_file
-        ))
+       for i in range(nspin):
+           filname="rho_r"+str(index)+"_spin"+str(i+1)+".cube"
 
-        # quick check
-        rhor_raw = read_cube_data(CDFTSolver.dft_driver.rhor_file)[0]
-        #assert rhor_raw.shape == (n1, n2, n3)
-        
+           # Qbox generates charge density
+           CDFTSolver.dft_driver.run_cmd(cmd="plot -density {} {}".format(
+               "-spin {}".format(i + 1) if nspin == 2 else "",
+               filname
+           ))
+           
+           # quick check
+           #rhor_raw = read_cube_data(CDFTSolver.dft_driver.rhor_file)[0]
+           #assert rhor_raw.shape == (n1, n2, n3)
+           
     print("Generated charge density cube file!")
 
 #============== Charge and Hirshfeld gradients =============================

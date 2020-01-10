@@ -1,4 +1,5 @@
-""" Input file for generation of promolecule densities, *.spavr files in rho/ """
+""" Input file for generation of promolecule densities, *.spavr files in rho/ 
+"""
 
 SG15PP = {
     'Ag': {'atomic_number': 47,

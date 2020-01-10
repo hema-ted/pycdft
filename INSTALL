@@ -19,7 +19,7 @@ Currently PyCDFT is compatible with **cube** and **Function3d** formats.
 
 The basic command is:
 
-.. code-block:: python
+.. code-block:: bash
 
    $ python setup.py install 
 
@@ -27,7 +27,7 @@ You may need to modify which directory to install in with "--prefix=/desired/ins
 
 E.g., On UChicago RCC Midway 2
 
-.. code-block:: python
+.. code-block:: bash
 
    export PYTHONPATH="${PYTHONPATH}:/desired/installation/path/lib/python3.7/site-packages"
    python setup.py install --prefix="/desired/installation/path"
