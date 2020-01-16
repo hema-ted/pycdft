@@ -22,6 +22,5 @@ doxygen/latex
 doyxgen/uml
 
 sphinx/west-doc/
-sphinx/build/
+sphinx/docify_self.sh
 
-examples/he2force
