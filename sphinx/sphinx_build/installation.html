@@ -1,0 +1,290 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Installation &mdash; pyCDFT 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tutorial" href="tutorial.html" />
+    <link rel="prev" title="Welcome to pyCDFT’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pyCDFT
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickreference.html">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual.html">pycdft manual</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyCDFT</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Installation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/installation.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="installation">
+<span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>In order to install and use <strong>pyCDFT</strong></p>
+<ol class="arabic simple">
+<li><p>Compile DFT driver</p></li>
+</ol>
+<p><strong>pyCDFT</strong> is currently compatible with Qbox (used in <a class="reference external" href="http://qboxcode.org/doc/html/usage/client-server.html">client-server mode</a>). Other DFT codes may be added in the future as needed.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="http://qboxcode.org/doc/html/usage/installation.html">Qbox</a></p></li>
+<li><p><a class="reference external" href="https://www.alcf.anl.gov/user-guides/qbox">Qbox on Mira</a></p></li>
+</ul>
+</div></blockquote>
+<p>PyCDFT has been tested with Python 3.6+, Qbox 1.67.4+.
+A version of Qbox that is capable of handling external potentials via the variable <strong>vext</strong> is required.
+Currently PyCDFT is compatible with <strong>cube</strong> and <strong>Function3d</strong> formats.</p>
+<ol class="arabic simple" start="2">
+<li><p>Install PyCDFT</p></li>
+</ol>
+<p>The basic command is:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ python setup.py install
+</pre></div>
+</div>
+<p>You may need to modify which directory to install in with “–prefix=/desired/installation/path/”</p>
+<p>E.g., On UChicago RCC Midway 2</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">PYTHONPATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PYTHONPATH</span><span class="si">}</span><span class="s2">:/desired/installation/path/lib/python3.7/site-packages&quot;</span>
+python setup.py install --prefix<span class="o">=</span><span class="s2">&quot;/desired/installation/path&quot;</span>
+</pre></div>
+</div>
+<p>Be sure to load python v 3.6+, e.g.,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ module load python
+$ module list
+
+Currently Loaded Modulefiles:
+ <span class="m">1</span><span class="o">)</span> serf/1.3.9                      <span class="m">7</span><span class="o">)</span> intelmpi/2018.2.199+intel-18.0
+ <span class="m">2</span><span class="o">)</span> subversion/1.9.4                <span class="m">8</span><span class="o">)</span> xerces/3.1.4
+ <span class="m">3</span><span class="o">)</span> git/2.10                        <span class="m">9</span><span class="o">)</span> python/3.7.0
+ <span class="m">4</span><span class="o">)</span> env/rcc                        <span class="m">10</span><span class="o">)</span> octave/4.0
+ <span class="m">5</span><span class="o">)</span> mkl/2018.up2                   <span class="m">11</span><span class="o">)</span> gcc/6.1
+ <span class="m">6</span><span class="o">)</span> intel/18.0                     <span class="m">12</span><span class="o">)</span> slurm/current
+</pre></div>
+</div>
+</div>
+<div class="section" id="dependencies">
+<h1>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h1>
+<dl class="simple">
+<dt>The following dependencies are needed:</dt><dd><ul class="simple">
+<li><p><a class="reference external" href="https://www.python.org/downloads/">python</a></p></li>
+<li><p><a class="reference external" href="https://jupyter.org/install">Jupyter</a></p></li>
+</ul>
+</dd>
+<dt>The following Python packages are needed, as included in <strong>setup.py</strong> install file:</dt><dd><ul class="simple">
+<li><p><a class="reference external" href="https://numpy.org/">numpy</a></p></li>
+<li><p><a class="reference external" href="https://pypi.org/project/pyFFTW/">pyFFTW</a></p></li>
+<li><p><a class="reference external" href="https://pypi.org/project/lxml/">lxml</a></p></li>
+<li><p><a class="reference external" href="https://wiki.fysik.dtu.dk/ase/install.html">ase</a></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tutorial.html" class="btn btn-neutral float-right" title="Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to pyCDFT’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Galli Group, U. Chicago
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,390 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Quick Reference &mdash; pyCDFT 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pycdft manual" href="manual.html" />
+    <link rel="prev" title="Tutorial" href="tutorial.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pyCDFT
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#interactive-mode">Interactive Mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#job-queue-mode">Job Queue Mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#template-input-file">Template input file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#debugging">Debugging</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="manual.html">pycdft manual</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyCDFT</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Quick Reference</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/quickreference.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="quick-reference">
+<span id="quickreference"></span><h1>Quick Reference<a class="headerlink" href="#quick-reference" title="Permalink to this headline">¶</a></h1>
+<p>These are quick references for <strong>pyCDFT</strong> usage.</p>
+<div class="section" id="interactive-mode">
+<h2>Interactive Mode<a class="headerlink" href="#interactive-mode" title="Permalink to this headline">¶</a></h2>
+<p>One way to run PyCDFT is through an interactive session.
+This is ideal for debugging or small tutorial files.
+This involves having two terminals open: 1) terminal 1 runs the DFT driver in client-server mode in an interactive session and 2) terminal 2 loads a Jupyter notebook that can be run through a browser.</p>
+<p>On Midway 2, you can request an <a class="reference external" href="https://rcc.uchicago.edu/docs/using-midway/index.html">interactive session</a> using e.g.,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sinteractive --exclusive --partition<span class="o">=</span>broadwl --nodes<span class="o">=</span><span class="m">2</span> --time<span class="o">=</span><span class="m">08</span>:00:00
+</pre></div>
+</div>
+<p>You can also run a <a class="reference external" href="https://rcc.uchicago.edu/documentation/_build/html/software/environments/python/index.html">Jupyter Notebook</a> on Midway using e.g.,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">ip</span><span class="o">=</span><span class="k">$(</span>/sbin/ip route get <span class="m">8</span>.8.8.8 <span class="p">|</span> awk <span class="s1">&#39;{print $NF;exit}&#39;</span><span class="k">)</span>
+jupyter-notebook --no-browser --ip<span class="o">=</span><span class="si">${</span><span class="nv">ip</span><span class="si">}</span>
+</pre></div>
+</div>
+<p>which will provide a link that you can click to open a Jupyter session.</p>
+</div>
+<div class="section" id="job-queue-mode">
+<h2>Job Queue Mode<a class="headerlink" href="#job-queue-mode" title="Permalink to this headline">¶</a></h2>
+<p>For larger jobs, the ability to submit in a job queue submission is also provided.</p>
+<p>The basic command looks like</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">qb</span><span class="o">=</span><span class="s2">&quot;/path/to/executable/qb_vext&quot;</span>
+mpirun -np <span class="m">112</span> <span class="nv">$qb</span> -server qb_cdft.in qb_cdft.out <span class="p">&amp;</span>
+sleep <span class="m">2</span>
+python -u <span class="si">${</span><span class="nv">name</span><span class="si">}</span>-thiophene-coupling.py &gt; coupling_<span class="si">${</span><span class="nv">name</span><span class="si">}</span>.out
+</pre></div>
+</div>
+<p>Example submission scripts for PBS and further details are provided in the respective tutorial files.</p>
+</div>
+<div class="section" id="template-input-file">
+<h2>Template input file<a class="headerlink" href="#template-input-file" title="Permalink to this headline">¶</a></h2>
+<p>After compiling the DFT driver and installing <strong>PyCDFT</strong>, run the ground state calculation.
+e.g., Qbox</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">qb</span><span class="o">=</span><span class="s2">&quot;/path/to/executable&quot;</span>
+<span class="nv">$qb</span> &lt; gs.in &gt; gs.out
+</pre></div>
+</div>
+<p>Then in the same directory, run Qbox in client-server mode (using interactive queue)</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mpirun -np &lt;ntasks&gt; <span class="nv">$qb</span> -server qb_cdft.in qb_cdft.out
+</pre></div>
+</div>
+<p>A minimum working example for running <strong>pyCDFT</strong> and calculating the electron coupling parameter.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ### Tutorial: coupling constant for He$_2^+$</span>
+
+<span class="kn">from</span> <span class="nn">pycdft</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">ase.io</span> <span class="kn">import</span> <span class="n">read</span>
+
+<span class="n">cell</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s2">&quot;./He2.cif&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;Initial atomic positions (Ang):&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">get_positions</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">get_cell</span><span class="p">())</span>
+
+
+<span class="c1"># Here we will do a proper run of PyCDFT and include the calculation of the electron coupling.</span>
+<span class="c1"># Instead of randomly guessing an initial constraint potential $V$, we shall use the </span>
+<span class="c1"># `brentq` or `brenth` optimizers to perform a search. For these particular optimizers, </span>
+<span class="c1"># we need to specify a range of $V$ where the function space is sampled for both positive </span>
+<span class="c1"># and negative values; a range of (-2,2) is typically sufficient.</span>
+<span class="c1"># </span>
+<span class="c1"># As before, we initialize the system in the PyCDFT module.</span>
+
+<span class="n">V</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+<span class="c1"># this is close to optimal constraint potential, use secant optimizer to refine</span>
+<span class="c1"># V = -0.703772086888 </span>
+    
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;==================== Initializing Run =========================&quot;</span><span class="p">)</span>
+<span class="c1"># load sample geometry</span>
+<span class="n">cell</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">3.0</span> 
+<span class="n">sample</span> <span class="o">=</span> <span class="n">Sample</span><span class="p">(</span><span class="n">ase_cell</span><span class="o">=</span><span class="n">cell</span><span class="p">,</span> <span class="n">n1</span><span class="o">=</span><span class="mi">112</span><span class="p">,</span> <span class="n">n2</span><span class="o">=</span><span class="mi">112</span><span class="p">,</span> <span class="n">n3</span><span class="o">=</span><span class="mi">112</span><span class="p">,</span> <span class="n">vspin</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    
+<span class="c1"># load DFT driver</span>
+<span class="n">qboxdriver</span> <span class="o">=</span> <span class="n">QboxDriver</span><span class="p">(</span>
+    <span class="n">sample</span><span class="o">=</span><span class="n">sample</span><span class="p">,</span>
+    <span class="n">init_cmd</span><span class="o">=</span><span class="s2">&quot;load gs.xml </span><span class="se">\n</span><span class="s2">&quot;</span> 
+        <span class="s2">&quot;set xc PBE </span><span class="se">\n</span><span class="s2">&quot;</span> 
+        <span class="s2">&quot;set wf_dyn PSDA </span><span class="se">\n</span><span class="s2">&quot;</span> 
+        <span class="s2">&quot;set_atoms_dyn CG </span><span class="se">\n</span><span class="s2">&quot;</span> 
+        <span class="s2">&quot;set scf_tol 1.0E-8 </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">scf_cmd</span><span class="o">=</span><span class="s2">&quot;run 0 50 5&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+    
+<span class="c1"># set up CDFT constraints and solver</span>
+<span class="n">solver1</span> <span class="o">=</span> <span class="n">CDFTSolver</span><span class="p">(</span><span class="n">job</span><span class="o">=</span><span class="s2">&quot;scf&quot;</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="s2">&quot;brenth&quot;</span><span class="p">,</span><span class="n">sample</span><span class="o">=</span><span class="n">sample</span><span class="p">,</span> <span class="n">dft_driver</span><span class="o">=</span><span class="n">qboxdriver</span><span class="p">)</span>
+<span class="n">solver2</span> <span class="o">=</span> <span class="n">solver1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    
+<span class="c1"># add constraint to two solvers</span>
+<span class="n">ChargeTransferConstraint</span><span class="p">(</span>
+    <span class="n">sample</span><span class="o">=</span><span class="n">solver1</span><span class="o">.</span><span class="n">sample</span><span class="p">,</span>
+    <span class="n">donor</span><span class="o">=</span><span class="n">Fragment</span><span class="p">(</span><span class="n">solver1</span><span class="o">.</span><span class="n">sample</span><span class="p">,</span> <span class="n">solver1</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]),</span>
+    <span class="n">acceptor</span><span class="o">=</span><span class="n">Fragment</span><span class="p">(</span><span class="n">solver1</span><span class="o">.</span><span class="n">sample</span><span class="p">,</span> <span class="n">solver1</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]),</span>
+    <span class="n">V_brak</span> <span class="o">=</span><span class="n">V</span><span class="p">,</span> <span class="c1"># change to V_init for secant optimizer</span>
+    <span class="n">N0</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">N_tol</span><span class="o">=</span><span class="mf">1E-6</span>
+<span class="p">)</span>
+<span class="n">ChargeTransferConstraint</span><span class="p">(</span>
+    <span class="n">sample</span><span class="o">=</span><span class="n">solver2</span><span class="o">.</span><span class="n">sample</span><span class="p">,</span> 
+    <span class="n">donor</span><span class="o">=</span><span class="n">Fragment</span><span class="p">(</span><span class="n">solver2</span><span class="o">.</span><span class="n">sample</span><span class="p">,</span> <span class="n">solver2</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]),</span>
+    <span class="n">acceptor</span><span class="o">=</span><span class="n">Fragment</span><span class="p">(</span><span class="n">solver2</span><span class="o">.</span><span class="n">sample</span><span class="p">,</span> <span class="n">solver2</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]),</span>
+    <span class="n">V_brak</span><span class="o">=</span><span class="n">V</span><span class="p">,</span>
+    <span class="n">N0</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> 
+    <span class="n">N_tol</span><span class="o">=</span><span class="mf">1E-6</span>
+<span class="p">)</span>
+
+
+<span class="c1"># And performed constrained DFT</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;~~~~~~~~~~~~~~~~~~~~ Applying CDFT ~~~~~~~~~~~~~~~~~~~~&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;---- solver A ------&quot;</span><span class="p">)</span>
+<span class="n">solver1</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;---- solver B ------&quot;</span><span class="p">)</span>
+<span class="n">solver2</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+
+<span class="c1"># Finally, we call upon the routines for calculating electronic coupling. </span>
+<span class="c1"># An example output is given in ./reference</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;~~~~~~~~~~~~~~~~~~~~ Calculating coupling ~~~~~~~~~~~~~~~~~~~~&quot;</span><span class="p">)</span>
+<span class="n">compute_elcoupling</span><span class="p">(</span><span class="n">solver1</span><span class="p">,</span> <span class="n">solver2</span><span class="p">)</span>
+    
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;=========== &quot;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; Bohr&quot;</span><span class="o">+</span><span class="s2">&quot; =======================&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;==================== JOB DONE =========================&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># Visualize the charge density.</span>
+<span class="k">print</span> <span class="p">(</span><span class="s2">&quot;~~~~~~~~~~~ Debugging ~~~~~~~~~&quot;</span><span class="p">)</span>
+<span class="n">origin</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="mf">0.529</span><span class="p">))</span>
+<span class="n">get_rho</span><span class="p">(</span><span class="n">solver1</span><span class="p">,</span><span class="n">origin</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">get_rho</span><span class="p">(</span><span class="n">solver2</span><span class="p">,</span><span class="n">origin</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Each example comes with a Jupyter notebook that can be converted to a number of formats (e.g., Python script, html, pdf, LaTeX) using</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>jupyter nbconvert --to FORMAT notebook.ipynb
+</pre></div>
+</div>
+<p>where <strong>FORMAT</strong> takes on values described <a class="reference external" href="https://ipython.org/ipython-doc/dev/notebook/nbconvert.html">here</a>.</p>
+<p>Alternatively, you can use <cite>ipynb-py-convert &lt;https://pypi.org/project/ipynb-py-convert/&gt;</cite>.</p>
+</div>
+<div class="section" id="debugging">
+<h2>Debugging<a class="headerlink" href="#debugging" title="Permalink to this headline">¶</a></h2>
+<p>To use the debugging module simply add the following commands to your python script.
+See <strong>pycdft/pycdft.debug</strong> for details.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>get_hirsh<span class="o">(</span>CDFTSolver, origin<span class="o">)</span>
+get_hirsh_ct<span class="o">(</span>CDFTSolver, origin<span class="o">)</span>
+get_rho_atom<span class="o">(</span>CDFTSolver, origin<span class="o">)</span>
+get_rho<span class="o">(</span>CDFTSolver, origin<span class="o">)</span>
+get_grad<span class="o">(</span>CDFTSolver, origin<span class="o">)</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>All input keywords are referenced and explained in the Manual.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="manual.html" class="btn btn-neutral float-right" title="pycdft manual" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="tutorial.html" class="btn btn-neutral float-left" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Galli Group, U. Chicago
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

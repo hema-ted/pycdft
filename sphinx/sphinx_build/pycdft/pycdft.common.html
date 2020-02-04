@@ -1,0 +1,829 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pycdft.common &mdash; pyCDFT 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pycdft.constraint" href="pycdft.constraint.html" />
+    <link rel="prev" title="pycdft.atomic" href="pycdft.atomic.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> pyCDFT
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html#dependencies">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickreference.html">Quick Reference</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../manual.html">pycdft manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../manual.html#module-pycdft.cdft">pycdft.cdft</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../manual.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pycdft.atomic.html">pycdft.atomic</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">pycdft.common</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#system-specific-modules">System-specific modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pycdft.common.atom">pycdft.common.atom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pycdft.common.fragment">pycdft.common.fragment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pycdft.common.sample">pycdft.common.sample</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#internal-modules">Internal modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pycdft.common.wfc">pycdft.common.wfc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pycdft.common.ft">pycdft.common.ft</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-pycdft.common.units">pycdft.common.units</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pycdft.constraint.html">pycdft.constraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pycdft.debug.html">pycdft.debug</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pycdft.dft_driver.html">pycdft.dft_driver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pycdft.elcoupling.html">pycdft.elcoupling</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pyCDFT</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../manual.html">pycdft manual</a> &raquo;</li>
+        
+      <li>pycdft.common</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/pycdft/pycdft.common.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="pycdft-common">
+<h1>pycdft.common<a class="headerlink" href="#pycdft-common" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="system-specific-modules">
+<h2>System-specific modules<a class="headerlink" href="#system-specific-modules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pycdft.common.atom">
+<span id="pycdft-common-atom"></span><h2>pycdft.common.atom<a class="headerlink" href="#module-pycdft.common.atom" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pycdft.common.atom.Atom">
+<em class="property">class </em><code class="sig-prename descclassname">pycdft.common.atom.</code><code class="sig-name descname">Atom</code><span class="sig-paren">(</span><em class="sig-param">sample</em>, <em class="sig-param">ase_atom</em><span class="sig-paren">)</span><a class="headerlink" href="#pycdft.common.atom.Atom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>An atom in a specific cell.</p>
+<p>An atom can be initialized by and exported to an ASE Atom object.</p>
+<p>All physical quantities are in atomic unit.</p>
+<dl class="attribute">
+<dt id="pycdft.common.atom.Atom.sample">
+<code class="sig-name descname">sample</code><a class="headerlink" href="#pycdft.common.atom.Atom.sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>the sample where the atom lives.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pycdft.common.sample.Sample" title="pycdft.common.sample.Sample">Sample</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.atom.Atom.symbol">
+<code class="sig-name descname">symbol</code><a class="headerlink" href="#pycdft.common.atom.Atom.symbol" title="Permalink to this definition">¶</a></dt>
+<dd><p>chemical symbol of the atom.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.atom.Atom.abs_coord">
+<code class="sig-name descname">abs_coord</code><a class="headerlink" href="#pycdft.common.atom.Atom.abs_coord" title="Permalink to this definition">¶</a></dt>
+<dd><p>absolute coordinate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray, shape = [3]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.atom.Atom.cry_coord">
+<code class="sig-name descname">cry_coord</code><a class="headerlink" href="#pycdft.common.atom.Atom.cry_coord" title="Permalink to this definition">¶</a></dt>
+<dd><p>crystal coordinate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray, shape = [3]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Extra attributes are welcomed to be attached to an atom.
+These will be printed out in the representation of Atom object.</p>
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">cry_coord</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pycdft.common.atom.Atom.ase_atom">
+<em class="property">property </em><code class="sig-name descname">ase_atom</code><a class="headerlink" href="#pycdft.common.atom.Atom.ase_atom" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pycdft.common.fragment">
+<span id="pycdft-common-fragment"></span><h2>pycdft.common.fragment<a class="headerlink" href="#module-pycdft.common.fragment" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pycdft.common.fragment.Fragment">
+<em class="property">class </em><code class="sig-prename descclassname">pycdft.common.fragment.</code><code class="sig-name descname">Fragment</code><span class="sig-paren">(</span><em class="sig-param">sample: pycdft.common.sample.Sample</em>, <em class="sig-param">atoms: list</em>, <em class="sig-param">name: str = ''</em><span class="sig-paren">)</span><a class="headerlink" href="#pycdft.common.fragment.Fragment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A part of the system to which constraints may apply.</p>
+<dl class="attribute">
+<dt id="pycdft.common.fragment.Fragment.sample">
+<code class="sig-name descname">sample</code><a class="headerlink" href="#pycdft.common.fragment.Fragment.sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>sample.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pycdft.common.sample.Sample" title="pycdft.common.sample.Sample">Sample</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.fragment.Fragment.atoms">
+<code class="sig-name descname">atoms</code><a class="headerlink" href="#pycdft.common.fragment.Fragment.atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of atoms belonging to the fragment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list of Atom</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.fragment.Fragment.natoms">
+<code class="sig-name descname">natoms</code><a class="headerlink" href="#pycdft.common.fragment.Fragment.natoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of atoms in fragment</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.fragment.Fragment.rhopro_r">
+<code class="sig-name descname">rhopro_r</code><a class="headerlink" href="#pycdft.common.fragment.Fragment.rhopro_r" title="Permalink to this definition">¶</a></dt>
+<dd><p>real space promolecule charge density</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pycdft.common.sample">
+<span id="pycdft-common-sample"></span><h2>pycdft.common.sample<a class="headerlink" href="#module-pycdft.common.sample" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pycdft.common.sample.Sample">
+<em class="property">class </em><code class="sig-prename descclassname">pycdft.common.sample.</code><code class="sig-name descname">Sample</code><span class="sig-paren">(</span><em class="sig-param">ase_cell: ase.atoms.Atoms</em>, <em class="sig-param">vspin: int</em>, <em class="sig-param">n1: int</em>, <em class="sig-param">n2: int</em>, <em class="sig-param">n3: int</em>, <em class="sig-param">atomic_density_files: dict = None</em><span class="sig-paren">)</span><a class="headerlink" href="#pycdft.common.sample.Sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>The physical system to be simulated.</p>
+<p>All physical quantities are in atomic unit.</p>
+<p>Variables ending with _r are defined on R space grid.
+Variables ending with _g are defined on G space grid.
+Variables ending with _rd are defined on radial grid in R space; variables ending
+with _d correspond to all G vectors with different norm. They are used to compute
+atomic densities.</p>
+<dl class="attribute">
+<dt id="pycdft.common.sample.Sample.R">
+<code class="sig-name descname">R</code><a class="headerlink" href="#pycdft.common.sample.Sample.R" title="Permalink to this definition">¶</a></dt>
+<dd><p>the real space lattice vectors of the system.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray, shape = [3, 3]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.sample.Sample.G">
+<code class="sig-name descname">G</code><a class="headerlink" href="#pycdft.common.sample.Sample.G" title="Permalink to this definition">¶</a></dt>
+<dd><p>the reciprocal space lattice vectors of the system.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray, shape = [3, 3]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.sample.Sample.omega">
+<code class="sig-name descname">omega</code><a class="headerlink" href="#pycdft.common.sample.Sample.omega" title="Permalink to this definition">¶</a></dt>
+<dd><p>cell volume.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.sample.Sample.atoms">
+<code class="sig-name descname">atoms</code><a class="headerlink" href="#pycdft.common.sample.Sample.atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of atoms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list of Atoms</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.sample.Sample.fragments">
+<code class="sig-name descname">fragments</code><a class="headerlink" href="#pycdft.common.sample.Sample.fragments" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of fragments defined on the sample.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list of Fragments</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.sample.Sample.rhopro_tot_r">
+<code class="sig-name descname">rhopro_tot_r</code><a class="headerlink" href="#pycdft.common.sample.Sample.rhopro_tot_r" title="Permalink to this definition">¶</a></dt>
+<dd><p>total promolecule density.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray, shape = [n1, n2, n3]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.sample.Sample.vspin">
+<code class="sig-name descname">vspin</code><a class="headerlink" href="#pycdft.common.sample.Sample.vspin" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of spin channels (1 or 2) for constraint potential. Note that
+as long as only charge constraints are present, vspin = 1 even if the
+system may be spin-polarized.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">n1, n2, n3</code></dt>
+<dd><p>FFT grid for charge density, weight function and constraint potential.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.sample.Sample.Ed">
+<code class="sig-name descname">Ed</code><a class="headerlink" href="#pycdft.common.sample.Sample.Ed" title="Permalink to this definition">¶</a></dt>
+<dd><p><span class="math notranslate nohighlight">\(E_d\)</span>, DFT energy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.sample.Sample.Ec">
+<code class="sig-name descname">Ec</code><a class="headerlink" href="#pycdft.common.sample.Sample.Ec" title="Permalink to this definition">¶</a></dt>
+<dd><p><span class="math notranslate nohighlight">\(E_c\)</span>, Constraint energy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.sample.Sample.W">
+<code class="sig-name descname">W</code><a class="headerlink" href="#pycdft.common.sample.Sample.W" title="Permalink to this definition">¶</a></dt>
+<dd><p>free energy. <span class="math notranslate nohighlight">\(W = E_d + E_c - \sum_k V_k N_k\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.sample.Sample.Fd">
+<code class="sig-name descname">Fd</code><a class="headerlink" href="#pycdft.common.sample.Sample.Fd" title="Permalink to this definition">¶</a></dt>
+<dd><p><span class="math notranslate nohighlight">\(F_d\)</span>, DFT force.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.sample.Sample.Fc">
+<code class="sig-name descname">Fc</code><a class="headerlink" href="#pycdft.common.sample.Sample.Fc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constraint force. <span class="math notranslate nohighlight">\(F_c = \sum_k V_k \int \nabla w_k({\bf r}) \cdot n({\bf r}) d{\bf r}\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.sample.Sample.Fw">
+<code class="sig-name descname">Fw</code><a class="headerlink" href="#pycdft.common.sample.Sample.Fw" title="Permalink to this definition">¶</a></dt>
+<dd><p><span class="math notranslate nohighlight">\(-\nabla(W)\)</span>;:math:<cite>F_w = F_d + F_c</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pycdft.common.sample.Sample.update_weights">
+<code class="sig-name descname">update_weights</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pycdft.common.sample.Sample.update_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update weights with new structure.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pycdft.common.sample.Sample.compute_eigr">
+<code class="sig-name descname">compute_eigr</code><span class="sig-paren">(</span><em class="sig-param">atom: pycdft.common.atom.Atom</em>, <em class="sig-param">axis=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pycdft.common.sample.Sample.compute_eigr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute <span class="math notranslate nohighlight">\(e^{-i\bf{G} \cdot \bf{R}}\)</span> array where R is coordinate of atom.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pycdft.common.sample.Sample.compute_rhoatom_g">
+<code class="sig-name descname">compute_rhoatom_g</code><span class="sig-paren">(</span><em class="sig-param">atom: pycdft.common.atom.Atom</em><span class="sig-paren">)</span><a class="headerlink" href="#pycdft.common.sample.Sample.compute_rhoatom_g" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute charge density for an atom with specific coordinate in cell.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pycdft.common.sample.Sample.compute_rhoatom_grad_r">
+<code class="sig-name descname">compute_rhoatom_grad_r</code><span class="sig-paren">(</span><em class="sig-param">atom: pycdft.common.atom.Atom</em><span class="sig-paren">)</span><a class="headerlink" href="#pycdft.common.sample.Sample.compute_rhoatom_grad_r" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute nuclear gradient for atom.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pycdft.common.sample.Sample.ase_cell">
+<em class="property">property </em><code class="sig-name descname">ase_cell</code><a class="headerlink" href="#pycdft.common.sample.Sample.ase_cell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an ASE Atoms object of current cell.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pycdft.common.sample.Sample.show">
+<code class="sig-name descname">show</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pycdft.common.sample.Sample.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>Visualize the structure by VESTA.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pycdft.common.sample.Sample.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">fname</em><span class="sig-paren">)</span><a class="headerlink" href="#pycdft.common.sample.Sample.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the structure to file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pycdft.common.sample.Sample.export">
+<code class="sig-name descname">export</code><span class="sig-paren">(</span><em class="sig-param">fmt='qb'</em>, <em class="sig-param">pseudos=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pycdft.common.sample.Sample.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export the structure to various formats.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pycdft.common.sample.Sample.nel">
+<code class="sig-name descname">nel</code><span class="sig-paren">(</span><em class="sig-param">pseudos='SG15'</em><span class="sig-paren">)</span><a class="headerlink" href="#pycdft.common.sample.Sample.nel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute # of electrons according to certain pseudopotential family.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="internal-modules">
+<h2>Internal modules<a class="headerlink" href="#internal-modules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pycdft.common.wfc">
+<span id="pycdft-common-wfc"></span><h2>pycdft.common.wfc<a class="headerlink" href="#module-pycdft.common.wfc" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pycdft.common.wfc.WfcManager">
+<em class="property">class </em><code class="sig-prename descclassname">pycdft.common.wfc.</code><code class="sig-name descname">WfcManager</code><span class="sig-paren">(</span><em class="sig-param">wfc</em>, <em class="sig-param">transform=&lt;function WfcManager.&lt;lambda&gt;&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#pycdft.common.wfc.WfcManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Helper class to manage a collection of quantities like <span class="math notranslate nohighlight">\(\psi(r)' or :math:\)</span>psi(G)`.</p>
+<p>The collection can be indexed by either an internal index or a (spin, kpoint, band) index.</p>
+<dl class="method">
+<dt id="pycdft.common.wfc.WfcManager.indices">
+<code class="sig-name descname">indices</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pycdft.common.wfc.WfcManager.indices" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pycdft.common.wfc.WfcManager.clear">
+<code class="sig-name descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pycdft.common.wfc.WfcManager.clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pycdft.common.wfc.Wavefunction">
+<em class="property">class </em><code class="sig-prename descclassname">pycdft.common.wfc.</code><code class="sig-name descname">Wavefunction</code><span class="sig-paren">(</span><em class="sig-param">sample: pycdft.common.sample.Sample</em>, <em class="sig-param">wgrid</em>, <em class="sig-param">dgrid</em>, <em class="sig-param">nspin</em>, <em class="sig-param">nkpt</em>, <em class="sig-param">nbnd</em>, <em class="sig-param">occ</em>, <em class="sig-param">gamma=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pycdft.common.wfc.Wavefunction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Container class for Kohn-Sham wavefunction.</p>
+<p>A wavefunction is defined as a collection of KS orbitals, each uniquely labeled by
+three integers: spin (0 or 1), k point index and band index. To facilitate distributed
+storage and access of a wavefunction on multiple processors, each KS orbital is also
+uniquelly labeled by an internal index. Internal index (idx) is generated by following
+pattern:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">ispin</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nspin</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">ikpt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nkpt</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">ibnd</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nbnd</span><span class="p">[</span><span class="n">ispin</span><span class="p">,</span> <span class="n">ikpt</span><span class="p">]):</span>
+            <span class="n">idx</span> <span class="o">++</span>
+</pre></div>
+</div>
+<p>Currently, k points are not fully supported.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">psi_r</span></code> and <code class="docutils literal notranslate"><span class="pre">psi_g</span></code> can be accessed like dicts. They can be indexed with either
+an integer (internal index) or a 3-tuple of integers (spin, kpoint, band index).
+After been indexed, the corresponding quantity (numpy array) of a
+specific KS orbital is returned.</p>
+</div>
+<dl class="attribute">
+<dt id="pycdft.common.wfc.Wavefunction.psi_r">
+<code class="sig-name descname">psi_r</code><a class="headerlink" href="#pycdft.common.wfc.Wavefunction.psi_r" title="Permalink to this definition">¶</a></dt>
+<dd><p>R space KS orbitals defined on a R space grid described by self.wgrid.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.wfc.Wavefunction.psi_g">
+<code class="sig-name descname">psi_g</code><a class="headerlink" href="#pycdft.common.wfc.Wavefunction.psi_g" title="Permalink to this definition">¶</a></dt>
+<dd><p>G space KS orbitals defined on a G space grid described by self.wgrid.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.wfc.Wavefunction.sample">
+<code class="sig-name descname">sample</code><a class="headerlink" href="#pycdft.common.wfc.Wavefunction.sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>sample upon which the wavefunction is defined.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pycdft.common.sample.Sample" title="pycdft.common.sample.Sample">Sample</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.wfc.Wavefunction.wgrid">
+<code class="sig-name descname">wgrid</code><a class="headerlink" href="#pycdft.common.wfc.Wavefunction.wgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>wavefunction grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>FFTGrid</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.wfc.Wavefunction.dgrid">
+<code class="sig-name descname">dgrid</code><a class="headerlink" href="#pycdft.common.wfc.Wavefunction.dgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>charge density grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>FFTGrid</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.wfc.Wavefunction.nspin">
+<code class="sig-name descname">nspin</code><a class="headerlink" href="#pycdft.common.wfc.Wavefunction.nspin" title="Permalink to this definition">¶</a></dt>
+<dd><p># of spin channel. 1: spin unpolarized; 2: spin polarized.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.wfc.Wavefunction.nkpt">
+<code class="sig-name descname">nkpt</code><a class="headerlink" href="#pycdft.common.wfc.Wavefunction.nkpt" title="Permalink to this definition">¶</a></dt>
+<dd><p># of k points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.wfc.Wavefunction.nbnd">
+<code class="sig-name descname">nbnd</code><a class="headerlink" href="#pycdft.common.wfc.Wavefunction.nbnd" title="Permalink to this definition">¶</a></dt>
+<dd><p># of bands.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.wfc.Wavefunction.norb">
+<code class="sig-name descname">norb</code><a class="headerlink" href="#pycdft.common.wfc.Wavefunction.norb" title="Permalink to this definition">¶</a></dt>
+<dd><p>total # of orbitals on all spins, kpoints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.wfc.Wavefunction.occ">
+<code class="sig-name descname">occ</code><a class="headerlink" href="#pycdft.common.wfc.Wavefunction.occ" title="Permalink to this definition">¶</a></dt>
+<dd><p>occupation numbers. shape: (nspin, nkpt, nbnd).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.wfc.Wavefunction.idx_skb_map">
+<code class="sig-name descname">idx_skb_map</code><a class="headerlink" href="#pycdft.common.wfc.Wavefunction.idx_skb_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>private, internal index -&gt; (spin, kpoint, band) index map; access with skb2idx</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pycdft.common.wfc.Wavefunction.skb_idx_map">
+<code class="sig-name descname">skb_idx_map</code><a class="headerlink" href="#pycdft.common.wfc.Wavefunction.skb_idx_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>private, (spin, kpoint, band) index -&gt; internal index map; access with idx2skb</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pycdft.common.wfc.Wavefunction.skb2idx">
+<code class="sig-name descname">skb2idx</code><span class="sig-paren">(</span><em class="sig-param">ispin</em>, <em class="sig-param">ikpt</em>, <em class="sig-param">ibnd</em><span class="sig-paren">)</span><a class="headerlink" href="#pycdft.common.wfc.Wavefunction.skb2idx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get internal index from (spin, kpoint, band) index.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pycdft.common.wfc.Wavefunction.idx2skb">
+<code class="sig-name descname">idx2skb</code><span class="sig-paren">(</span><em class="sig-param">idx</em><span class="sig-paren">)</span><a class="headerlink" href="#pycdft.common.wfc.Wavefunction.idx2skb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get (spin, kpoint, band) index from internal index.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pycdft.common.wfc.Wavefunction.normalize">
+<code class="sig-name descname">normalize</code><span class="sig-paren">(</span><em class="sig-param">psir</em><span class="sig-paren">)</span><a class="headerlink" href="#pycdft.common.wfc.Wavefunction.normalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize psi(r).</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pycdft.common.ft">
+<span id="pycdft-common-ft"></span><h2>pycdft.common.ft<a class="headerlink" href="#module-pycdft.common.ft" title="Permalink to this headline">¶</a></h2>
+<p>Following codes define 3D forward/backward FFT on a given grid.</p>
+<dl class="simple">
+<dt>Forward/backward FT are defined with following conventions:</dt><dd><p>f(G) = 1/omega * int{ f(r) exp(-iGr) dr }
+f(r) = sigma{ f(G) exp(iGr) }</p>
+</dd>
+</dl>
+<dl class="function">
+<dt id="pycdft.common.ft.ftrr">
+<code class="sig-prename descclassname">pycdft.common.ft.</code><code class="sig-name descname">ftrr</code><span class="sig-paren">(</span><em class="sig-param">fr</em>, <em class="sig-param">source</em>, <em class="sig-param">dest</em><span class="sig-paren">)</span><a class="headerlink" href="#pycdft.common.ft.ftrr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fourier interpolate fr from source grid to dest grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fr</strong> (<em>np.ndarray</em>) – R space function. shape == (source.n1, source.n2, source.n3)</p></li>
+<li><p><strong>source</strong> (<em>FFTGrid</em>) – FFT grid on which fr is defined.</p></li>
+<li><p><strong>dest</strong> (<em>FFTGrid</em>) – FFT grid on which output is defined.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Interpolated R space function defined on dest grid.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pycdft.common.units">
+<span id="pycdft-common-units"></span><h2>pycdft.common.units<a class="headerlink" href="#module-pycdft.common.units" title="Permalink to this headline">¶</a></h2>
+<p>Contains common unit conversions</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="pycdft.constraint.html" class="btn btn-neutral float-right" title="pycdft.constraint" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="pycdft.atomic.html" class="btn btn-neutral float-left" title="pycdft.atomic" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Galli Group, U. Chicago
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

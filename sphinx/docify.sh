@@ -8,9 +8,9 @@
 #   
 
 # CHANGE THIS
-home_dir="/home/wwwennie/bin2/pycdft/sphinx/"
+home_dir="/PATH/TO/pycdft/sphinx/"
 
 cd $home_dir
-rm -r $home_dir/build/*
+rm -r $home_dir/sphinx_build/*
 
-sphinx-build -b html $home_dir/source/ $home_dir/build/
+sphinx-build -b html $home_dir/source/ $home_dir/sphinx_build/
