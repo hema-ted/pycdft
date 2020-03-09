@@ -11,16 +11,24 @@ import sys
 
 
 class CDFTSCFConverged(Exception):
-    """ Test for scf convergence """
+    """ Test for scf convergence. """
     pass
+
+
+def timer(start, end):
+    """ Helper function for timing. """
+    hours, rem = divmod(end-start,3600)
+    minutes, seconds = divmod(rem, 60)
+    print("{:0>2}h:{:0>2}m:{:05.2f}s".format(int(hours),int(minutes),seconds))
 
 
 class CDFTSolver:
     """ Constrained DFT solver.
-        In atomic units (Ry, Bohr...)
+
+    All quantities are expressed in Hartree atomic units.
 
     Attributes:
-        job (str): "scf" or "opt".
+        job (str): "scf" for SCF calculations or "opt" for geometry optimization.
         sample (:class:`Sample`): the whole system for which CDFT calculation is performed.
         constraints (list of :class:`Constraint`): constraints on the system.
         dft_driver (:class:`DFTDriver`): the interface to DFT code (e.g., Qbox or PWscf).
@@ -197,11 +205,11 @@ class CDFTSolver:
             print("    N = {:.6f}".format(c.N))
             print("    dW/dV = N - N0 = {:.8f}".format(c.dW_by_dV))
         print("SCF time cycle:")
-        self.timer(start_dft,end_dft)
+        timer(start_dft,end_dft)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         
         print("Elapsed time: ")
-        self.timer(self.start_time,time.time())
+        timer(self.start_time,time.time())
 
         if all(c.is_converged for c in self.constraints):
             raise CDFTSCFConverged
@@ -273,10 +281,5 @@ class CDFTSolver:
             print("\n**Constrained optimization NOT achieved after {} steps!**\n".format(self.maxstep))
 
     def copy(self):
+        """ Generate a deepcopy of the current CDFTSolver instance."""
         return deepcopy(self)
-  
-    def timer(self,start,end):
-        hours, rem = divmod(end-start,3600)
-        minutes, seconds = divmod(rem, 60)
-        print("{:0>2}h:{:0>2}m:{:05.2f}s".format(int(hours),int(minutes),seconds))
-

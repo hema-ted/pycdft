@@ -5,25 +5,29 @@ from pycdft.common.ft import FFTGrid, ftrr
 from pycdft.common.units import hartree_to_ev, hartree_to_millihartree
 import time 
 
+
 def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver,debug=True):
-    """ Compute electronic coupling in mH between two KS wavefunctions.
-        For theory on implementation, see:
-        1) Oberhofer2010; dx.doi.org/10.1063/1.3507878
-        2) Kaduk2012; dx.doi.org/10.1021/cr200148b
-        3) Goldey2017; dx.doi.org/10.1021/acs.jctc.7b00088
-  
-        only @ Gamma point, so quantities are real; but keep conjugate operations for now
-        
-        Attributes:
-           solver1, solver2 (CDFTSolver): instances of solver
-  
-        Internal Parameters:
-           O (array): overlap matrix of KS orbitals, norb x norb
-           S (array): overlap matrix of diabatic states, 2x2 
-           W (array): weight function matrix, 2x2
-           H (array): diabatic Hamiltonian matrix, 2x2
-           Hsymm (array): symmetrized diabatic Hamiltonian matrix, 2x2
+    """ Compute electronic coupling Hab between two KS wavefunctions.
+
+    The implementation is based on the formalism presented in
+    1) Oberhofer2010; dx.doi.org/10.1063/1.3507878
+    2) Kaduk2012; dx.doi.org/10.1021/cr200148b
+    3) Goldey2017; dx.doi.org/10.1021/acs.jctc.7b00088
+
+    Currently we only consider Gamma point, so wavefunctions are real;
+    however, complex conjugate operations are kept for future extensions.
+
+    Attributes:
+       solver1, solver2 (CDFTSolver): instances of solver
+
+    Internal Parameters:
+       O (array): overlap matrix of KS orbitals, norb x norb
+       S (array): overlap matrix of diabatic states, 2x2
+       W (array): weight function matrix, 2x2
+       H (array): diabatic Hamiltonian matrix, 2x2
+       Hsymm (array): symmetrized diabatic Hamiltonian matrix, 2x2
     """
+
     try:
        start_time = time.time()
        assert solver1.sample.vspin == solver2.sample.vspin

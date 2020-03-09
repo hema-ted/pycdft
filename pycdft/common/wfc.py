@@ -1,4 +1,3 @@
-from pycdft.common.ft import *
 from pycdft.common.sample import *
 
 

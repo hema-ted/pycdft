@@ -23,4 +23,4 @@ doyxgen/uml
 
 sphinx/west-doc/
 sphinx/docify_self.sh
-
+doc/sphinx_build/

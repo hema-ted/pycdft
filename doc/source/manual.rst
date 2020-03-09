@@ -1,6 +1,6 @@
 .. _Manual:
 
-pycdft manual
+PyCDFT manual
 ==============
 
 This is the main module for **PyCDFT**
@@ -10,7 +10,7 @@ pycdft.cdft
 ------------
 
 .. automodule:: pycdft.cdft
-   :members:
+   :members: CDFTSolver
    :undoc-members:
    :show-inheritance:
 

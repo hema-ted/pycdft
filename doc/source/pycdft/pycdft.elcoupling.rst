@@ -3,7 +3,7 @@ pycdft.elcoupling
 
 Module for calculating the electron coupling parameter :math:`H_{ab}`
 
-For theory behind implementation, see:
+The implementation is based on the formalism presented in:
 
 1) H. Oberhofer and J. Blumberger. 
 "Electronic coupling matrix elements from charge constrained density functional theory calculations using a plane wave basis set." *J Chem. Phys.* **133**, 244105 (2010). 
