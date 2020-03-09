@@ -1,8 +1,0 @@
-#!/bin/bash
-
-# this is a script used by doxygen.config
-#  to run filters more compatible with Python syntax
-#  using doxypypy: https://github.com/Feneric/doxypypy
-
-doxypypy_exec="/home/wwwennie/doxypypy/bin/doxypypy"
-$doxypypy_exec -a -c $1
