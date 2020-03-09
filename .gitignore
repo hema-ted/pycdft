@@ -18,8 +18,7 @@ build/
 dist/
 lib/
 
-doxygen/latex
-doyxgen/uml
+doxygen/
 
 sphinx/west-doc/
 sphinx/docify_self.sh
