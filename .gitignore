@@ -23,4 +23,4 @@ doxygen/
 sphinx/west-doc/
 sphinx/docify_self.sh
 doc/docify_self.sh
-
+doc/sphinx_build/

@@ -17,12 +17,11 @@ sys.path.insert(0, os.path.abspath('../../pycdft/'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'pyCDFT'
-copyright = '2020, Galli Group, U. Chicago'
+project = 'PyCDFT'
 author = 'He Ma, Ma Hin Cheng, Wennie Wang, Siyoung Kim, Marco Govoni, Giulia Galli'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1'
+release = '0.9'
 
 
 # -- General configuration ---------------------------------------------------
