@@ -17,8 +17,6 @@ The implementation is based on the formalism presented in:
 "Charge Transport in Nanostructured Materials: Implementation and Verification of Constrained Density Functional Theory." *J. Chem. Theory Comp.* **13**, 2581 (2017).
 `10.1021/acs/jctc.7b00088 <http://dx.doi.org/10.1021/acs.jctc.7b00088>`_
 
-
-
 pycdft.elcoupling.elcoupling
 ----------------------------
 

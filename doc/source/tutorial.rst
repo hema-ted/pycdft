@@ -6,10 +6,11 @@ Tutorial
 Tutorials to demonstrate how to utilize core features of **PyCDFT**.
 
 The following tutorials are included in the release, located in the **examples/** folder:
- - 01-he2_scf: self-consistent cycle with CDFT using He-He+ dimer
- - 02-he2_coupling: calculate electronic coupling :math:`H_{ab}` for He-He+ dimer
- - 03-thiophene: calculate :math:`H_{ab}` for stacked thiophene dimer
- - 04-thiophene_rotated: calculate :math:`H_{ab}` for stacked thiophene dimer with relative rotation
+
+ - 01-he2_scf: SCF calculation of a He-He+ dimer
+ - 02-he2_coupling: calculation of electronic coupling :math:`H_{ab}` of a He-He+ dimer
+ - 03-thiophene: calculation of electronic coupling :math:`H_{ab}` of a stacked thiophene dimer
+ - 04-thiophene_rotated: calculation of electronic coupling :math:`H_{ab}` of a stacked thiophene dimer with relative rotation
 
 Here, we show the basic usage with 02-he2_coupling.
 

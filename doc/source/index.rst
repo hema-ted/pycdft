@@ -30,7 +30,7 @@ Contents
       Template for **PyCDFT** minimum working input file.
  
     :ref:`manual`
-      The complete manual of the code itself.
+      The documentation of the code.
 
 
 Indices and tables

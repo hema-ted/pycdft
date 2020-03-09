@@ -1,9 +1,9 @@
 .. _Manual:
 
-PyCDFT manual
-==============
+PyCDFT documentation
+====================
 
-This is the main module for **PyCDFT**
+Code documentation for **PyCDFT**
 
 
 pycdft.cdft 
