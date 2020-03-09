@@ -16,4 +16,4 @@ loop_
   _atom_site_B_iso_or_equiv
   _atom_site_type_symbol
   He1      1.0000 0.00000  0.00000  0.00000  Biso   1.000  He
-  He2      1.0000 0.00000  0.00000  REPL  Biso   1.000  He
+  He2      1.0000 0.00000  0.00000  0.188972  Biso   1.000  He

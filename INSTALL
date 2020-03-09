@@ -7,8 +7,8 @@ In order to install and use **pyCDFT**
 
 **pyCDFT** is currently compatible with Qbox (used in `client-server mode <http://qboxcode.org/doc/html/usage/client-server.html>`_). Other DFT codes may be added in the future as needed.
 
- - `Qbox <http://qboxcode.org/doc/html/usage/installation.html>`_
- - `Qbox on Mira <https://www.alcf.anl.gov/user-guides/qbox>`_
+ - `Install Qbox <http://qboxcode.org/doc/html/usage/installation.html>`_
+ - `Install Qbox on Mira <https://www.alcf.anl.gov/user-guides/qbox>`_
 
 PyCDFT has been tested with Python 3.6+, Qbox 1.67.4+. 
 A version of Qbox that is capable of handling external potentials via the variable **vext** is required.
@@ -23,13 +23,13 @@ The basic command is:
 
    $ python setup.py install 
 
-You may need to modify which directory to install in with "--prefix=/desired/installation/path/"
+You may need to modify which directory to install in with "--prefix=/desired/installation/path/pycdft/"
 
 E.g., On UChicago RCC Midway 2
 
 .. code-block:: bash
 
-   export PYTHONPATH="${PYTHONPATH}:/desired/installation/path/lib/python3.7/site-packages"
+   export PYTHONPATH="${PYTHONPATH}:/desired/installation/path/pycdft/:/desired/installation/path/pycdft/lib/python3.7/site-packages"
    python setup.py install --prefix="/desired/installation/path"
 
 Be sure to load python v 3.6+, e.g., 
