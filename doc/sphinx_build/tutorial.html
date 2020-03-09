@@ -192,9 +192,7 @@
 </ul>
 </dd>
 </dl>
-<p>Here, we show the basic usage with 02-he2_coupling.</p>
-<div class="toctree-wrapper compound">
-</div>
+<p>Here, we show the basic usage of PyCDFT with 02-he2_coupling.</p>
 <div class="section" id="he-he-dimer-coupling">
 <h2>He-He+ dimer coupling<a class="headerlink" href="#he-he-dimer-coupling" title="Permalink to this headline">¶</a></h2>
 <p>This is a minimum working example for calculating the electronic coupling in a He-He+ dimer
@@ -250,10 +248,11 @@ See <a class="reference external" href="http://qboxcode.org/doc/html/">Qbox docu
 </pre></div>
 </div>
 <p>Then, we initialize an instance of the CDFT solver itself.
-Since we are not relaxation our structure, the job consists of one self-consistent field calculation and skips the calculation of constrained forces.
+Since we are not relaxing our structure, the job consists of one self-consistent field calculation and skips the calculation of constrained forces.
 We first do a search across a range of values (in this case [-1,1]) for the constraint potential using the <strong>brenth</strong> optimizer.
-In order calculate the electronic coupling, we must do a CDFT calculation for the initial and final state.
-We set the target number of electrons between the donor He atom and acceptor He atom <strong>N0</strong> to 1.</p>
+In order calculate the electronic coupling, we must do a CDFT calculation for the initial and final state, so we set up a CDFT solver and constraint for each.
+We set the target number of electrons between the donor He atom and acceptor He atom <strong>N0</strong> to 1.
+Convergence in CDFT is determined by the threshold given by <strong>N_tol</strong>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># set up CDFT constraints and solver</span>
 <span class="n">solver1</span> <span class="o">=</span> <span class="n">CDFTSolver</span><span class="p">(</span><span class="n">job</span><span class="o">=</span><span class="s2">&quot;scf&quot;</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="s2">&quot;brenth&quot;</span><span class="p">,</span><span class="n">sample</span><span class="o">=</span><span class="n">sample</span><span class="p">,</span> <span class="n">dft_driver</span><span class="o">=</span><span class="n">qboxdriver</span><span class="p">)</span>
 <span class="n">solver2</span> <span class="o">=</span> <span class="n">solver1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -298,7 +297,8 @@ Replace <strong>V_brak</strong> with <strong>V_init</strong> when initializing t
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">V</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.704717721359</span>
 </pre></div>
 </div>
-<p>for <strong>solver1</strong>. Due to the symmetry of the system, <strong>solver2</strong> will have a very close constraint potential of the opposite sign.
+<p>for <strong>solver1</strong>. Try replacing the constraint potential with the above starting guess.
+Due to the symmetry of the system, <strong>solver2</strong> will have a very close constraint potential of the opposite sign.
 An example output is included in the examples/ folder.</p>
 <p>The outputted electronic coupling is</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="p">|</span>Hab<span class="p">|</span> <span class="o">(</span>H<span class="o">)</span>: <span class="m">0</span>.002145233079196648

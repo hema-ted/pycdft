@@ -192,7 +192,7 @@
 This is ideal for debugging or small tutorial files.
 This involves having two terminals open: 1) terminal 1 runs the DFT driver in client-server mode in an interactive session and 2) terminal 2 loads a Jupyter notebook that can be run through a browser.</p>
 <p>On Midway 2, you can request an <a class="reference external" href="https://rcc.uchicago.edu/docs/using-midway/index.html">interactive session</a> using e.g.,</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sinteractive --exclusive --partition<span class="o">=</span>broadwl --nodes<span class="o">=</span><span class="m">2</span> --time<span class="o">=</span><span class="m">08</span>:00:00
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sinteractive --exclusive --partition<span class="o">=</span>broadwl --nodes<span class="o">=</span><span class="m">2</span> --time<span class="o">=</span><span class="m">02</span>:00:00
 </pre></div>
 </div>
 <p>You can also run a <a class="reference external" href="https://rcc.uchicago.edu/documentation/_build/html/software/environments/python/index.html">Jupyter Notebook</a> on Midway using e.g.,</p>
@@ -201,48 +201,83 @@ jupyter-notebook --no-browser --ip<span class="o">=</span><span class="si">${</s
 </pre></div>
 </div>
 <p>which will provide a link that you can click to open a Jupyter session.</p>
+<p>After compiling the DFT driver and installing <strong>PyCDFT</strong>, run the ground state calculation.
+e.g., Qbox</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">qb</span><span class="o">=</span><span class="s2">&quot;/path/to/executable/qb&quot;</span>
+<span class="nv">$qb</span> &lt; gs.in &gt; gs.out
+</pre></div>
+</div>
+<p>Then in the same directory, run Qbox in client-server mode</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mpirun -np &lt;ntasks&gt; <span class="nv">$qb</span> -server qb_cdft.in qb_cdft.out
+</pre></div>
+</div>
+<p>where qb_cdft.in and qb_cdft.out are reserved file names for the DFT driver.</p>
 </div>
 <div class="section" id="job-queue-mode">
 <h2>Job Queue Mode<a class="headerlink" href="#job-queue-mode" title="Permalink to this headline">¶</a></h2>
 <p>For larger jobs, the ability to submit in a job queue submission is also provided.</p>
 <p>The basic command looks like</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">qb</span><span class="o">=</span><span class="s2">&quot;/path/to/executable/qb_vext&quot;</span>
-mpirun -np <span class="m">112</span> <span class="nv">$qb</span> -server qb_cdft.in qb_cdft.out <span class="p">&amp;</span>
+mpirun -np <span class="m">40</span> <span class="nv">$qb</span> -server qb_cdft.in qb_cdft.out <span class="p">&amp;</span>
 sleep <span class="m">2</span>
 python -u <span class="si">${</span><span class="nv">name</span><span class="si">}</span>-thiophene-coupling.py &gt; coupling_<span class="si">${</span><span class="nv">name</span><span class="si">}</span>.out
 </pre></div>
 </div>
-<p>Example submission scripts for PBS and further details are provided in the respective tutorial files.</p>
+<p>where <em>name</em> is a previously defined variable.
+Example submission scripts for PBS job submission and further details are provided in the respective tutorial files.</p>
 </div>
 <div class="section" id="template-input-file">
 <h2>Template input file<a class="headerlink" href="#template-input-file" title="Permalink to this headline">¶</a></h2>
-<p>After compiling the DFT driver and installing <strong>PyCDFT</strong>, run the ground state calculation.
-e.g., Qbox</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">qb</span><span class="o">=</span><span class="s2">&quot;/path/to/executable&quot;</span>
-<span class="nv">$qb</span> &lt; gs.in &gt; gs.out
-</pre></div>
-</div>
-<p>Then in the same directory, run Qbox in client-server mode (using interactive queue)</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mpirun -np &lt;ntasks&gt; <span class="nv">$qb</span> -server qb_cdft.in qb_cdft.out
-</pre></div>
-</div>
 <p>A minimum working example for running <strong>PyCDFT</strong> and calculating the electron coupling parameter.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ### Tutorial: coupling constant for He$_2^+$</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="c1"># coding: utf-8</span>
+
+<span class="c1"># ## Prerequisite</span>
+
+<span class="c1"># After compiling the DFT driver and installing PyCDFT, run the ground state calculation.</span>
+<span class="c1"># - - - - - - -</span>
+<span class="c1"># For Qbox</span>
+<span class="c1"># </span>
+<span class="c1"># ```bash</span>
+<span class="c1">#  export qb=&quot;/path/to/executable&quot;</span>
+<span class="c1">#  $qb &lt; gs.in &gt; gs.out</span>
+<span class="c1"># ```</span>
+<span class="c1"># Then in the same directory, run [Qbox in server mode](qboxcode.org/daoc/html/usage/client-server.html) (using interactive queue), e.g., </span>
+<span class="c1">#     </span>
+<span class="c1"># </span>
+<span class="c1"># ```bash</span>
+<span class="c1">#  mpirun -np &lt;ntasks&gt; $qb -server qb_cdft.in qb_cdft.out</span>
+<span class="c1"># ```</span>
+<span class="c1"># </span>
+<span class="c1"># where ntasks designates the number of tasks/processors and qb_cdft.\* are files reserved in client-server mode.</span>
+<span class="c1"># </span>
+<span class="c1"># Make sure this Jupyter notebook sits in the same directory as the groundstate calculation.</span>
+<span class="c1"># </span>
+<span class="c1"># Using 20 processors on Intel Ivybridge nodes, this example takes less than 10 min.</span>
+
+<span class="c1"># ### Tutorial: coupling constant for He$_2^+$</span>
 
 <span class="c1"># Here we will do a proper run of PyCDFT and include the calculation of the electron coupling.</span>
 <span class="c1"># Instead of randomly guessing an initial constraint potential $V$, we shall use the `brentq` or `brenth` optimizers to perform a search. For these particular optimizers, we need to specify a range of $V$ where the function space is sampled for both positive and negative values; a range of (-2,2) is typically sufficient.</span>
 <span class="c1"># </span>
 <span class="c1"># As before, we initialize the system in the PyCDFT module.</span>
 
+<span class="c1"># In[ ]:</span>
+
+
 <span class="kn">from</span> <span class="nn">pycdft</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">ase.io</span> <span class="kn">import</span> <span class="n">read</span>
+
+
+<span class="c1"># In[ ]:</span>
+
 
 <span class="n">V</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
 <span class="c1"># V = -0.703772086888  # this is close to optimal constraint potential, use secant optimizer to refine</span>
     
 <span class="k">print</span><span class="p">(</span><span class="s2">&quot;==================== Initializing Run =========================&quot;</span><span class="p">)</span>
 <span class="c1"># Read atomic structure</span>
-<span class="n">cell</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s2">&quot;./He2.cif&quot;</span><span class="p">)</span>
+<span class="n">cell</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s2">&quot;./He2_3Ang.cif&quot;</span><span class="p">)</span>
 <span class="k">print</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;Initial atomic positions (Ang):&quot;</span><span class="p">)</span>
 <span class="k">print</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">get_positions</span><span class="p">())</span>
 <span class="k">print</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">get_cell</span><span class="p">())</span>
@@ -294,6 +329,9 @@ e.g., Qbox</p>
 
 <span class="c1"># And performed constrained DFT</span>
 
+<span class="c1"># In[ ]:</span>
+
+
 <span class="k">print</span><span class="p">(</span><span class="s2">&quot;~~~~~~~~~~~~~~~~~~~~ Applying CDFT ~~~~~~~~~~~~~~~~~~~~&quot;</span><span class="p">)</span>
 <span class="k">print</span><span class="p">(</span><span class="s2">&quot;---- solver A ------&quot;</span><span class="p">)</span>
 <span class="n">solver1</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
@@ -304,18 +342,25 @@ e.g., Qbox</p>
 <span class="c1"># Finally, we call upon the routines for calculating electronic coupling. </span>
 <span class="c1"># An example output is given in ./reference</span>
 
+<span class="c1"># In[ ]:</span>
+
+
 <span class="k">print</span><span class="p">(</span><span class="s2">&quot;~~~~~~~~~~~~~~~~~~~~ Calculating coupling ~~~~~~~~~~~~~~~~~~~~&quot;</span><span class="p">)</span>
 <span class="n">compute_elcoupling</span><span class="p">(</span><span class="n">solver1</span><span class="p">,</span> <span class="n">solver2</span><span class="p">)</span>
     
 <span class="k">print</span><span class="p">(</span><span class="s2">&quot;=========== &quot;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; Bohr&quot;</span><span class="o">+</span><span class="s2">&quot; =======================&quot;</span><span class="p">)</span>
 <span class="k">print</span><span class="p">(</span><span class="s2">&quot;==================== JOB DONE =========================&quot;</span><span class="p">)</span>
 
+
 <span class="c1"># Visualize the charge density.</span>
 
-<span class="c1">#print (&quot;~~~~~~~~~~~ Debugging ~~~~~~~~~&quot;)</span>
-<span class="c1">#origin=tuple(np.multiply([0,0,0],0.529))</span>
-<span class="c1">#get_rho(solver1,origin,1)</span>
-<span class="c1">#get_rho(solver2,origin,2)</span>
+<span class="c1"># In[ ]:</span>
+
+
+<span class="k">print</span> <span class="p">(</span><span class="s2">&quot;~~~~~~~~~~~ Debugging ~~~~~~~~~&quot;</span><span class="p">)</span>
+<span class="n">origin</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="mf">0.529</span><span class="p">))</span>
+<span class="n">get_rho</span><span class="p">(</span><span class="n">solver1</span><span class="p">,</span><span class="n">origin</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">get_rho</span><span class="p">(</span><span class="n">solver2</span><span class="p">,</span><span class="n">origin</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
 
 </pre></div>
 </div>
@@ -323,7 +368,7 @@ e.g., Qbox</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>jupyter nbconvert --to FORMAT notebook.ipynb
 </pre></div>
 </div>
-<p>where <strong>FORMAT</strong> takes on values described <a class="reference external" href="https://ipython.org/ipython-doc/dev/notebook/nbconvert.html">here</a>.</p>
+<p>where <strong>FORMAT</strong> takes on values described <a class="reference external" href="https://ipython.org/ipython-doc/dev/notebook/nbconvert.html">here</a> (e.g., ‘script’).</p>
 <p>Alternatively, you can use <cite>ipynb-py-convert &lt;https://pypi.org/project/ipynb-py-convert/&gt;</cite>.</p>
 </div>
 <div class="section" id="debugging">

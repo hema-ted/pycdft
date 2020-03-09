@@ -1,5 +1,5 @@
 This example shows the calculation for electronic coupling  with the He-He+ dimer at 3 Ang separation.
-It can be run in either an interactive session or through the job submission queue (see run_he2_coupling job submission script).
+It can be run in either an interactive session (in interactive/) or through the job submission queue (in pbs/).
 See usage manual (under Quick Reference) or 01-he_scf for the how to's.
 
 The expected output files are located in reference/

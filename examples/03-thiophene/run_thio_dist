@@ -39,12 +39,12 @@ for d in ${ds[@]}; do
   # set up run
   db=$(bc <<< $d*$ang2bohr)
   frac_d=$(bc <<< $db*0.01763924163)  # assumed box size, 30 Ang
-  cp ../{align.in,align.cif,*ipynb,*1.0.xml} .
-  sed -i "s/REPL/$db/g" align.in
-  sed -i "s/REPL/$frac_d/g" align.cif
+  cp ../{align_tmp.in,align_tmp.cif,*ipynb,*1.0.ximl} .
+  sed  "s/REPL/$db/g" align_tmp.in > align.in 
+  sed  "s/REPL/$frac_d/g" align_tmp.cif > align.cif
   
   echo "===  Running Qbox ===="
-  mpirun -np 40 $qb < align.in > align.out 
+  mpirun -np $NCORES $qb < align.in > align.out 
   
   cd ../
 done
@@ -77,7 +77,7 @@ for d in ${ds[@]}; do
   fi
  
   echo "======  Running Qbox in client-server for ${d} distance ======="
-  mpirun -np 112 $qb -server qb_cdft.in qb_cdft.out &
+  mpirun -np $NCORES $qb -server qb_cdft.in qb_cdft.out &
   sleep 10
   python -u $d-thiophene-coupling.py > coupling_${d}.out  
   cd ../

@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --partition=gagalli
+#SBATCH --partition=gagalli-brdwl
 #SBATCH --mail-type=END,FAIL
 #SBATCH --qos=gagalli-debug
 #SBATCH --time=02:00:00
 #SBATCH --ntasks-per-node=28
-#SBATCH --nodes=2
+#SBATCH --nodes=1
 
 #SBATCH --constraint=e5-2680v4
 
@@ -26,6 +26,8 @@ module load mkl/2018.up2 intelmpi/2018.2.199+intel-18.0 xerces/3.1.4
 # requires a modified version of Qbox that can handle external potentials
 #----------------------------------------------------------------------
 
+NCORES=$(($SLURM_NTASKS_PER_NODE * $SLURM_JOB_NUM_NODES))
+
 #TODO: substitute the appropriate path of the Qbox executable
 export qb="/path/to/executable/qb_vext"
 
@@ -39,13 +41,13 @@ for d in ${ds[@]}; do
   # set up run
   db=$(bc <<< $d*$ang2bohr)
   frac_d=$(bc <<< $db*0.0333333)  # assumed box size, 30 Bohr
-  cp ../{gs.in,He2.cif,*ipynb,*1.0.xml} .
-  sed -i "s/REPL/$db/g" gs.in
-  sed "s/REPL/$frac_d/g" He2_tmp.cif > He2.cif
+  cp ../{*py,*1.0.xml} .
+  sed "s/REPL/$db/g" ../gs_tmp.in > gs.in
+  sed "s/REPL/$frac_d/g" ../He2_tmp.cif > He2.cif
  
   # set up notebook
-  mv he2_coupling-tmp.ipynb ${d}-he2-coupling.ipynb
-  sed -i "s/REPL/d = $d/g" ${d}-he2-coupling.ipynb
+  cp he2_coupling-tmp.py ${d}-he2-coupling.py
+  sed -i "s/REPL/$d/g" ${d}-he2-coupling.py
   
   echo "===  Running Qbox ===="
   mpirun -np 4 $qb < gs.in > gs.out

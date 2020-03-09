@@ -1,3 +1,26 @@
+# ## Prerequisite
+
+# After compiling the DFT driver and installing PyCDFT, run the ground state calculation.
+# - - - - - - -
+# For Qbox
+# 
+# ```bash
+#  export qb="/path/to/executable"
+#  $qb < gs.in > gs.out
+# ```
+# Then in the same directory, run [Qbox in server mode](qboxcode.org/daoc/html/usage/client-server.html) (using interactive queue), e.g., 
+#     
+# 
+# ```bash
+#  mpirun -np <ntasks> $qb -server qb_cdft.in qb_cdft.out
+# ```
+# 
+# where ntasks designates the number of tasks/processors and qb_cdft.\* are files reserved in client-server mode.
+# 
+# Make sure this Jupyter notebook sits in the same directory as the groundstate calculation.
+# 
+# Using 20 processors on Intel Ivybridge nodes, this example takes less than 10 min.
+
 # ### Tutorial: coupling constant for He$_2^+$
 
 # Here we will do a proper run of PyCDFT and include the calculation of the electron coupling.
@@ -13,7 +36,7 @@ V = (2,-2)
     
 print("==================== Initializing Run =========================")
 # Read atomic structure
-cell = read("./He2.cif")
+cell = read("./He2_3Ang.cif")
 print(r"Initial atomic positions (Ang):")
 print(cell.get_positions())
 print(cell.get_cell())
@@ -64,7 +87,6 @@ ChargeTransferConstraint(
 
 
 # And performed constrained DFT
-
 print("~~~~~~~~~~~~~~~~~~~~ Applying CDFT ~~~~~~~~~~~~~~~~~~~~")
 print("---- solver A ------")
 solver1.solve()
@@ -74,12 +96,12 @@ solver2.solve()
 
 # Finally, we call upon the routines for calculating electronic coupling. 
 # An example output is given in ./reference
-
 print("~~~~~~~~~~~~~~~~~~~~ Calculating coupling ~~~~~~~~~~~~~~~~~~~~")
 compute_elcoupling(solver1, solver2)
     
 print("=========== "+ str(d)+" Bohr"+" =======================")
 print("==================== JOB DONE =========================")
+
 
 # Visualize the charge density.
 

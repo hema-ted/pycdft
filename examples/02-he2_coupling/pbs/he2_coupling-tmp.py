@@ -17,7 +17,7 @@ cell = read("./He2.cif")
 print(r"Initial atomic positions (Ang):")
 print(cell.get_positions())
 print(cell.get_cell())
-cell.positions[1][2] = 3.0
+cell.positions[1][2] = REPL
 
 # Construct sample class, set FFT grid
 sample = Sample(ase_cell=cell, n1=112, n2=112, n3=112, vspin=1)

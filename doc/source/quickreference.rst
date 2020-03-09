@@ -65,7 +65,7 @@ Template input file
 
 A minimum working example for running **PyCDFT** and calculating the electron coupling parameter.
 
-.. literalinclude:: ../../examples/02-he2_coupling/tut/he2_coupling-tmp.py
+.. literalinclude:: ../../examples/02-he2_coupling/interactive/he2_coupling.py
    :language: python
 
 Each example comes with a Jupyter notebook that can be converted to a number of formats (e.g., Python script, html, pdf, LaTeX) using
@@ -74,7 +74,7 @@ Each example comes with a Jupyter notebook that can be converted to a number of 
 
    jupyter nbconvert --to FORMAT notebook.ipynb
 
-where **FORMAT** takes on values described `here <https://ipython.org/ipython-doc/dev/notebook/nbconvert.html>`_ (e.g., 'script').
+where **FORMAT** takes on values described `here <https://ipython.org/ipython-doc/dev/notebook/nbconvert.html>`_ (e.g., 'script' to convert to Python script).
 
 Alternatively, you can use `ipynb-py-convert <https://pypi.org/project/ipynb-py-convert/>`.
 

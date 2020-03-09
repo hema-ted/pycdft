@@ -13,11 +13,6 @@ The following tutorials are included in the release, located in the **examples/*
 
 Here, we show the basic usage of PyCDFT with 02-he2_coupling.
 
-.. toctree::
-   :maxdepth: 1
-
-   tut_files/3.0_he2_coupling.py
-
 He-He+ dimer coupling
 ---------------------
        

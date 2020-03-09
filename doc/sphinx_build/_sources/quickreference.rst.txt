@@ -16,7 +16,7 @@ On Midway 2, you can request an `interactive session <https://rcc.uchicago.edu/d
 
 .. code-block:: bash
 
-   sinteractive --exclusive --partition=broadwl --nodes=2 --time=08:00:00
+   sinteractive --exclusive --partition=broadwl --nodes=2 --time=02:00:00
 
 You can also run a `Jupyter Notebook <https://rcc.uchicago.edu/documentation/_build/html/software/environments/python/index.html>`_ on Midway using e.g., 
 
@@ -26,6 +26,22 @@ You can also run a `Jupyter Notebook <https://rcc.uchicago.edu/documentation/_bu
    jupyter-notebook --no-browser --ip=${ip}
 
 which will provide a link that you can click to open a Jupyter session.
+
+After compiling the DFT driver and installing **PyCDFT**, run the ground state calculation.
+e.g., Qbox
+
+.. code-block:: bash
+
+   export qb="/path/to/executable/qb"
+   $qb < gs.in > gs.out
+
+Then in the same directory, run Qbox in client-server mode
+
+.. code-block:: bash
+
+   mpirun -np <ntasks> $qb -server qb_cdft.in qb_cdft.out
+
+where qb_cdft.in and qb_cdft.out are reserved file names for the DFT driver.
 
 Job Queue Mode
 --------------
@@ -37,33 +53,19 @@ The basic command looks like
 .. code-block:: bash
 
    export qb="/path/to/executable/qb_vext"
-   mpirun -np 112 $qb -server qb_cdft.in qb_cdft.out &
+   mpirun -np 40 $qb -server qb_cdft.in qb_cdft.out &
    sleep 2
    python -u ${name}-thiophene-coupling.py > coupling_${name}.out
 
-Example submission scripts for PBS and further details are provided in the respective tutorial files.
+where *name* is a previously defined variable. 
+Example submission scripts for PBS job submission and further details are provided in the respective tutorial files.
 
 Template input file
 -------------------
 
-After compiling the DFT driver and installing **PyCDFT**, run the ground state calculation.
-e.g., Qbox
-
-.. code-block:: bash
-
-   export qb="/path/to/executable"
-   $qb < gs.in > gs.out
-
-Then in the same directory, run Qbox in client-server mode (using interactive queue)
-
-.. code-block:: bash
-
-   mpirun -np <ntasks> $qb -server qb_cdft.in qb_cdft.out
-
-
 A minimum working example for running **PyCDFT** and calculating the electron coupling parameter.
 
-.. literalinclude:: ../../examples/02-he2_coupling/tut/he2_coupling-tmp.py
+.. literalinclude:: ../../examples/02-he2_coupling/interactive/he2_coupling.py
    :language: python
 
 Each example comes with a Jupyter notebook that can be converted to a number of formats (e.g., Python script, html, pdf, LaTeX) using
@@ -72,7 +74,7 @@ Each example comes with a Jupyter notebook that can be converted to a number of 
 
    jupyter nbconvert --to FORMAT notebook.ipynb
 
-where **FORMAT** takes on values described `here <https://ipython.org/ipython-doc/dev/notebook/nbconvert.html>`_.
+where **FORMAT** takes on values described `here <https://ipython.org/ipython-doc/dev/notebook/nbconvert.html>`_ (e.g., 'script').
 
 Alternatively, you can use `ipynb-py-convert <https://pypi.org/project/ipynb-py-convert/>`.
 
