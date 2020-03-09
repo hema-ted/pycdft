@@ -3,7 +3,7 @@
 pycdft manual
 ==============
 
-This is the main module for **pyCDFT**
+This is the main module for **PyCDFT**
 
 
 pycdft.cdft 

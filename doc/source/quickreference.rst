@@ -3,7 +3,7 @@
 Quick Reference
 ===============
 
-These are quick references for **pyCDFT** usage. 
+These are quick references for **PyCDFT** usage. 
 
 Interactive Mode
 ----------------
@@ -61,7 +61,7 @@ Then in the same directory, run Qbox in client-server mode (using interactive qu
    mpirun -np <ntasks> $qb -server qb_cdft.in qb_cdft.out
 
 
-A minimum working example for running **pyCDFT** and calculating the electron coupling parameter.
+A minimum working example for running **PyCDFT** and calculating the electron coupling parameter.
 
 .. literalinclude:: ../../examples/02-he2_coupling/tut/he2_coupling-tmp.py
    :language: python

@@ -3,7 +3,7 @@
 Tutorial
 ========
 
-Tutorials to demonstrate how to utilize core features of **pyCDFT**.
+Tutorials to demonstrate how to utilize core features of **PyCDFT**.
 
 The following tutorials are included in the release, located in the **examples/** folder:
  - 01-he2_scf: self-consistent cycle with CDFT using He-He+ dimer

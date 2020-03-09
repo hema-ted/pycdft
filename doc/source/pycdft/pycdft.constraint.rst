@@ -1,7 +1,7 @@
 pycdft.constraint
 =================
 
-pyCDFT supports the following contraints:
+PyCDFT supports the following contraints:
   - charge constraint, where the absolute electron number of fragment is constrained
   - charge transfer constraint, where the electron number difference
     between a donor and acceptor fragment is constrained
