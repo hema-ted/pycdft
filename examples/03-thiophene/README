@@ -1,6 +1,7 @@
 This example shows the calculation for electronic coupling  with the thiophene-thiophene+ dimer.
 It can be run in either an interactive session or through the job submission queue.
-See usage manual or 01-he_scf for the how to's.
+See usage manual (under Quick Reference) or 01-he_scf for the how to's.
 
+See the run_thio_dist script for a PBS submission queue 
 
 

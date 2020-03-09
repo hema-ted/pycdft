@@ -41,7 +41,7 @@ for d in ${ds[@]}; do
   frac_d=$(bc <<< $db*0.0333333)  # assumed box size, 30 Bohr
   cp ../{gs.in,He2.cif,*ipynb,*1.0.xml} .
   sed -i "s/REPL/$db/g" gs.in
-  sed -i "s/REPL/$frac_d/g" He2.cif
+  sed "s/REPL/$frac_d/g" He2_tmp.cif > He2.cif
  
   # set up notebook
   mv he2_coupling-tmp.ipynb ${d}-he2-coupling.ipynb

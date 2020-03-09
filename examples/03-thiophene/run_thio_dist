@@ -3,9 +3,8 @@
 #SBATCH --mail-type=FAIL,END
 #SBATCH --qos=gagalli-small
 #SBATCH --time=02:00:00
-#SBATCH --ntasks-per-node=28
-#SBATCH --nodes=4
-#SBATCH --constraint=e5-2680v4
+#SBATCH --ntasks-per-node=20
+#SBATCH --nodes=2
 
 #------------------------------------------------
 # Tutorial 3: thiophene-thiophene+ dimer

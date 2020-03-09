@@ -25,14 +25,14 @@ The basic command is:
 
 You may need to modify which directory to install in with "--prefix=/desired/installation/path/pycdft/"
 
-E.g., On UChicago RCC Midway 2
+E.g., in a bash environment
 
 .. code-block:: bash
 
    export PYTHONPATH="${PYTHONPATH}:/desired/installation/path/pycdft/:/desired/installation/path/pycdft/lib/python3.7/site-packages"
    python setup.py install --prefix="/desired/installation/path"
 
-Be sure to load python v 3.6+, e.g., 
+Be sure to to have installed or have loaded Python v 3.6+, e.g., 
 
 .. code-block:: bash
 

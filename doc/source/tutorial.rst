@@ -11,7 +11,7 @@ The following tutorials are included in the release, located in the **examples/*
  - 03-thiophene: calculate :math:`H_{ab}` for stacked thiophene dimer
  - 04-thiophene_rotated: calculate :math:`H_{ab}` for stacked thiophene dimer with relative rotation
 
-Here, we show the basic usage with 02-he2_coupling.
+Here, we show the basic usage of PyCDFT with 02-he2_coupling.
 
 .. toctree::
    :maxdepth: 1
@@ -85,10 +85,11 @@ See `Qbox documentation <http://qboxcode.org/doc/html/>`_ for more information.
    )
        
 Then, we initialize an instance of the CDFT solver itself.
-Since we are not relaxation our structure, the job consists of one self-consistent field calculation and skips the calculation of constrained forces.
+Since we are not relaxing our structure, the job consists of one self-consistent field calculation and skips the calculation of constrained forces.
 We first do a search across a range of values (in this case [-1,1]) for the constraint potential using the **brenth** optimizer.
-In order calculate the electronic coupling, we must do a CDFT calculation for the initial and final state.
+In order calculate the electronic coupling, we must do a CDFT calculation for the initial and final state, so we set up a CDFT solver and constraint for each.
 We set the target number of electrons between the donor He atom and acceptor He atom **N0** to 1. 
+Convergence in CDFT is determined by the threshold given by **N_tol**.
 
 .. code-block:: python
 
@@ -142,7 +143,8 @@ For the He-He+ dimer at 3 Angstrom separation, a good starting guess is
 
    V = -0.704717721359 
 
-for **solver1**. Due to the symmetry of the system, **solver2** will have a very close constraint potential of the opposite sign.
+for **solver1**. Try replacing the constraint potential with the above starting guess.
+Due to the symmetry of the system, **solver2** will have a very close constraint potential of the opposite sign.
 An example output is included in the examples/ folder.
 
 The outputted electronic coupling is
