@@ -1,11 +1,9 @@
 #!/bin/bash
-#SBATCH --partition=gagalli
+#SBATCH --partition=gagalli-ivyb
 #SBATCH --mail-type=FAIL,END
-#SBATCH --qos=gagalli-small
 #SBATCH --time=2:00:00
-#SBATCH --ntasks-per-node=28
+#SBATCH --ntasks-per-node=20
 #SBATCH --nodes=4
-#SBATCH --constraint=e5-2680v4
 
 #------------------------------------------------
 # Thiophene coupling as a function of angular difference at 5 Ang distance
@@ -21,11 +19,10 @@
 
 NCORES=$(($SLURM_NTASKS_PER_NODE * $SLURM_JOB_NUM_NODES))
 
-# substitute the appropriate path of the Qbox executable
-export qb="/home/wwwennie/bin2/qbox-vext/bin/qb_vext"
+#TODO: substitute the appropriate path of the Qbox executable
+export qb="/path/to/executable/qb"
 
-#inputs=$( ls *.in )
-inputs=( "delta90.in")
+inputs=$( ls *.in )
 
 # run gs calculation in Qbox
 for inp in ${inputs[@]}; do
@@ -35,14 +32,10 @@ for inp in ${inputs[@]}; do
   mkdir $fol
   cd $fol
   
-  # set up run
-  #cp ../{${name}.in,${name}.cif,thiophene-coupling-tmp.ipynb,*xml} .
- 
-  # set up notebook
-  #mv thiophene-coupling-tmp.ipynb ${name}-thiophene-coupling.ipynb
+  cp ../{${fol}.in,${fol}.cif,*1.0.xml} .
   
   echo "===  Running Qbox ===="
-  mpirun -np 112 $qb < ${name}.in > ${name}.out 
+  mpirun -np $NCORES $qb < ${name}.in > ${name}.out 
   
   cd ../
 done

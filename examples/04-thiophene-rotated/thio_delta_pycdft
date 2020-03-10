@@ -1,12 +1,9 @@
 #!/bin/bash
-#SBATCH --partition=broadwl
+#SBATCH --partition=gagalli-ivyb
 #SBATCH --mail-type=FAIL,END
-#SBATCH --qos=broadwl
-#SBATCH --time=16:00:00
-#SBATCH --account=pi-mgovoni
-#SBATCH --ntasks-per-node=28
+#SBATCH --time=06:00:00
+#SBATCH --ntasks-per-node=20
 #SBATCH --nodes=4
-#SBATCH --constraint=e5-2680v4
 
 #------------------------------------------------
 # Thiophene coupling as a function of angular difference at 5 Ang distance
@@ -23,16 +20,11 @@
 
 NCORES=$(($SLURM_NTASKS_PER_NODE * $SLURM_JOB_NUM_NODES))
 
-# substitute the appropriate path of the Qbox executable
-export qb="/home/wwwennie/bin2/qbox-1.67.4/bin/qb"
+# TODO: substitute the appropriate path of the Qbox executable
+#export qb="/path/to/executable/qb"
+export qb="/home/wwwennie/bin/qbox-1.67.4/bin/qb"
 
 inputs=$( ls *.in )
-#inputs=( "delta40.in" )
-
-# There are two options for running PyCDFT
-# Interactive client-server modes --> best suited with jupyter notebook
-# or
-# SLURM queue (below) using python script
 
 # run PyCDFT
 for inp in ${inputs[@]}; do
@@ -41,7 +33,7 @@ for inp in ${inputs[@]}; do
  
   cd ${fol}
   echo "======  Running Qbox in client-server for ${name}  ======="
-  mpirun -np 112 $qb -server qb_cdft.in qb_cdft.out &
+  mpirun -np $NCORES $qb -server qb_cdft.in qb_cdft.out &
   sleep 10
   python -u ${name}-thiophene-coupling.py > coupling_${name}.out 
   wait

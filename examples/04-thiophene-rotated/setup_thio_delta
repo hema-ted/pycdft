@@ -12,9 +12,10 @@
 #------------------------------------------------
 
 # input parameters
-tol=2e-4                              # CDFT tolerance
-Vstart_a=Vstart_b="V_brak = V"        # CDFT constraint potential
-optimizer_a=optimizer_b="brenth"                    # search initial guess for V
+tol=5e-5                              # CDFT tolerance
+Vstart_a="V_brak = V"
+Vstart_b="V_brak = V"        # CDFT constraint potential
+optimizer="brenth"
 inputs=$( ls *.in )
 
 main () {
@@ -40,29 +41,7 @@ for inp in ${inputs[@]}; do
      exit 1 
   fi
 
-  # if restart from previous CDFT calculation
-  if [ -f coupling_${name}.out ]; then
-     # search and replace up to/from line number l
-     l=$(grep -n "solver B" "coupling_${name}.out" | cut -d : -f 1)
-
-     # extract last Vc
-     if [[ $l -gt 0 ]]; then
-       Vca=$(sed -n "1,${l}p" "coupling_${name}.out" | grep "Constraint #" | tr -d ':' | tr -d ')' | awk '{print $(NF)}' | tail -n 1)
-       Vcb=$(sed -n "${l},$ p" "coupling_${name}.out" | grep "Constraint #" | tr -d ':' | tr -d ')' | awk '{print $(NF)}' | tail -n 1)
-       Vstart_a="V_init = ${Vca},"
-       Vstart_b="V_init = ${Vcb},"
-       optimizer_a=optimizer_b="secant"
-     else
-       Vca=$(grep "Constraint #" "coupling_${name}.out" | tr -d ':' | tr -d ')' | awk '{print $(NF)}' | tail -n 1)
-       Vstart_a="V_init = ${Vca},"
-       Vstart_b="V_brak = ${V}," # works well for symmetric; check: good enough for asymm?
-       optimizer_a="secant"
-     fi
-
-  fi
- 
   sed -i "s/REPLOPT_A/${optimizer}/g" ${name}-thiophene-coupling.py
-  sed -i "s/REPLOPT_B/${optimizer}/g" ${name}-thiophene-coupling.py
   sed -i "s/REPL_TOL/${tol}/g" ${name}-thiophene-coupling.py
   sed -i "s/REPLV_START_A/${Vstart_a}/g" ${name}-thiophene-coupling.py
   sed -i "s/REPLV_START_B/${Vstart_b}/g" ${name}-thiophene-coupling.py
