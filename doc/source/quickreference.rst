@@ -3,72 +3,42 @@
 Quick Reference
 ===============
 
-These are quick references for **PyCDFT** usage. 
+These are quick references for **PyCDFT** usage.
 
-Interactive Mode
-----------------
+Run PyCDFT interactively
+------------------------
 
-One way to run PyCDFT is through an interactive session. 
-This is ideal for debugging or small tutorial files. 
-This involves having two terminals open: 1) terminal 1 runs the DFT driver in client-server mode in an interactive session and 2) terminal 2 loads a Jupyter notebook that can be run through a browser.
+Before performing a CDFT calculation, one should always complete the normal ground state DFT calculation first (see Tutorials).
 
-On Midway 2, you can request an `interactive session <https://rcc.uchicago.edu/docs/using-midway/index.html>`_ using e.g., 
+Like most Python packages, **PyCDFT** can be used interactively in a Python terminal or Jupyter notebook, which is ideal for testing purposes.
+Example Python commands for using **PyCDFT** are given below.
 
-.. code-block:: bash
-
-   sinteractive --exclusive --partition=broadwl --nodes=2 --time=02:00:00
-
-You can also run a `Jupyter Notebook <https://rcc.uchicago.edu/documentation/_build/html/software/environments/python/index.html>`_ on Midway using e.g., 
-
-.. code-block:: bash
-
-   ip=$(/sbin/ip route get 8.8.8.8 | awk '{print $NF;exit}')
-   jupyter-notebook --no-browser --ip=${ip}
-
-which will provide a link that you can click to open a Jupyter session.
-
-After compiling the DFT driver and installing **PyCDFT**, run the ground state calculation.
-e.g., Qbox
-
-.. code-block:: bash
-
-   export qb="/path/to/executable/qb"
-   $qb < gs.in > gs.out
-
-Then in the same directory, run Qbox in client-server mode
+Besides the Python terminal or Jupyter notebook, one also needs to run the DFT driver in a separate terminal.
+For instance, one can use the follow command to execute Qbox in client-server mode as a DFT driver
 
 .. code-block:: bash
 
    mpirun -np <ntasks> $qb -server qb_cdft.in qb_cdft.out
 
-where qb_cdft.in and qb_cdft.out are reserved file names for the DFT driver.
+where qb_cdft.in and qb_cdft.out are input/output file names of Qbox for communicating with **PyCDFT**.
 
-Job Queue Mode
---------------
+On clusters which use schedulers such as slurm, it may be convenient to execute the DFT driver in an `interactive session <https://rcc.uchicago.edu/docs/using-midway/index.html>`_ .
 
-For larger jobs, the ability to submit in a job queue submission is also provided.
+Run PyCDFT through bash script
+------------------------------
 
-The basic command looks like
+For larger jobs, it is recommended to directly execute both **PyCDFT** and the DFT driver in the same job submission script.
+An example bash script is
 
 .. code-block:: bash
 
-   export qb="/path/to/executable/qb_vext"
-   mpirun -np 40 $qb -server qb_cdft.in qb_cdft.out &
+   export qb="/path/to/qbox"
+   mpirun $qb -server qb_cdft.in qb_cdft.out &
    sleep 2
-   python -u ${name}-thiophene-coupling.py > coupling_${name}.out
+   python -u run_cdft.py > run_cdft.out
 
-where *name* is a previously defined variable. 
-Example submission scripts for PBS job submission and further details are provided in the respective tutorial files.
-
-Template input file
--------------------
-
-A minimum working example for running **PyCDFT** and calculating the electron coupling parameter.
-
-.. literalinclude:: ../../examples/02-he2_coupling/interactive/he2_coupling.py
-   :language: python
-
-Each example comes with a Jupyter notebook that can be converted to a number of formats (e.g., Python script, html, pdf, LaTeX) using
+where run_cdft.py is a Python script calling **PyCDFT** to perform CDFT calculations (see below for a template).
+More example scripts can be found in the /examples directory. Each example comes with a Jupyter notebook that can be converted to a number of formats (e.g., Python script, html, pdf, LaTeX) using
 
 .. code-block:: bash
 
@@ -76,13 +46,38 @@ Each example comes with a Jupyter notebook that can be converted to a number of 
 
 where **FORMAT** takes on values described `here <https://ipython.org/ipython-doc/dev/notebook/nbconvert.html>`_ (e.g., 'script' to convert to Python script).
 
-Alternatively, you can use `ipynb-py-convert <https://pypi.org/project/ipynb-py-convert/>`.
+Template input file
+-------------------
+
+A minimum working example for running **PyCDFT** and computing the electron coupling parameter of a He-He+ dimer.
+
+.. literalinclude:: ../../examples/02-he2_coupling/interactive/he2_coupling.py
+   :language: python
+
+
+List of user-defined parameters
+-------------------------------
+Here we list important user-defined parameters for CDFT calculations.
+See the code documentation for more details.
+
+Important parameters for the construction of **CDFTSolver**
+
+   - job: 'scf' for SCF calculation and 'opt' for geometry optimization.
+   - optimizer: 'secant', 'bisect', 'brentq', 'brenth' or 'BFGS'. Optimization algorithm used for Langrange multipliers.
+
+Important parameters for the construction of **ChargeConstraint** or **ChargeTransferConstraint**
+
+   - fragment (ChargeConstraint only): a Fragment instance denoting the part of the system to which the constraint applied.
+   - donor/acceptor (ChargeTransferConstraint only): a Fragment instance denoting the part of the system serving as the donor/acceptor.
+   - N0: target charge number (ChargeConstraint) or charge difference number (ChargeTransferConstraint)
+   - N_tol: convergence threshold for N - N0
+   - V_brak/V_init: search interval/initial guess for optimizer
+
 
 Debugging
 ---------
 
-To use the debugging module simply add the following commands to your python script. 
-See **pycdft/pycdft.debug** for details. 
+**PyCDFT** provides some functions to inspect intermediate quantities for testing purposes:
 
 .. code-block:: bash
 
@@ -92,5 +87,4 @@ See **pycdft/pycdft.debug** for details.
    get_rho(CDFTSolver, origin)
    get_grad(CDFTSolver, origin)
 
-.. seealso:: 
-   All input keywords are referenced and explained in the Manual. 
+See **pycdft/pycdft.debug** for details.
