@@ -3,8 +3,6 @@
 Tutorial
 ========
 
-Tutorials to demonstrate how to utilize core features of **PyCDFT**.
-
 The following tutorials are included in the release, located in the **examples/** folder:
 
  - 01-he2_scf: SCF calculation of a He-He+ dimer
@@ -14,41 +12,41 @@ The following tutorials are included in the release, located in the **examples/*
 
 Here, we show the basic usage of PyCDFT with 02-he2_coupling.
 
-He-He+ dimer coupling
----------------------
-       
-This is a minimum working example for calculating the electronic coupling in a He-He+ dimer
-(i.e., two He atoms separated by some distance with one electron removed). 
+Computing electronic coupling of a He-He+ dimer
+-----------------------------------------------
 
-1) After compiling the DFT driver and installing PyCDFT, run the ground state calculation.
+This is a minimum working example for computing the electronic coupling of a He-He+ dimer
+(two He atoms separated by some distance with one electron removed).
 
-For Qbox
+1) After the installation of **PyCDFT** and a DFT driver (**Qbox** is used in this example), perform the ground state DFT calculation.
  
 .. code-block:: bash
 
-   export qb="/path/to/executable"
-   $qb < gs.in > gs.out
+   export qb="/path/to/qbox"
+   $mpirun -np <ntasks> $qb < gs.in > gs.out
 
-This will generate an **xml** file containing the wavefunctions. 
+where <ntasks> denotes the number of MPI processes.
+This will generate an **xml** file containing the DFT ground state wavefunctions.
 In this example, it is named **gs.xml**.
-Then in the same directory, run `Qbox in server mode <qboxcode.org/daoc/html/usage/client-server.html>`_      
+
+2) In the same directory, execute Qbox in `client-server mode <qboxcode.org/daoc/html/usage/client-server.html>`_.
  
 .. code-block:: bash
 
-   mpirun -np <ntasks> $qb -server qb_cdft.in qb_cdft.out
+   $mpirun -np <ntasks> $qb -server qb_cdft.in qb_cdft.out
  
-where qb_cdft.\* are files reserved for client-server mode.
+Leave the terminal open throughout the entire calculation, Qbox will response to commands given by **PyCDFT**.
 
-Launch separately an instance of Python and run the following commands.
-First, we load the structure using the **read** routine from ASE. 
-In this example, we choose a separation of 3 Angstroms between He atoms and initialize a corresponding instance of the **Sample** object.
+3) In the same directory, open a Python terminal and follow the procedures below.
+
+First, load the atomic structure and construct a **Sample** instance.
+In this example, we choose a separation of 3 Angstroms between He atoms, and we used the same FFT grid in Qbox (**n1,n2,n3**). To check the FFT grid used by **Qbox**, simply type **grep np2v gs.out** in the directory containing Qbox output file gs.out.
 
 .. code-block:: python
 
    from pycdft import *
    from ase.io import read
 
-   print("==================== Initializing Run =========================")
    # load sample geometry
    cell = read("./He2.cif")
    d = 3.0 # Angstroms
@@ -56,15 +54,8 @@ In this example, we choose a separation of 3 Angstroms between He atoms and init
 
    sample = Sample(ase_cell=cell, n1=140, n2=140, n3=140, vspin=1)
 
-The **Sample** object requires input of the FFT grid (**n1,n2,n3**). 
-In **Qbox**, this can be found with
-
-.. code-block:: bash
-
-   grep np2v gs.out
-
-Next we load an instance of the DFT driver, which in this example is **Qbox**. 
-We initialize the DFT driver with several commands used in the self-consistent field calculation. 
+Next we load an instance of the DFT driver.
+We initialize the DFT driver for Qbox by specifying commands used by Qbox in the self-consistent field calculation.
 See `Qbox documentation <http://qboxcode.org/doc/html/>`_ for more information. 
 
 .. code-block:: python       
@@ -79,21 +70,19 @@ See `Qbox documentation <http://qboxcode.org/doc/html/>`_ for more information.
            "set scf_tol 1.0E-8 \n",
            scf_cmd="run 0 50 5",
    )
-       
-Then, we initialize an instance of the CDFT solver itself.
-Since we are not relaxing our structure, the job consists of one self-consistent field calculation and skips the calculation of constrained forces.
-We first do a search across a range of values (in this case [-1,1]) for the constraint potential using the **brenth** optimizer.
-In order calculate the electronic coupling, we must do a CDFT calculation for the initial and final state, so we set up a CDFT solver and constraint for each.
-We set the target number of electrons between the donor He atom and acceptor He atom **N0** to 1. 
-Convergence in CDFT is determined by the threshold given by **N_tol**.
+
+Then, we construct CDFT solvers (**CDFTSolver**), which orchestrate the entire CDFT calculations.
+In order to compute the electronic coupling, we need two CDFT solvers for the initial and final diabatic state, respectively.
+After CDFT solvers are constructed, we add constraints to the solvers.
+In this example we will apply **ChargeTransferConstraint** to enforce the electron number difference between the two He atoms to be 1.
 
 .. code-block:: python
 
    # set up CDFT constraints and solver
    solver1 = CDFTSolver(job="scf", optimizer="brenth",sample=sample, dft_driver=qboxdriver)
    solver2 = solver1.copy()
-   V = (-1,1) # range of constraint potentials
-       
+   V = (-1,1)  # search range for the brenth optimizer
+
    # add constraint to two solvers
    ChargeTransferConstraint(
        sample=solver1.sample,
@@ -112,7 +101,7 @@ Convergence in CDFT is determined by the threshold given by **N_tol**.
        N_tol=1E-6
    )
 
-We run the CDFT calculation for the initial and final states.
+Then, we execute the calculations by calling the **solve** method of **CDFTSolver**
 
 .. code-block:: python
        
@@ -122,28 +111,14 @@ We run the CDFT calculation for the initial and final states.
    print("---- solver B ------")
    solver2.solve()
 
-Finally, we may calculate the electronic coupling
+Finally, we compute the electronic coupling of the He-He+ dimer based on the two diabatic states obtained from CDFT calculations
 
 .. code-block:: python
        
    print("~~~~~~~~~~~~~~~~~~~~ Calculating coupling ~~~~~~~~~~~~~~~~~~~~")
    compute_elcoupling(solver1, solver2)
-   print("==================== JOB DONE =========================")
 
-Once you have a good guess for an initial constraint potential, you may switch the optimizer to **secant**.
-Replace **V_brak** with **V_init** when initializing the constraints when switching to the **secant** optimizer.
-
-For the He-He+ dimer at 3 Angstrom separation, a good starting guess is 
-
-.. code-block:: python 
-
-   V = -0.704717721359 
-
-for **solver1**. Try replacing the constraint potential with the above starting guess.
-Due to the symmetry of the system, **solver2** will have a very close constraint potential of the opposite sign.
-An example output is included in the examples/ folder.
-
-The outputted electronic coupling is
+The electronic coupling predicted by **PyCDFT** is
 
 .. code-block:: bash
 
@@ -151,3 +126,6 @@ The outputted electronic coupling is
   |Hab| (mH): 2.1452330791966476
   |Hab| (eV): 0.05837458088794375
 
+Note that if one has a good guess for the Lagrange multipliers in constraint potentials (for instance from previous calculations using smaller kinetic energy cutoff, etc.), it is recommended to use optimizers such as **secant**, which can take a initial guess for the Lagrange multiplier. In this case, the **V_brak** parameter should be replaced by the **V_init** parameter when initializing the constraints.
+
+For the He-He+ dimer separated by 3 Angstrom, a good starting guess is V_init = -0.7 for solver1 and V_init = 0.7 for solver2.

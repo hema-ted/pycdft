@@ -4,7 +4,7 @@ Installation
 ------------
 
 **PyCDFT** can be installed with **pip**.
-If you haven't downloaded the source code already, you can clone the git repository into a local directory
+First, clone the git repository into a local directory
 
 .. code:: bash
 
@@ -14,9 +14,9 @@ Then, execute **pip** in the folder containing  **setup.py**
 
 .. code:: bash
 
-   $ pip install [-e] .
+   $ pip install -e .
 
-The optional [-e] flag allows one to install **PyCDFT** in editable mode so one can modify the source code without re-installing the package.
+The optional flag -e allows one to install **PyCDFT** in editable mode so one can modify the source code without re-installing the package.
 
 **PyCDFT** depends on the following packages, which will be installed automatically if installed through **pip**:
 
@@ -31,4 +31,4 @@ Extension to support other DFT codes may be added in the future.
 
 To install Qbox, please follow the `online instructions <http://qboxcode.org/doc/html/usage/installation.html>`_.
 
-PyCDFT has been tested with Python 3.6+ and Qbox 1.67.4+.
+**PyCDFT** has been tested with Python 3.6+ and Qbox 1.67.4+. Note that lower versions of Qbox may not work properly with **PyCDFT**.
