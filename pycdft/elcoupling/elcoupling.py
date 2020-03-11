@@ -94,9 +94,9 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver, close_dft_drive
         f"{W}\n"
         f"Cofactor matrix:\n"
         f"{C}\n"
-        f"H matrix:"
+        f"H matrix:\n"
         f"{H}\n"
-        f"H ortho. Lowdin:"
+        f"H ortho. Lowdin:\n"
         f"{Hsymm}\n"
     )
 
