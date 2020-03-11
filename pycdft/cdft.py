@@ -74,21 +74,19 @@ class CDFTSolver:
     def solve(self):
         """ Solve CDFT SCF or optimization problem."""
         print("===================== Initializing Run ====================")
+        if self.job not in ['scf', 'opt']:
+            raise ValueError
+
         try:
-           self.dft_driver.get_rho_r()
-           if self.job == "scf":
-               self.solve_scf()
-           elif self.job == "opt":
-               self.solve_opt()
-           else:
-               raise ValueError
-           self.dft_driver.get_wfc()
+            self.dft_driver.get_rho_r()
+            if self.job == "scf":
+                self.solve_scf()
+            else:
+                self.solve_opt()
+            self.dft_driver.get_wfc()
         except:
-              
-            print("Something went wrong! Check scf, convergence, ..." )
-            e = sys.exc_info()
-            print(e)
-            print("Quitting DFT driver")
+            print(sys.exc_info())
+            print("Terminating DFT driver...")
             self.dft_driver.exit() 
 
     def solve_scf(self):

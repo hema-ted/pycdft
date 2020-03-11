@@ -77,6 +77,7 @@ class QboxDriver(DFTDriver):
             nsec += self.sleep_seconds
             if nsec > self.max_sleep_seconds:
                 raise QboxLockfileError
+        time.sleep(self.sleep_seconds)
 
     def run_cmd(self, cmd):
         """ Order Qbox to run given command. """
