@@ -2,24 +2,18 @@ import numpy as np
 import os
 import shutil
 from copy import deepcopy
+import time
+import sys
 import scipy.optimize
-from pycdft.common import Sample
+from pycdft.common import Sample, timer
 from pycdft.constraint import Constraint
 from pycdft.dft_driver import DFTDriver
-import time 
-import sys
+
 
 
 class CDFTSCFConverged(Exception):
     """ Test for scf convergence. """
     pass
-
-
-def timer(start, end):
-    """ Helper function for timing. """
-    hours, rem = divmod(end-start,3600)
-    minutes, seconds = divmod(rem, 60)
-    print("{:0>2}h:{:0>2}m:{:05.2f}s".format(int(hours),int(minutes),seconds))
 
 
 class CDFTSolver:
@@ -73,7 +67,7 @@ class CDFTSolver:
 
     def solve(self):
         """ Solve CDFT SCF or optimization problem."""
-        print("===================== Initializing Run ====================")
+        print("===================== Initializing Run =====================")
         if self.job not in ['scf', 'opt']:
             raise ValueError
 
@@ -203,11 +197,11 @@ class CDFTSolver:
             print("    N = {:.6f}".format(c.N))
             print("    dW/dV = N - N0 = {:.8f}".format(c.dW_by_dV))
         print("SCF time cycle:")
-        timer(start_dft,end_dft)
+        timer(start_dft, end_dft)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         
         print("Elapsed time: ")
-        timer(self.start_time,time.time())
+        timer(self.start_time, time.time())
 
         if all(c.is_converged for c in self.constraints):
             raise CDFTSCFConverged

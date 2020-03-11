@@ -1,12 +1,14 @@
 import numpy as np
+import time
 from scipy.linalg import fractional_matrix_power
+
+from pycdft.common import timer
 from pycdft.cdft import CDFTSolver
 from pycdft.common.ft import FFTGrid, ftrr
 from pycdft.common.units import hartree_to_ev, hartree_to_millihartree
-import time 
 
 
-def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver,debug=True):
+def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
     """ Compute electronic coupling Hab between two KS wavefunctions.
 
     The implementation is based on the formalism presented in
@@ -18,105 +20,97 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver,debug=True):
     however, complex conjugate operations are kept for future extensions.
 
     Attributes:
-       solver1, solver2 (CDFTSolver): instances of solver
+        solver1, solver2 (CDFTSolver): instances of solver
 
     Internal Parameters:
-       O (array): overlap matrix of KS orbitals, norb x norb
-       S (array): overlap matrix of diabatic states, 2x2
-       W (array): weight function matrix, 2x2
-       H (array): diabatic Hamiltonian matrix, 2x2
-       Hsymm (array): symmetrized diabatic Hamiltonian matrix, 2x2
+        O (array): overlap matrix of KS orbitals, norb x norb
+        S (array): overlap matrix of diabatic states, 2x2
+        W (array): weight function matrix, 2x2
+        H (array): diabatic Hamiltonian matrix, 2x2
+        Hsymm (array): symmetrized diabatic Hamiltonian matrix, 2x2
     """
 
-    try:
-       start_time = time.time()
-       assert solver1.sample.vspin == solver2.sample.vspin
-       vspin = solver1.sample.vspin
-      
-       if vspin != 1:
-           raise NotImplementedError
-   
-       wfc1 = solver1.sample.wfc
-       wfc2 = solver2.sample.wfc
-   
-       assert wfc1.nspin == wfc2.nspin
-       assert wfc1.nkpt == wfc2.nkpt
-       assert np.all(wfc1.nbnd == wfc2.nbnd)
-       nspin, nkpt, nbnd, norb = wfc1.nspin, wfc1.nkpt, wfc1.nbnd, wfc1.norb
-   
-       # Gamma point only
-       if nspin not in [1, 2] or nkpt != 1:
-           raise NotImplementedError
-    except:
-       print("Error in elcoupling! Check your solvers!")
-       solver1.dft_driver.exit()
-       sys.exit()
+    print("===================== Hab calculation =====================")
+
+    # initialize parameters of diabatic states
+    start_time = time.time()
+    assert solver1.sample.vspin == solver2.sample.vspin
+    vspin = solver1.sample.vspin
+
+    if vspin != 1:
+        raise NotImplementedError
+
+    wfc1 = solver1.sample.wfc
+    wfc2 = solver2.sample.wfc
+
+    assert wfc1.nspin == wfc2.nspin
+    assert wfc1.nkpt == wfc2.nkpt
+    assert np.all(wfc1.nbnd == wfc2.nbnd)
+    nspin, nkpt, nbnd, norb = wfc1.nspin, wfc1.nkpt, wfc1.nbnd, wfc1.norb
+
+    if nspin not in [1, 2] or nkpt != 1:
+        raise NotImplementedError
 
     sample = solver1.sample
+    omega = sample.omega
+
     # density grid
     n1, n2, n3 = sample.n1, sample.n2, sample.n3
     n = n1 * n2 * n3
+
     # wavefunction grid
     wgrid = wfc1.wgrid
     m1, m2, m3 = wgrid.n1, wgrid.n2, wgrid.n3
     m = m1 * m2 * m3
-    omega = sample.omega
 
-    #----------------------------------------------
-    print("")
-    if debug:
-      print(""); print(" Below is a breakdown of components that go into calculating H_ab" )
-    print(" npin: %d, nkpt: %d \n nbnd (per spin channel): %s, norb: %d"%(nspin,nkpt,nbnd,norb))
+    # print summary
+    print(f"npin: {nspin}, nkpt: {nkpt}, nbnd: {nbnd}, norb: {norb}")
   
-    # To calculate the coupling, we need S, W, and H
-    print("")
     # S matrix
-    O = cdft_get_O(wfc1,wfc2,omega,m)
-    S,Odet = cdft_get_S(O)
-    print("DONE: S") 
-    timer(start_time,time.time())
+    O = hab_get_O(wfc1, wfc2, omega, m)
+    S, Odet = hab_get_S(O)
 
-    # W matrix 
-    # TODO: averaging for Hermitian H in *get_H; remove here ?
+    # W matrix
     # constraint potential matrix element Vab = <psi_a| (V_a + V_b)/2 |psi_b>
     # where V_i = \sum V w_j, i.e., the constraint lagrange multiplier is included 
     Vc_dense = 0.5 * (solver1.Vc_tot + solver2.Vc_tot)[0, ...]
     Vc = ftrr(Vc_dense, source=FFTGrid(n1, n2, n3), dest=FFTGrid(m1, m2, m3)).real
-    W,C = cdft_get_W(wfc1,wfc2,Vc,O,omega,m)
-    print("DONE: W")
-    timer(start_time,time.time())
+    W, C = hab_get_W(wfc1, wfc2, Vc, O, omega, m)
     
     # H matrix 
-    H = cdft_get_H(solver1,solver2,S,W)
-    print("DONE: H")
-    timer(start_time,time.time())
+    H = hab_get_H(solver1, solver2, S, W)
 
-    # H matrix between orthogonal diabatic states 
-    Hsymm = cdft_get_Hsymm(H,S)
- 
-    # debug output
-    print("")
-    if debug:
-       print("O matrix"); print(O); print("|O|:",Odet); print("")
-       print("S matrix"); print(S); print("")
-       print("W matrix"); print(W); print("")
-       print("--> Cofactor:"); print(C); print("")
-       print("H matrix"); print(H); print("")
-       print("H ortho. Lowdin"); print(Hsymm); print("")
+    # Lowdin diagonalization of H
+    Hsymm = hab_get_Hsymm(H, S)
 
-    # final output
-    print("~~~~~~~~~~~~~~~~~ Electronic Coupling ~~~~~~~~~~~~~~~~~~")
-    print(" See Oberhofer & Blumberger 2010: dx.doi.org/10.1063/1.3507878 ")
-    print("")
+    # print matrices and Hab
+    print(
+        f"O matrix:\n"
+        f"{O}\n"
+        f"|O|: {Odet}\n"
+        f"S matrix:\n"
+        f"{S}\n"
+        f"W matrix:\n"
+        f"{W}\n"
+        f"Cofactor matrix:\n"
+        f"{C}\n"
+        f"H matrix:"
+        f"{H}\n"
+        f"H ortho. Lowdin:"
+        f"{Hsymm}\n"
+    )
+
+    print("~~~~~~~~~~~~~~~~~ Electronic Coupling ~~~~~~~~~~~~~~~~~")
     print("|Hab| (H):", np.abs(Hsymm[0, 1]))
     print("|Hab| (mH):", np.abs(Hsymm[0, 1] * hartree_to_millihartree))
     print("|Hab| (eV):", np.abs(Hsymm[0, 1] * hartree_to_ev))
-    print(""); print("Elapsed time for Electronic Coupling:")
+    print()
+
+    print("Elapsed time for Hab calculation:")
     timer(start_time,time.time())
 
-    solver1.dft_driver.exit()
 
-def cdft_get_O(wfc1,wfc2,omega,m):
+def hab_get_O(wfc1, wfc2, omega, m):
     r""" construct orbital overlap matrix 
      
       :math:`{\bf O}_{ij} = \langle \phi^j_b | \phi^i_a \rangle`
@@ -138,7 +132,8 @@ def cdft_get_O(wfc1,wfc2,omega,m):
  
     return O
 
-def cdft_get_S(O):
+
+def hab_get_S(O):
     r""" build overlap matrix S
  
       :math:`{\bf S}_{ab} = \langle \psi_a | \psi_b \rangle \det{{\bf O}}`
@@ -154,7 +149,8 @@ def cdft_get_S(O):
  
     return S, Odet
 
-def cdft_get_W(wfc1,wfc2,Vc,O,omega,m): 
+
+def hab_get_W(wfc1, wfc2, Vc, O, omega, m):
     r""" build W matrix 
 
         :math:`W_{ba} = \langle \psi_b | \sum_i w({\bf r}_i)| \psi_a \rangle = \sum_i \sum_j \langle \phi_A^i | w({\bf r}) | \phi_B^j \rangle {\bf C}_{ij}`
@@ -208,7 +204,8 @@ def cdft_get_W(wfc1,wfc2,Vc,O,omega,m):
 
     return W, C
 
-def cdft_get_H(solver1,solver2,S,W):
+
+def hab_get_H(solver1, solver2, S, W):
     r""" 
      H matrix between nonorthogonal diabatic states 
      
@@ -237,18 +234,12 @@ def cdft_get_H(solver1,solver2,S,W):
    
     return H
 
-def cdft_get_Hsymm(H,S):
+
+def hab_get_Hsymm(H, S):
     """ 
        get orthogonal diabatic H matrix using Lowdin diagonalization
     """ 
     Ssqrtinv = fractional_matrix_power(S, -1 / 2)
     Hsymm = Ssqrtinv @ H @ Ssqrtinv
-    print("H matrix between orthogonal diabatic states using Lowdin diagonalization:")
-    print(Hsymm)
   
     return Hsymm
-
-def timer(start,end):
-        hours, rem = divmod(end-start,3600)
-        minutes, seconds = divmod(rem, 60)
-        print("{:0>2}h:{:0>2}m:{:05.2f}s".format(int(hours),int(minutes),seconds))
