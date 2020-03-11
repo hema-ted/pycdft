@@ -51,7 +51,7 @@ Template input file
 
 A minimum working example for running **PyCDFT** and computing the electron coupling parameter of a He-He+ dimer.
 
-.. literalinclude:: ../../examples/02-he2_coupling/interactive/he2_coupling.py
+.. literalinclude:: ../../examples/01-he2_coupling/interactive/he2_coupling.py
    :language: python
 
 
