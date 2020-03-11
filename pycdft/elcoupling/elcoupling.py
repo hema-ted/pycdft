@@ -8,7 +8,7 @@ from pycdft.common.ft import FFTGrid, ftrr
 from pycdft.common.units import hartree_to_ev, hartree_to_millihartree
 
 
-def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
+def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver, close_dft_driver=True):
     """ Compute electronic coupling Hab between two KS wavefunctions.
 
     The implementation is based on the formalism presented in
@@ -109,6 +109,9 @@ def compute_elcoupling(solver1: CDFTSolver, solver2: CDFTSolver):
     print("Elapsed time for Hab calculation:")
     timer(start_time,time.time())
 
+    if close_dft_driver:
+        solver1.dft_driver.exit()
+
 
 def hab_get_O(wfc1, wfc2, omega, m):
     r""" construct orbital overlap matrix 
@@ -127,7 +130,7 @@ def hab_get_O(wfc1, wfc2, omega, m):
     for ispin in range(nspin):
         for ibnd, jbnd in np.ndindex(nbnd[ispin, 0], nbnd[ispin, 0]):
             i = wfc1.skb2idx(ispin, 0, ibnd)
-            j = wfc2.skb2idx(ispin, 0, jbnd) # before was wfc1 
+            j = wfc2.skb2idx(ispin, 0, jbnd)
             O[i, j] = (omega / m) * np.sum(np.conjugate(wfc1.psi_r[i]) * wfc2.psi_r[j])
  
     return O
@@ -140,18 +143,18 @@ def hab_get_S(O):
   
       see Eq 20 in Oberhofer2010
     """
-    S = np.zeros([2,2]) # 2x2 state overlap matrix S
+    S = np.zeros([2, 2])  # 2x2 state overlap matrix S
     Odet = np.linalg.det(O)
    
-    S[0,0] = S[1,1] = 1.0
-    S[1,0] = Odet # S_BA
-    S[0,1] = np.conjugate(Odet) # Eq. 12, Oberhofer2010 # S_AB
+    S[0, 0] = S[1, 1] = 1.0
+    S[1, 0] = Odet  # S_BA
+    S[0, 1] = np.conjugate(Odet)  # Eq. 12, Oberhofer2010 # S_AB
  
     return S, Odet
 
 
 def hab_get_W(wfc1, wfc2, Vc, O, omega, m):
-    r""" build W matrix 
+    r""" build W matrix
 
         :math:`W_{ba} = \langle \psi_b | \sum_i w({\bf r}_i)| \psi_a \rangle = \sum_i \sum_j \langle \phi_A^i | w({\bf r}) | \phi_B^j \rangle {\bf C}_{ij}`
 
@@ -159,46 +162,46 @@ def hab_get_W(wfc1, wfc2, Vc, O, omega, m):
     """
 
     nspin, nkpt, nbnd, norb = wfc1.nspin, wfc1.nkpt, wfc1.nbnd, wfc1.norb
-    P12 = np.zeros([norb, norb]); #P21 = np.zeros([norb, norb]); 
-    #P11 = np.zeros([norb, norb]); P22 = np.zeros([norb, norb]); 
-    W = np.zeros([2,2])
+    P12 = np.zeros([norb, norb])  # P21 = np.zeros([norb, norb]);
+    # P11 = np.zeros([norb, norb]) P22 = np.zeros([norb, norb]);
+    W = np.zeros([2, 2])
 
     # see Eq. 25 in Oberhofer2010
     # cofactor matrix C
     Odet = np.linalg.det(O)
     Oinv = np.linalg.inv(O)
     CT = Oinv @ (Odet*np.eye(norb))
-    C= CT.T
+    C = CT.T
 
     # constraint potential matrix P, for finding V_a*W_ab, see Eq. 22 in Oberhofer2010
     # in our notation: Vab = V_a*W_ab
     for ispin in range(nspin):
-       for ibnd, jbnd in np.ndindex(nbnd[ispin, 0], nbnd[ispin, 0]):
-           i = wfc1.skb2idx(ispin, 0, ibnd)
-           j = wfc2.skb2idx(ispin, 0, jbnd)
-   
-           p = (omega / m) * np.sum(np.conjugate(wfc1.psi_r[i]) * Vc * wfc2.psi_r[j])
-           P12[i, j] = p # orbital overlaps, <\phi_A | w | \phi_B>
-   
-           #p = (omega / m) * np.sum(np.conjugate(wfc2.psi_r[i]) * Vc * wfc1.psi_r[j])
-           #P21[i, j] = p # orbital overlaps, <\phi_B | w | \phi_A>
-   
-           ## not need on-diagonal W, omit for speed up?
-           #p = (omega / m) * np.sum(np.conjugate(wfc1.psi_r[i]) * Vc * wfc1.psi_r[j])
-           #P11[i, j] = p # orbital overlaps, <\phi_A | w | \phi_A>
-   
-           #p = (omega / m) * np.sum(np.conjugate(wfc2.psi_r[i]) * Vc * wfc2.psi_r[j])
-           #P22[i, j] = p # orbital overlaps, <\phi_B | w | \phi_B>
+        for ibnd, jbnd in np.ndindex(nbnd[ispin, 0], nbnd[ispin, 0]):
+            i = wfc1.skb2idx(ispin, 0, ibnd)
+            j = wfc2.skb2idx(ispin, 0, jbnd)
+
+            p = (omega / m) * np.sum(np.conjugate(wfc1.psi_r[i]) * Vc * wfc2.psi_r[j])
+            P12[i, j] = p  # orbital overlaps, <\phi_A | w | \phi_B>
+
+            # p = (omega / m) * np.sum(np.conjugate(wfc2.psi_r[i]) * Vc * wfc1.psi_r[j])
+            # P21[i, j] = p # orbital overlaps, <\phi_B | w | \phi_A>
+
+            # # not need on-diagonal W, omit for speed up?
+            # p = (omega / m) * np.sum(np.conjugate(wfc1.psi_r[i]) * Vc * wfc1.psi_r[j])
+            # P11[i, j] = p # orbital overlaps, <\phi_A | w | \phi_A>
+
+            # p = (omega / m) * np.sum(np.conjugate(wfc2.psi_r[i]) * Vc * wfc2.psi_r[j])
+            # P22[i, j] = p # orbital overlaps, <\phi_B | w | \phi_B>
          
     Vab = np.trace(P12 @ C) # \sum_ij = Tr(A_ij * B_ij) 
     Vba = np.conjugate(Vab) # np.trace(P21 @ C)
 
-    #Vaa = np.trace(P11 @ C)
-    #Vbb = np.trace(P22 @ C) 
+    # Vaa = np.trace(P11 @ C)
+    # Vbb = np.trace(P22 @ C)
    
-    ## on-diagonal elements not used
-    #W[0,0] = Vaa
-    #W[1,1] = Vbb
+    # # on-diagonal elements not used
+    # W[0,0] = Vaa
+    # W[1,1] = Vbb
     W[0,1] = Vab
     W[1,0] = Vba
 
@@ -229,8 +232,8 @@ def hab_get_H(solver1, solver2, S, W):
 
     # to make H hermitian
     # H_ab -> 1/2(H_ab + H_ba)
-    H[0, 1] = 0.5 * (Fb * S[0, 1] + Fa * S[1,0]) - 0.5 * (W[0,1]+W[1,0])
-    H[1,0] = np.conjugate(H[0,1])
+    H[0, 1] = 0.5 * (Fb * S[0, 1] + Fa * S[1,0]) - 0.5 * (W[0, 1] + W[1, 0])
+    H[1, 0] = np.conjugate(H[0,1])
    
     return H
 

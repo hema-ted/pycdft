@@ -15,7 +15,7 @@ class Fragment(object):
         rhopro_r (array): real space promolecule charge density
     """
 
-    def __init__(self, sample: Sample, atoms: list, name: str=""):
+    def __init__(self, sample: Sample, atoms: list, name: str = ""):
         self.name = name
         self.sample = sample
         self.atoms = atoms

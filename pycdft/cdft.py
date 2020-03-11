@@ -10,7 +10,6 @@ from pycdft.constraint import Constraint
 from pycdft.dft_driver import DFTDriver
 
 
-
 class CDFTSCFConverged(Exception):
     """ Test for scf convergence. """
     pass
@@ -39,8 +38,8 @@ class CDFTSolver:
     nsolver = 0
 
     def __init__(self, job: str, sample: Sample, dft_driver: DFTDriver,
-                 optimizer: str="secant", maxcscf: int=1000, maxstep: int=100,
-                 F_tol: float=1.0E-2):
+                 optimizer: str = "secant", maxcscf: int = 1000, maxstep: int = 100,
+                 F_tol: float = 1.0E-2):
 
         self.job = job
         self.sample = sample
@@ -247,11 +246,11 @@ class CDFTSolver:
                 *self.sample.Fd[imaxforce], *self.sample.Fc[imaxforce]
             ))
  
-            #print all forces
+            # print all forces
             for i in np.arange(len(self.sample.atoms)):
-              print("{}th atom ({})  Fd = {:.6f}, {:.6f}, {:.6f}; Fc = {:.6f}, {:.6f}, {:.6f}".format(
-                 i+1,self.sample.atoms[i].symbol,*self.sample.Fd[i], *self.sample.Fc[i]
-              ))
+                print("{}th atom ({})  Fd = {:.6f}, {:.6f}, {:.6f}; Fc = {:.6f}, {:.6f}, {:.6f}".format(
+                 i + 1, self.sample.atoms[i].symbol, *self.sample.Fd[i], *self.sample.Fc[i]
+                ))
             if maxforce < self.F_tol:
                 print("\n**Constrained optimization converged!**\n")
                 break

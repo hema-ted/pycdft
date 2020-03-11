@@ -42,7 +42,7 @@ class Sample(object):
     """
 
     def __init__(self, ase_cell: Atoms, vspin: int, n1: int, n2: int, n3: int,
-                 atomic_density_files: dict=None):
+                 atomic_density_files: dict = None):
 
         # define cell
         self.R = ase_cell.get_cell() * angstrom_to_bohr
@@ -111,7 +111,7 @@ class Sample(object):
                 rho_r1 = np.roll(rho_r, n1 // 2, axis=0)
                 rho_r2 = np.roll(rho_r1, n2 // 2, axis=1)
                 rho_r3 = np.roll(rho_r2, n3 // 2, axis=2)
-                #self.rhoatom_g[s] = omega / self.n * fftn(rho_r3)
+                # self.rhoatom_g[s] = omega / self.n * fftn(rho_r3)
                 self.rhoatom_g[s] = omega / self.n * np.fft.fftn(rho_r3)
         else:
             # calculate atomic density from pre-computed spherically-averaged atomic density
@@ -166,10 +166,10 @@ class Sample(object):
                 if atom in f.atoms:
                     f.rhopro_r += rhog
 
-        #self.rhopro_tot_r = (n / omega) * np.fft.ifftn(self.rhopro_tot_r).real  # FT G -> R
+        # self.rhopro_tot_r = (n / omega) * np.fft.ifftn(self.rhopro_tot_r).real  # FT G -> R
         self.rhopro_tot_r = (n / omega) * ifftn(self.rhopro_tot_r).real  # FT G -> R
         for f in self.fragments:
-            #f.rhopro_r = (n / omega) * np.fft.ifftn(f.rhopro_r).real
+            # f.rhopro_r = (n / omega) * np.fft.ifftn(f.rhopro_r).real
             f.rhopro_r = (n / omega) * ifftn(f.rhopro_r).real
 
         # Update weights
@@ -220,7 +220,7 @@ class Sample(object):
         for i in range(3):
             eigr = self.compute_eigr(atom, axis=i)
             g = [self.Gx_g, self.Gy_g, self.Gz_g][i]
-            #rho_grad_r[i] = (n / omega) * np.fft.ifftn(-1j * g * eigr * rhog).real
+            # rho_grad_r[i] = (n / omega) * np.fft.ifftn(-1j * g * eigr * rhog).real
             rho_grad_r[i] = (n / omega) * ifftn(-1j * g * eigr * rhog).real
 
         return rho_grad_r
@@ -288,4 +288,3 @@ class Sample(object):
 
     def __str__(self):
         return self.__repr__()
-  

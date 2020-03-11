@@ -21,6 +21,7 @@ The optional flag -e allows one to install **PyCDFT** in editable mode so one ca
 **PyCDFT** depends on the following packages, which will be installed automatically if installed through **pip**:
 
   - `numpy <https://numpy.org/>`_
+  - `scipy <https://scipy.org/>`_
   - `pyFFTW <https://pypi.org/project/pyFFTW/>`_
   - `lxml <https://pypi.org/project/lxml/>`_
   - `ase <https://wiki.fysik.dtu.dk/ase/install.html>`_

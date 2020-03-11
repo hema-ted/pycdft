@@ -14,7 +14,6 @@ class Atom(object):
         sample (Sample): the sample where the atom lives.
         symbol (str): chemical symbol of the atom.
         abs_coord (np.ndarray, shape = [3]): absolute coordinate.
-        cry_coord (np.ndarray, shape = [3]): crystal coordinate.
 
     Extra attributes are welcomed to be attached to an atom.
     These will be printed out in the representation of Atom object.

@@ -121,9 +121,9 @@ The electronic coupling predicted by **PyCDFT** is
 
 .. code-block:: bash
 
-  |Hab| (H): 0.002145233079196648
-  |Hab| (mH): 2.1452330791966476
-  |Hab| (eV): 0.05837458088794375
+  Hab (H): 0.002145233079196648
+  Hab (mH): 2.1452330791966476
+  Hab (eV): 0.05837458088794375
 
 Note that if one has a good guess for the Lagrange multipliers in constraint potentials (for instance from previous calculations using smaller kinetic energy cutoff, etc.), it is recommended to use optimizers such as **secant**, which can take a initial guess for the Lagrange multiplier. In this case, the **V_brak** parameter should be replaced by the **V_init** parameter when initializing the constraints.
 

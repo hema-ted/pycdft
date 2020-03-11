@@ -22,7 +22,6 @@ class Constraint(object):
 
     __metaclass__ = ABCMeta
     type = None
-    #_eps = 1E-6  # cutoff of Hirshfeld weight when the density approaches zero
 
     @abstractmethod
     def __init__(self, sample: Sample, N0, V_init=None, V_brak=None, N_tol=None):

@@ -61,7 +61,7 @@ def get_hirsh(CDFTSolver,origin):
 
         write_cube(fileobj,atoms_write,weights_dat,origin=origin)
         fileobj.close()
-        print("Generated cube file for Constraint %d"% (index))
+        print(f"Generated cube file for Constraint {index}.")
         
     print("Completed Hirshfeld weight extraction!")
 
@@ -86,7 +86,7 @@ def get_hirsh_ct(CDFTSolver,origin):
 
         write_cube(fileobj,atoms,weights_dat,origin=origin)
         fileobj.close()
-        print("Generated for Constraint %d"% (index))
+        print(f"Generated for Constraint {index}.")
         
     print("Completed! Have fun plotting")
 
@@ -120,7 +120,7 @@ def get_rho_atom(CDFTSolver,origin):
 
         write_cube(fileobj,atoms_write,rhoatom_r,origin=origin)
         fileobj.close()
-        print("Generated rhoatom_r cube file for Atom %d"% (index))
+        print(f"Generated rhoatom_r cube file for Atom {index}")
         index += 1
     print("Completed get_rho_atom")
 
@@ -187,7 +187,7 @@ def get_grad(CDFTSolver,origin):
                 fileobj=open(fil1,"w")
                 write_cube(fileobj,atoms_write,w_grad_tmp,origin=origin)
                 fileobj.close()
-                print("Generated Hirshfeld wts cube file for Atom %d,  constraint %d, dir %d"% (ia, ic, icart))
+                print(f"Generated Hirshfeld wts cube file for Atom {ia}, constraint {ic}, dir {icart}")
 
                 fileobj=open(fil2,"w")
                 write_cube(fileobj,atoms_write,rho_grad_r_tmp,origin=origin)
@@ -195,7 +195,7 @@ def get_grad(CDFTSolver,origin):
 
             ia += 1
         ic += 1
-        print("Generated charge density cube file for Atom %d, constraint %d, dir %d"% (ia,ic, icart))
+        print(f"Generated charge density cube file for Atom {ia}, constraint {ic}, dir {icart}")
 
     print("Completed extraction of grad quantities!")
 

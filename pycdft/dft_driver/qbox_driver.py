@@ -3,10 +3,9 @@ import re
 import shutil
 import time
 import base64
-import sys
 import numpy as np
 from lxml import etree
-from ase.io.cube import read_cube_data, write_cube
+from ase.io.cube import read_cube_data
 from pycdft.common.ft import FFTGrid
 from pycdft.common.wfc import Wavefunction
 from pycdft.dft_driver.base import DFTDriver
@@ -14,6 +13,7 @@ from pycdft.dft_driver.base import DFTDriver
 
 class QboxLockfileError(Exception):
     pass
+
 
 class QboxDriver(DFTDriver):
     """ DFT driver for Qbox (v 1.69.0 +, post-XML conversion)
@@ -304,4 +304,3 @@ class QboxDriver(DFTDriver):
         open(self.input_file, "w").write("quit" + "\n")
         os.remove(self.lock_file)
         print("Qbox session ended")
-        sys.exit()

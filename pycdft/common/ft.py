@@ -76,17 +76,17 @@ def ftgg(fg, source, dest, real=False):
         if real:
             fgnew = ifftshift(
                 fftshift(fg, axes=(1, 2))[
-                0:n[0] // 2 + 1,
-                idxs[1]:idxs[1] + n[1],
-                idxs[2]:idxs[2] + n[2],
+                    0:n[0] // 2 + 1,
+                    idxs[1]:idxs[1] + n[1],
+                    idxs[2]:idxs[2] + n[2],
                 ], axes=(1, 2)
             )
         else:
             fgnew = ifftshift(
                 fftshift(fg)[
-                idxs[0]:idxs[0] + n[0],
-                idxs[1]:idxs[1] + n[1],
-                idxs[2]:idxs[2] + n[2],
+                    idxs[0]:idxs[0] + n[0],
+                    idxs[1]:idxs[1] + n[1],
+                    idxs[2]:idxs[2] + n[2],
                 ]
             )
 

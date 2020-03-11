@@ -16,6 +16,7 @@ setup(
     install_requires=[
         "ase",
         "numpy",
+        "scipy",
         "pyFFTW",
         "lxml"
     ],
