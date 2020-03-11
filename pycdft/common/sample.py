@@ -2,9 +2,10 @@ from random import randint
 from subprocess import Popen
 import warnings
 import numpy as np
+from numpy.fft import fftfreq
 from ase import Atoms
 from ase.io.cube import read_cube_data
-from numpy.fft import *
+from pycdft.common.ft import fftn, ifftn
 from pycdft.atomic import rho_path, rd_grid, drd
 from pycdft.atomic.pp import SG15PP
 from pycdft.common.atom import Atom
@@ -112,7 +113,7 @@ class Sample(object):
                 rho_r2 = np.roll(rho_r1, n2 // 2, axis=1)
                 rho_r3 = np.roll(rho_r2, n3 // 2, axis=2)
                 # self.rhoatom_g[s] = omega / self.n * fftn(rho_r3)
-                self.rhoatom_g[s] = omega / self.n * np.fft.fftn(rho_r3)
+                self.rhoatom_g[s] = omega / self.n * fftn(rho_r3)
         else:
             # calculate atomic density from pre-computed spherically-averaged atomic density
             # located in atomic/rho
@@ -166,10 +167,10 @@ class Sample(object):
                 if atom in f.atoms:
                     f.rhopro_r += rhog
 
-        # self.rhopro_tot_r = (n / omega) * np.fft.ifftn(self.rhopro_tot_r).real  # FT G -> R
+        # self.rhopro_tot_r = (n / omega) * ifftn(self.rhopro_tot_r).real  # FT G -> R
         self.rhopro_tot_r = (n / omega) * ifftn(self.rhopro_tot_r).real  # FT G -> R
         for f in self.fragments:
-            # f.rhopro_r = (n / omega) * np.fft.ifftn(f.rhopro_r).real
+            # f.rhopro_r = (n / omega) * ifftn(f.rhopro_r).real
             f.rhopro_r = (n / omega) * ifftn(f.rhopro_r).real
 
         # Update weights
@@ -220,7 +221,7 @@ class Sample(object):
         for i in range(3):
             eigr = self.compute_eigr(atom, axis=i)
             g = [self.Gx_g, self.Gy_g, self.Gz_g][i]
-            # rho_grad_r[i] = (n / omega) * np.fft.ifftn(-1j * g * eigr * rhog).real
+            # rho_grad_r[i] = (n / omega) * ifftn(-1j * g * eigr * rhog).real
             rho_grad_r[i] = (n / omega) * ifftn(-1j * g * eigr * rhog).real
 
         return rho_grad_r

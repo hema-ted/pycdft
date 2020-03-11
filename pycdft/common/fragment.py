@@ -1,5 +1,3 @@
-import numpy as np
-from numpy.fft import *
 from pycdft.common.atom import Atom
 from pycdft.common.sample import Sample
 

@@ -1,14 +1,6 @@
 import numpy as np
-from ase.io.cube import read_cube_data, write_cube
-from ase import Atom
-
-# get fft
-try:
-    from pyfftw.interfaces.numpy_fft import fftn, ifftn, rfftn, irfftn
-except ImportError:
-    from numpy.fft import fftn, ifftn, rfftn, irfftn
-from numpy.fft import fftshift, ifftshift
-
+from ase.io.cube import write_cube
+from pycdft.common.ft import fftn, ifftn
 
 # Compatible for PyCDFT v0.1
 #   Helper functions for debugging the forces in PyCDFT
@@ -109,7 +101,7 @@ def get_rho_atom(CDFTSolver,origin):
     index = 1
     for atom in atoms_iter:
         rhoatom_g = CDFTSolver.sample.compute_rhoatom_g(atom)
-        rhoatom_r = (n / omega) * np.fft.ifftn(rhoatom_g).real # FT G -> R
+        rhoatom_r = (n / omega) * ifftn(rhoatom_g).real # FT G -> R
         #rhoatom_r = (n / omega) * ifftn(rhoatom_g).real # FT G -> R
 
         # write to cube file 
