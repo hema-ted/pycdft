@@ -12,14 +12,6 @@ pycdft.dft\_driver.qbox\_driver
    :undoc-members:
    :show-inheritance:
 
-pycdft.dft\_driver.qbox\_cube\_driver
--------------------------------------
-
-.. automodule:: pycdft.dft_driver.qbox_cube_driver
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 pycdft.dft\_driver.base
 -----------------------
 

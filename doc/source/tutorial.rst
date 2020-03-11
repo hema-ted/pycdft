@@ -9,7 +9,7 @@ The following tutorials are included in the release, located in the **examples/*
  - 02-thiophene: calculation of electronic coupling :math:`H_{ab}` of a stacked thiophene dimer
  - 03-thiophene_rotated: calculation of electronic coupling :math:`H_{ab}` of a stacked thiophene dimer with relative rotation
 
-Here, we show the basic usage of PyCDFT with 01-he2_coupling.
+Here, we show the basic usage of **PyCDFT** with 01-he2_coupling.
 
 Computing electronic coupling of a He-He+ dimer
 -----------------------------------------------
@@ -17,16 +17,14 @@ Computing electronic coupling of a He-He+ dimer
 This is a minimum working example for computing the electronic coupling of a He-He+ dimer
 (two He atoms separated by some distance with one electron removed).
 
-1) After the installation of **PyCDFT** and a DFT driver (**Qbox** is used in this example), perform the ground state DFT calculation.
+1) After the installation of **PyCDFT** and a DFT driver (**Qbox** is used in this example), perform the ground state DFT calculation with Qbox.
  
 .. code-block:: bash
 
    export qb="/path/to/qbox"
    $mpirun -np <ntasks> $qb < gs.in > gs.out
 
-where <ntasks> denotes the number of MPI processes.
-This will generate an **xml** file containing the DFT ground state wavefunctions.
-In this example, it is named **gs.xml**.
+where /path/to/qbox is the path to the Qbox executable and ntasks denotes the number of MPI processes.
 
 2) In the same directory, execute Qbox in `client-server mode <qboxcode.org/daoc/html/usage/client-server.html>`_.
  
@@ -34,7 +32,7 @@ In this example, it is named **gs.xml**.
 
    $mpirun -np <ntasks> $qb -server qb_cdft.in qb_cdft.out
  
-Leave the terminal open throughout the entire calculation, Qbox will response to commands given by **PyCDFT**.
+and leave the terminal open throughout the entire calculation, Qbox will response to commands given by **PyCDFT**.
 
 3) In the same directory, open a Python terminal and follow the procedures below.
 
@@ -46,28 +44,27 @@ In this example, we choose a separation of 3 Angstroms between He atoms, and we 
    from pycdft import *
    from ase.io import read
 
-   # load sample geometry
-   cell = read("./He2.cif")
-   d = 3.0 # Angstroms
-   cell.positions[1][2] = d 
+   # read atomic structure using ASE
+   cell = read("./He2_3Ang.cif")
 
-   sample = Sample(ase_cell=cell, n1=140, n2=140, n3=140, vspin=1)
+   # construct the Sample instance
+   sample = Sample(ase_cell=cell, n1=112, n2=112, n3=112, vspin=1)
 
-Next we load an instance of the DFT driver.
-We initialize the DFT driver for Qbox by specifying commands used by Qbox in the self-consistent field calculation.
+Next we set up the CDFT calculations.
+To begin with, we construct a QboxDriver instance that provide necessary commands to for **PyCDFT** to communicate with Qbox.
+We initialize the QboxDriver by specifying commands used by Qbox in the self-consistent field calculation.
 See `Qbox documentation <http://qboxcode.org/doc/html/>`_ for more information. 
 
 .. code-block:: python       
-   
-   # load DFT driver
+
    qboxdriver = QboxDriver(
        sample=sample,
-       init_cmd="load gs.xml \n" 
-           "set xc PBE \n" 
-           "set wf_dyn PSDA \n" 
-           "set_atoms_dyn CG \n" 
+       init_cmd="load gs.xml \n"
+           "set xc PBE \n"
+           "set wf_dyn PSDA \n"
+           "set_atoms_dyn CG \n"
            "set scf_tol 1.0E-8 \n",
-           scf_cmd="run 0 50 5",
+       scf_cmd="run 0 50 5",
    )
 
 Then, we construct CDFT solvers (**CDFTSolver**), which orchestrate the entire CDFT calculations.
@@ -77,10 +74,14 @@ In this example we will apply **ChargeTransferConstraint** to enforce the electr
 
 .. code-block:: python
 
-   # set up CDFT constraints and solver
-   solver1 = CDFTSolver(job="scf", optimizer="brenth",sample=sample, dft_driver=qboxdriver)
+   solver1 = CDFTSolver(
+    job="scf",  # indicate that the calculation is a SCF calculation
+    optimizer="brenth", # specifiy the optimizer used for the Lagrangian multiplier
+    sample=sample, dft_driver=qboxdriver
+   )
    solver2 = solver1.copy()
-   V = (-1,1)  # search range for the brenth optimizer
+
+   V = (2,-2)  # search range for the brenth optimizer
 
    # add constraint to two solvers
    ChargeTransferConstraint(
@@ -104,7 +105,6 @@ Then, we execute the calculations by calling the **solve** method of **CDFTSolve
 
 .. code-block:: python
        
-   print("~~~~~~~~~~~~~~~~~~~~ Applying CDFT ~~~~~~~~~~~~~~~~~~~~")
    print("---- solver A ------")
    solver1.solve()
    print("---- solver B ------")
@@ -114,7 +114,6 @@ Finally, we compute the electronic coupling of the He-He+ dimer based on the two
 
 .. code-block:: python
        
-   print("~~~~~~~~~~~~~~~~~~~~ Calculating coupling ~~~~~~~~~~~~~~~~~~~~")
    compute_elcoupling(solver1, solver2)
 
 The electronic coupling predicted by **PyCDFT** is

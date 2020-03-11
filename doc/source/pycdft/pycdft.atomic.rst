@@ -16,4 +16,3 @@ pycdft.atomic.pp
    :undoc-members:
    :show-inheritance:
 
-
