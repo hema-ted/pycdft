@@ -55,8 +55,8 @@ ChargeTransferConstraint(
 # Below are the main routines needed to restart a CDFT calculation
 print("~~~~~~~~~~~~~~~~~~~~ Restarting CDFT ~~~~~~~~~~~~~~~~~~~~")
 print("---- solver A ------")
-solver1.restart("wfc-1.xml",[-4.726619,-0.703904])
-solver1.get_Vc("Vc-1.dat")
+solver1.restart("wfc-1.xml",[-4.726619,-0.703904]) # input arguments are name of wfc file, [Ed,Ec] from output
+solver1.get_Vc("Vc-1.dat")                         # input argument is name of constraint potential file
 
 print("---- solver B ------")
 solver2.restart("wfc-2.xml",[-4.726621,-0.703725])

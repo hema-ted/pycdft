@@ -57,6 +57,8 @@ ChargeTransferConstraint(
 )
 
 # And performed constrained DFT
+#   Here we rename files from each CDFTSolver, which will be used to 
+#      calculate the electronic coupling separately from restart
 print("~~~~~~~~~~~~~~~~~~~~ Applying CDFT ~~~~~~~~~~~~~~~~~~~~")
 print("---- solver A ------")
 solver1.solve()
