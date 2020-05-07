@@ -299,6 +299,90 @@ class QboxDriver(DFTDriver):
 
         self.sample.wfc = wfc
 
+    def restart_wfc(self,wfcfile, dft_energies):
+        """ upload wavefunction from Qbox; essentially a copy of get_wfc 
+                 
+            dft_energies = [Ed of solver, Ec of solver1]
+        """
+        
+        # set up total energies used in calculation of electronic coupling
+        self.sample.Ed = dft_energies[0]
+        self.sample.Ec = dft_energies[1]
+ 
+        # upload wavefunction
+        iterxml = etree.iterparse(wfcfile, huge_tree=True, events=("start", "end"))
+
+        nkpt = 1
+        ikpt = 0  # k points are not supported yet
+
+        for event, leaf in iterxml:
+            if event == "start" and leaf.tag == "wavefunction":
+                nspin = int(leaf.attrib["nspin"])
+                assert nspin >= self.sample.vspin
+                nbnd = np.zeros((nspin, nkpt))
+                occs = np.zeros((nspin, nkpt), dtype=object)
+
+            if event == "end" and leaf.tag == "grid":
+                n1, n2, n3 = int(leaf.attrib["nx"]), int(leaf.attrib["ny"]), int(leaf.attrib["nz"])
+
+            if event == "start" and leaf.tag == "slater_determinant":
+                ispin = 0
+                if nspin == 2 and leaf.attrib["spin"] == "down":
+                    ispin = 1
+
+            if event == "end" and leaf.tag == "density_matrix":
+                occ = np.fromstring(leaf.text, sep=" ", dtype=np.float_)
+                nbnd[ispin, ikpt] = len(occ)
+                occs[ispin, ikpt] = occ
+
+            if event == "end" and leaf.tag == "grid_function":
+                leaf.clear()
+
+            if event == "start" and leaf.tag == "wavefunction_velocity":
+                break
+
+        wgrid = FFTGrid(n1, n2, n3)
+
+        occs_ = np.zeros((nspin, nkpt, max(len(occs[ispin, ikpt])
+                                           for ispin, ikpt in np.ndindex(nspin, nkpt))))
+        for ispin, ikpt in np.ndindex(nspin, nkpt):
+            occs_[ispin, ikpt, 0:len(occs[ispin, ikpt])] = occs[ispin, ikpt]
+
+        wfc = Wavefunction(sample=self.sample, wgrid=wgrid, dgrid=wgrid,
+                           nspin=nspin, nkpt=nkpt, nbnd=nbnd, occ=occs_, gamma=True)
+
+        iterxml = etree.iterparse(wfcfile, huge_tree=True, events=("start", "end"))
+
+        ispin = 0
+        ikpt = 0
+        for event, leaf in iterxml:
+
+            if event == "start" and leaf.tag == "slater_determinant":
+                if wfc.nspin == 2 and leaf.attrib["spin"] == "down":
+                    ispin = 1
+                ibnd = 0
+
+            if event == "end" and leaf.tag == "grid_function":
+                if leaf.attrib["encoding"] == "base64":
+                    psir = np.frombuffer(
+                        base64.b64decode(leaf.text), dtype=np.float64
+                    ).reshape(wfc.wgrid.n3, wfc.wgrid.n2, wfc.wgrid.n1).T
+                elif leaf.attrib["encoding"] == "text":
+                    psir = np.fromstring(leaf.text, sep=" ", dtype=np.float64).reshape(
+                        wfc.wgrid.n3, wfc.wgrid.n2, wfc.wgrid.n1
+                    ).T
+                else:
+                    raise ValueError
+                wfc.psi_r[ispin, ikpt, ibnd] = psir
+                ibnd += 1
+                leaf.clear()
+
+            if event == "start" and leaf.tag == "wavefunction_velocity":
+                break
+
+        self.sample.wfc = wfc
+        print(" uploaded wfc ")
+
     def exit(self):
         """ quit DFT driver """
         open(self.input_file, "w").write("quit" + "\n")

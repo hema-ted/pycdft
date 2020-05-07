@@ -8,7 +8,8 @@ import scipy.optimize
 from pycdft.common import Sample, timer
 from pycdft.constraint import Constraint
 from pycdft.dft_driver import DFTDriver
-
+import io #restart 
+import base64  #restart
 
 class CDFTSCFConverged(Exception):
     """ Test for scf convergence. """
@@ -39,7 +40,7 @@ class CDFTSolver:
 
     def __init__(self, job: str, sample: Sample, dft_driver: DFTDriver,
                  optimizer: str = "secant", maxcscf: int = 1000, maxstep: int = 100,
-                 F_tol: float = 1.0E-2):
+                 F_tol: float = 1.0E-2, lrestart: bool=False):
 
         self.job = job
         self.sample = sample
@@ -52,17 +53,19 @@ class CDFTSolver:
         self.Vc_tot = None
         self.itscf = None
         self.start_time = time.time()
+        self.lrestart = lrestart
 
-        # make output folder, keeping any previous runs
-        CDFTSolver.nsolver += 1
-        self.isolver = CDFTSolver.nsolver
-        self.output_path = "./pycdft_outputs/solver{}/".format(self.isolver)
-        if os.path.exists(self.output_path):
-            shutil.rmtree(self.output_path)
-            os.makedirs(self.output_path)
-        else:
-            os.makedirs(self.output_path)
-        self.dft_driver.reset(self.output_path)
+        if not self.lrestart:
+           # make output folder, keeping any previous runs
+           CDFTSolver.nsolver += 1
+           self.isolver = CDFTSolver.nsolver
+           self.output_path = "./pycdft_outputs/solver{}/".format(self.isolver)
+           if os.path.exists(self.output_path):
+               shutil.rmtree(self.output_path)
+               os.makedirs(self.output_path)
+           else:
+               os.makedirs(self.output_path)
+           self.dft_driver.reset(self.output_path)
 
     def solve(self):
         """ Solve CDFT SCF or optimization problem."""
@@ -274,3 +277,47 @@ class CDFTSolver:
     def copy(self):
         """ Generate a deepcopy of the current CDFTSolver instance."""
         return deepcopy(self)
+
+    def restart(self, wfcfile,dft_energies):
+        """ restart from previous CDFT run wavefunction
+            currently compatible with Qbox 
+
+            wfcfile (str): name of wfc file
+            dft_energies : [ Ed, Ec] corresponding to Vc
+        """
+        print("=================== Restarting run =======================")
+        try:
+            self.dft_driver.restart_wfc(wfcfile,dft_energies) 
+  
+        except:
+            print(" Restart failed! ")
+            e = sys.exc_info()
+            print(e)
+            print("Quitting DFT driver")
+            self.dft_driver.exit() 
+
+    def get_Vc(self, Vc_file):
+        """ Read Vc in cube format from Qbox; for restarting calculations for elcoupling"""
+        sample = self.dft_driver.sample
+        vspin = sample.vspin
+        if vspin == 2:
+            raise NotImplementedError("Spin-dependent Vext not implemented in Qbox yet.")
+        n1, n2, n3 = sample.n1, sample.n2, sample.n3
+
+        with io.open(Vc_file,'r',encoding='utf8') as f:
+           data = f.readlines()
+    
+        # exclude header
+        data = data[10:-2]
+        data = ''.join(i for i in data).strip()
+    
+        # decode Vc.dat file
+        data = data.encode("utf-8")
+        data = base64.decodebytes(data)
+    
+        Vc = np.frombuffer(data, dtype=np.float64)
+        Vc_tot = Vc.reshape(n3,n2,n1,vspin).T
+
+        assert isinstance(Vc, np.ndarray) and Vc_tot.shape == (vspin, n1, n2, n3)
+        self.Vc_tot = Vc_tot
+        print(" uploaded Vc_tot")

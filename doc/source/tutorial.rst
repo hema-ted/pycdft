@@ -127,3 +127,9 @@ The electronic coupling predicted by **PyCDFT** is
 Note that if one has a good guess for the Lagrange multipliers in constraint potentials (for instance from previous calculations using smaller kinetic energy cutoff, etc.), it is recommended to use optimizers such as **secant**, which can take a initial guess for the Lagrange multiplier. In this case, the **V_brak** parameter should be replaced by the **V_init** parameter when initializing the constraints.
 
 For the He-He+ dimer separated by 3 Angstrom, a good starting guess is V_init = -0.7 for solver1 and V_init = 0.7 for solver2.
+
+Restarting CDFT calculation for :math:`H_{ab}`
+----------------------------------------------
+
+Depending on your computational resources and system, you may want to separately converge each CDFTSolver and save the relevant files for calculating the electronic coupling later.
+An example of how to do this in **PyCDFT** is provided in examples/01-he2_coupling/restart_example/.
