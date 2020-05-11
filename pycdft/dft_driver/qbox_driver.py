@@ -292,6 +292,7 @@ class QboxDriver(DFTDriver):
 
             if event == "start" and leaf.tag == "wavefunction_velocity":
                 break
+        return wfc
 
     def get_wfc(self):
         """ Parse wavefunction from Qbox."""
