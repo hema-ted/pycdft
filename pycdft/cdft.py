@@ -4,12 +4,12 @@ import shutil
 from copy import deepcopy
 import time
 import sys
+import io
+import base64
 import scipy.optimize
 from pycdft.common import Sample, timer
 from pycdft.constraint import Constraint
 from pycdft.dft_driver import DFTDriver
-import io #restart 
-import base64  #restart
 
 class CDFTSCFConverged(Exception):
     """ Test for scf convergence. """
@@ -278,23 +278,23 @@ class CDFTSolver:
         """ Generate a deepcopy of the current CDFTSolver instance."""
         return deepcopy(self)
 
-    def restart(self, wfcfile,dft_energies):
-        """ restart from previous CDFT run wavefunction
-            currently compatible with Qbox 
+    def restart(self, wfcfile, dft_energies):
+        """ Restart from previous CDFT run.
 
+        Args:
             wfcfile (str): name of wfc file
-            dft_energies : [ Ed, Ec] corresponding to Vc
+            dft_energies: [Ed, Ec] corresponding to Vc
         """
         print("=================== Restarting run =======================")
         try:
-            self.dft_driver.restart_wfc(wfcfile,dft_energies) 
+            self.dft_driver.restart_wfc(wfcfile, dft_energies)
   
         except:
             print(" Restart failed! ")
             e = sys.exc_info()
             print(e)
             print("Quitting DFT driver")
-            self.dft_driver.exit() 
+            self.dft_driver.exit()
 
     def get_Vc(self, Vc_file):
         """ Read Vc in cube format from Qbox; for restarting calculations for elcoupling"""
