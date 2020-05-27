@@ -18,10 +18,10 @@ sys.path.insert(0, os.path.abspath('../../pycdft/'))
 # -- Project information -----------------------------------------------------
 
 project = 'PyCDFT'
-author = 'He Ma, Ma Hin Cheng, Wennie Wang, Siyoung Kim, Marco Govoni, Giulia Galli'
+author = 'He Ma, Wennie Wang, Wennie Wang, Siyoung Kim, Man-Hin Cheng, Marco Govoni, Giulia Galli'
 
 # The full version, including alpha/beta/rc tags
-release = '0.9'
+release = '1.0'
 
 
 # -- General configuration ---------------------------------------------------

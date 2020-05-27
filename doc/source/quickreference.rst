@@ -74,6 +74,30 @@ Important parameters for the construction of **ChargeConstraint** or **ChargeTra
    - V_brak/V_init: search interval/initial guess for optimizer
 
 
+FAQ
+---
+
+A compilation of helpful hints and common runtime errors. Each item listed has the date of which it was last modified.
+
+1) Things to check for CDFT calculations (05/2020)
+   - all files are present in the directory, including cif structure file, pseudopotentials (if applicable) 
+   - the cif file and "ground-state" calculation give the same structure
+   - the "ground-state" calculation has converged 
+   - it is recommended to group atoms by fragment when specifying atom positions, as done in the tutorials
+   - PyCDFT is given the correct FFT grid dimensions
+
+2) A note on units (05/2020)
+   - PyCDFT uses ASE to read in the structure, which uses Angstroms
+   - Qbox uses atomic units (Ry, Bohr)
+
+3) Runtime errors (05/2020)
+
+   Q: I can run a few CDFT iterations of a **CDFTSolver** but **PyCDFT** crashes with (<class 'TypeError'>, TypeError('cannot unpack non-iterable float object')
+   A: This could be a sign that the optimizers used in PyCDFT did not converge and threw an error. Adjust inputs to the optimizer and restart the calculation. Further documentation may be found in documentation for scipy.optimizer.
+
+Other runtime errors in **PyCDFT** are related to an assertion condition failing. If this is the case, check your input files again corresponding to the error given. 
+Also keep in mind that the **DFTDriver** may throw runtime errors. 
+
 Debugging
 ---------
 
